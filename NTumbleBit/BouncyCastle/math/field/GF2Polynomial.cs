@@ -12,18 +12,9 @@ namespace NTumbleBit.BouncyCastle.Math.Field
 			this.exponents = Arrays.Clone(exponents);
 		}
 
-		public virtual int Degree
-		{
-			get
-			{
-				return exponents[exponents.Length - 1];
-			}
-		}
+		public virtual int Degree => exponents[exponents.Length - 1];
 
-		public virtual int[] GetExponentsPresent()
-		{
-			return Arrays.Clone(exponents);
-		}
+		public virtual int[] GetExponentsPresent() => Arrays.Clone(exponents);
 
 		public override bool Equals(object obj)
 		{
@@ -31,17 +22,14 @@ namespace NTumbleBit.BouncyCastle.Math.Field
 			{
 				return true;
 			}
-			GF2Polynomial other = obj as GF2Polynomial;
-			if(null == other)
+			var other = obj as GF2Polynomial;
+			if (null == other)
 			{
 				return false;
 			}
 			return Arrays.AreEqual(exponents, other.exponents);
 		}
 
-		public override int GetHashCode()
-		{
-			return Arrays.GetHashCode(exponents);
-		}
+		public override int GetHashCode() => Arrays.GetHashCode(exponents);
 	}
 }

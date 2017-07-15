@@ -110,15 +110,10 @@ namespace NTumbleBit.Configuration
 			return rpcClient;
 		}
 
-		public RPCClient ConfigureRPCClient(object network)
-		{
-			throw new NotImplementedException();
-		}
-
 		const int MIN_CORE_VERSION = 130100;
 		public static RPCClient ConfigureRPCClient(TextFileConfiguration confArgs, Network network, string prefix = null)
 		{
-			RPCArgs args = Parse(confArgs, network, prefix);
+			var args = Parse(confArgs, network, prefix);
 			return args.ConfigureRPCClient(network);
 		}
 
@@ -133,7 +128,7 @@ namespace NTumbleBit.Configuration
 			try
 			{
 				var url = confArgs.GetOrDefault<string>(prefix + "rpc.url", network == null ? null : "http://localhost:" + network.RPCPort + "/");
-				return new RPCArgs()
+				return new RPCArgs
 				{
 					User = confArgs.GetOrDefault<string>(prefix + "rpc.user", null),
 					Password = confArgs.GetOrDefault<string>(prefix + "rpc.password", null),

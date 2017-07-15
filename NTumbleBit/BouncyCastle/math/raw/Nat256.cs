@@ -247,30 +247,18 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			z[3] = x[3];
 		}
 
-		public static uint[] Create()
-		{
-			return new uint[8];
-		}
+		public static uint[] Create() => new uint[8];
 
-		public static ulong[] Create64()
-		{
-			return new ulong[4];
-		}
+		public static ulong[] Create64() => new ulong[4];
 
-		public static uint[] CreateExt()
-		{
-			return new uint[16];
-		}
+		public static uint[] CreateExt() => new uint[16];
 
-		public static ulong[] CreateExt64()
-		{
-			return new ulong[8];
-		}
+		public static ulong[] CreateExt64() => new ulong[8];
 
 		public static bool Diff(uint[] x, int xOff, uint[] y, int yOff, uint[] z, int zOff)
 		{
-			bool pos = Gte(x, xOff, y, yOff);
-			if(pos)
+			var pos = Gte(x, xOff, y, yOff);
+			if (pos)
 			{
 				Sub(x, xOff, y, yOff, z, zOff);
 			}
@@ -308,9 +296,9 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			if(x.SignValue < 0 || x.BitLength > 256)
 				throw new ArgumentException();
 
-			uint[] z = Create();
-			int i = 0;
-			while(x.SignValue != 0)
+			var z = Create();
+			var i = 0;
+			while (x.SignValue != 0)
 			{
 				z[i++] = (uint)x.IntValue;
 				x = x.ShiftRight(32);
@@ -323,9 +311,9 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			if(x.SignValue < 0 || x.BitLength > 256)
 				throw new ArgumentException();
 
-			ulong[] z = Create64();
-			int i = 0;
-			while(x.SignValue != 0)
+			var z = Create64();
+			var i = 0;
+			while (x.SignValue != 0)
 			{
 				z[i++] = (ulong)x.LongValue;
 				x = x.ShiftRight(64);
@@ -343,8 +331,8 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			{
 				return 0;
 			}
-			int w = bit >> 5;
-			int b = bit & 31;
+			var w = bit >> 5;
+			var b = bit & 31;
 			return (x[w] >> b) & 1;
 		}
 
@@ -352,8 +340,9 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 7; i >= 0; --i)
 			{
-				uint x_i = x[i], y_i = y[i];
-				if(x_i < y_i)
+				var x_i = x[i];
+				var y_i = y[i];
+				if (x_i < y_i)
 					return false;
 				if(x_i > y_i)
 					return true;
@@ -365,8 +354,9 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 7; i >= 0; --i)
 			{
-				uint x_i = x[xOff + i], y_i = y[yOff + i];
-				if(x_i < y_i)
+				var x_i = x[xOff + i];
+				var y_i = y[yOff + i];
+				if (x_i < y_i)
 					return false;
 				if(x_i > y_i)
 					return true;
@@ -802,11 +792,11 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(x >> 31 == 0);
 			Debug.Assert(zOff <= 4);
 			ulong c = 0, xVal = x;
-			ulong y00 = y & M;
+			var y00 = y & M;
 			c += xVal * y00 + z[zOff + 0];
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
-			ulong y01 = y >> 32;
+			var y01 = y >> 32;
 			c += xVal * y01 + y00 + z[zOff + 1];
 			z[zOff + 1] = (uint)c;
 			c >>= 32;
@@ -855,7 +845,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint MulWord(uint x, uint[] y, uint[] z, int zOff)
 		{
 			ulong c = 0, xVal = x;
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * y[i];
@@ -873,11 +863,12 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 			uint c = 0, w;
 			{
-				int i = 7, j = 16;
+				var i = 7;
+				var j = 16;
 				do
 				{
 					ulong xVal = x[i--];
-					ulong p = xVal * xVal;
+					var p = xVal * xVal;
 					zz[--j] = (c << 31) | (uint)(p >> 33);
 					zz[--j] = (uint)(p >> 1);
 					c = (uint)p;
@@ -885,7 +876,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 				while(i > 0);
 
 				{
-					ulong p = x_0 * x_0;
+					var p = x_0 * x_0;
 					zz_1 = (ulong)(c << 31) | (p >> 33);
 					zz[0] = (uint)p;
 					c = (uint)(p >> 32) & 1;
@@ -1037,11 +1028,12 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 			uint c = 0, w;
 			{
-				int i = 7, j = 16;
+				var i = 7;
+				var j = 16;
 				do
 				{
 					ulong xVal = x[xOff + i--];
-					ulong p = xVal * xVal;
+					var p = xVal * xVal;
 					zz[zzOff + --j] = (c << 31) | (uint)(p >> 33);
 					zz[zzOff + --j] = (uint)(p >> 1);
 					c = (uint)p;
@@ -1049,7 +1041,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 				while(i > 0);
 
 				{
-					ulong p = x_0 * x_0;
+					var p = x_0 * x_0;
 					zz_1 = (ulong)(c << 31) | (p >> 33);
 					zz[zzOff + 0] = (uint)p;
 					c = (uint)(p >> 32) & 1;
@@ -1346,11 +1338,11 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static BigInteger ToBigInteger(uint[] x)
 		{
-			byte[] bs = new byte[32];
-			for(int i = 0; i < 8; ++i)
+			var bs = new byte[32];
+			for (int i = 0; i < 8; ++i)
 			{
-				uint x_i = x[i];
-				if(x_i != 0)
+				var x_i = x[i];
+				if (x_i != 0)
 				{
 					Pack.UInt32_To_BE(x_i, bs, (7 - i) << 2);
 				}
@@ -1360,11 +1352,11 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static BigInteger ToBigInteger64(ulong[] x)
 		{
-			byte[] bs = new byte[32];
-			for(int i = 0; i < 4; ++i)
+			var bs = new byte[32];
+			for (int i = 0; i < 4; ++i)
 			{
-				ulong x_i = x[i];
-				if(x_i != 0L)
+				var x_i = x[i];
+				if (x_i != 0L)
 				{
 					Pack.UInt64_To_BE(x_i, bs, (3 - i) << 3);
 				}

@@ -24,11 +24,13 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 	{
 		public static TorConnectionSettings ParseConnectionSettings(string prefix, TextFileConfiguration config)
 		{
-			TorConnectionSettings settings = new TorConnectionSettings();
-			settings.Server = config.GetOrDefault<IPEndPoint>(prefix + ".server", new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9051));
-			settings.Password = config.GetOrDefault<string>(prefix + ".password", null);
-			settings.CookieFile = config.GetOrDefault<string>(prefix + ".cookiefile", null);
-			settings.VirtualPort = config.GetOrDefault<int>(prefix + ".virtualport", 80);
+			var settings = new TorConnectionSettings
+			{
+				Server = config.GetOrDefault<IPEndPoint>(prefix + ".server", new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9051)),
+				Password = config.GetOrDefault<string>(prefix + ".password", null),
+				CookieFile = config.GetOrDefault<string>(prefix + ".cookiefile", null),
+				VirtualPort = config.GetOrDefault<int>(prefix + ".virtualport", 80)
+			};
 			return settings;
 		}
 		public enum ConnectionTest
@@ -64,7 +66,7 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 
 		public override HttpMessageHandler CreateHttpHandler()
 		{
-			CancellationTokenSource cts = new CancellationTokenSource();
+			var cts = new CancellationTokenSource();
 			cts.CancelAfter(60000);
 			var client = CreateTorClient();
 			client.ChangeCircuitAsync(cts.Token).GetAwaiter().GetResult();

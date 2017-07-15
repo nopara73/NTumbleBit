@@ -61,9 +61,7 @@ namespace NTumbleBit.PuzzleSolver
 
 		public SolverClientSession(SolverParameters parameters)
 		{
-			if(parameters == null)
-				throw new ArgumentNullException(nameof(parameters));
-			_Parameters = parameters;
+			_Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
 			InternalState = new State();
 		}
 
@@ -75,8 +73,9 @@ namespace NTumbleBit.PuzzleSolver
 			if(InternalState.FakeIndexes != null)
 			{
 				_PuzzleElements = new PuzzleSetElement[_Parameters.GetTotalCount()];
-				int fakeI = 0, realI = 0;
-				for(int i = 0; i < _PuzzleElements.Length; i++)
+				var fakeI = 0;
+				var realI = 0;
+				for (int i = 0; i < _PuzzleElements.Length; i++)
 				{
 					PuzzleSetElement element = null;
 					var puzzle = new Puzzle(_Parameters.ServerKey, state.Puzzles[i]);
@@ -105,8 +104,9 @@ namespace NTumbleBit.PuzzleSolver
 				var puzzles = new PuzzleValue[_PuzzleElements.Length];
 				var fakeSolutions = new PuzzleSolution[Parameters.FakePuzzleCount];
 				var blinds = new BlindFactor[Parameters.RealPuzzleCount];
-				int fakeI = 0, realI = 0;
-				for(int i = 0; i < _PuzzleElements.Length; i++)
+				var fakeI = 0;
+				var realI = 0;
+				for (int i = 0; i < _PuzzleElements.Length; i++)
 				{
 					commitments[i] = _PuzzleElements[i].Commitment;
 					puzzles[i] = _PuzzleElements[i].Puzzle.PuzzleValue;
@@ -174,29 +174,11 @@ namespace NTumbleBit.PuzzleSolver
 		}
 
 
-		public SolverParameters Parameters
-		{
-			get
-			{
-				return _Parameters;
-			}
-		}
+		public SolverParameters Parameters => _Parameters;
 
-		public RsaPubKey ServerKey
-		{
-			get
-			{
-				return _Parameters.ServerKey;
-			}
-		}
+		public RsaPubKey ServerKey => _Parameters.ServerKey;
 
-		public SolverClientStates Status
-		{
-			get
-			{
-				return InternalState.Status;
-			}
-		}
+		public SolverClientStates Status => InternalState.Status;
 
 		public override void ConfigureEscrowedCoin(ScriptCoin escrowedCoin, Key escrowKey, Script redeemDestination)
 		{
@@ -207,36 +189,34 @@ namespace NTumbleBit.PuzzleSolver
 
 		public void AcceptPuzzle(PuzzleValue puzzleValue)
 		{
-			if(puzzleValue == null)
-				throw new ArgumentNullException(nameof(puzzleValue));
 			AssertState(SolverClientStates.WaitingPuzzle);
-			InternalState.Puzzle = puzzleValue;
+			InternalState.Puzzle = puzzleValue ?? throw new ArgumentNullException(nameof(puzzleValue));
 			InternalState.Status = SolverClientStates.WaitingGeneratePuzzles;
 		}
 
 		public PuzzleValue[] GeneratePuzzles()
 		{
 			AssertState(SolverClientStates.WaitingGeneratePuzzles);
-			List<PuzzleSetElement> puzzles = new List<PuzzleSetElement>();
-			for(int i = 0; i < Parameters.RealPuzzleCount; i++)
+			var puzzles = new List<PuzzleSetElement>();
+			for (int i = 0; i < Parameters.RealPuzzleCount; i++)
 			{
 				BlindFactor blind = null;
-				Puzzle puzzle = new Puzzle(ServerKey, InternalState.Puzzle).Blind(ref blind);
+				var puzzle = new Puzzle(ServerKey, InternalState.Puzzle).Blind(ref blind);
 				puzzles.Add(new RealPuzzle(puzzle, blind));
 			}
 
 			for(int i = 0; i < Parameters.FakePuzzleCount; i++)
 			{
 				PuzzleSolution solution = null;
-				Puzzle puzzle = ServerKey.GeneratePuzzle(ref solution);
+				var puzzle = ServerKey.GeneratePuzzle(ref solution);
 				puzzles.Add(new FakePuzzle(puzzle, solution));
 			}
 
 			_PuzzleElements = puzzles.ToArray();
 			NBitcoin.Utils.Shuffle(_PuzzleElements, RandomUtils.GetInt32());
 			InternalState.FakeIndexes = new int[Parameters.FakePuzzleCount];
-			int fakeI = 0;
-			for(int i = 0; i < _PuzzleElements.Length; i++)
+			var fakeI = 0;
+			for (int i = 0; i < _PuzzleElements.Length; i++)
 			{
 				_PuzzleElements[i].Index = i;
 				if(_PuzzleElements[i] is FakePuzzle)
@@ -254,10 +234,10 @@ namespace NTumbleBit.PuzzleSolver
 				throw new ArgumentException("Expecting " + Parameters.GetTotalCount() + " commitments");
 			AssertState(SolverClientStates.WaitingCommitments);
 
-			List<PuzzleSolution> solutions = new List<PuzzleSolution>();
-			List<int> indexes = new List<int>();
+			var solutions = new List<PuzzleSolution>();
+			var indexes = new List<int>();
 
-			foreach(var puzzle in _PuzzleElements.OfType<FakePuzzle>())
+			foreach (var puzzle in _PuzzleElements.OfType<FakePuzzle>())
 			{
 				solutions.Add(puzzle.Solution);
 				indexes.Add(puzzle.Index);
@@ -278,8 +258,8 @@ namespace NTumbleBit.PuzzleSolver
 				throw new ArgumentException("Expecting " + Parameters.FakePuzzleCount + " keys");
 			AssertState(SolverClientStates.WaitingFakeCommitmentsProof);
 
-			int y = 0;
-			foreach(var puzzle in _PuzzleElements.OfType<FakePuzzle>())
+			var y = 0;
+			foreach (var puzzle in _PuzzleElements.OfType<FakePuzzle>())
 			{
 				var key = keys[y++].ToBytes(true);
 				var hash = new uint160(Hashes.RIPEMD160(key, key.Length));
@@ -319,7 +299,7 @@ namespace NTumbleBit.PuzzleSolver
 			var offerCoin = new Coin(escrowCoin.Outpoint, txOut).ToScriptCoin(offerScript);
 
 
-			Transaction tx = new Transaction();
+			var tx = new Transaction();
 			tx.Inputs.Add(new TxIn(escrowCoin.Outpoint));
 			tx.Outputs.Add(offerCoin.TxOut);
 
@@ -348,8 +328,10 @@ namespace NTumbleBit.PuzzleSolver
 
 		public TrustedBroadcastRequest CreateOfferRedeemTransaction(FeeRate feeRate)
 		{
-			Transaction tx = new Transaction();
-			tx.LockTime = EscrowScriptPubKeyParameters.GetFromCoin(InternalState.EscrowedCoin).LockTime;
+			var tx = new Transaction
+			{
+				LockTime = EscrowScriptPubKeyParameters.GetFromCoin(InternalState.EscrowedCoin).LockTime
+			};
 			tx.Inputs.Add(new TxIn());
 			tx.Inputs[0].Sequence = 0;
 			tx.Outputs.Add(new TxOut(InternalState.OfferCoin.Amount, InternalState.RedeemDestination));
@@ -430,8 +412,8 @@ namespace NTumbleBit.PuzzleSolver
 			AssertState(SolverClientStates.WaitingPuzzleSolutions);
 			PuzzleSolution solution = null;
 			RealPuzzle solvedPuzzle = null;
-			int y = 0;
-			foreach(var puzzle in _PuzzleElements.OfType<RealPuzzle>())
+			var y = 0;
+			foreach (var puzzle in _PuzzleElements.OfType<RealPuzzle>())
 			{
 				var key = keys[y++].ToBytes(true);
 				var commitment = puzzle.Commitment;
@@ -461,10 +443,7 @@ namespace NTumbleBit.PuzzleSolver
 			return InternalState.PuzzleSolution;
 		}
 
-		public override LockTime GetLockTime(CycleParameters cycle)
-		{
-			return cycle.GetClientLockTime();
-		}
+		public override LockTime GetLockTime(CycleParameters cycle) => cycle.GetClientLockTime();
 
 		private void AssertState(SolverClientStates state)
 		{

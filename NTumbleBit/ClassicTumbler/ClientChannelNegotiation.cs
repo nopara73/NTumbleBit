@@ -71,7 +71,7 @@ namespace NTumbleBit.ClassicTumbler
 			{
 				get;
 				set;
-			}			
+			}
 			public int TumblerEscrowKeyReference
 			{
 				get;
@@ -80,20 +80,16 @@ namespace NTumbleBit.ClassicTumbler
 		}
 		public ClientChannelNegotiation(ClassicTumblerParameters parameters, int cycleStart)
 		{
-			if(parameters == null)
-				throw new ArgumentNullException(nameof(parameters));
 			InternalState = new State();
-			Parameters = parameters;
+			Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
 			InternalState.CycleStart = cycleStart;
 		}
 
 		public ClientChannelNegotiation(ClassicTumblerParameters parameters, State state)
 		{
-			if(parameters == null)
-				throw new ArgumentNullException(nameof(parameters));
-			if(state == null)
+			if (state == null)
 				throw new ArgumentNullException(nameof(state));
-			Parameters = parameters;
+			Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
 			InternalState = Serializer.Clone(state);
 		}
 
@@ -103,13 +99,7 @@ namespace NTumbleBit.ClassicTumbler
 		}
 
 
-		public TumblerClientSessionStates Status
-		{
-			get
-			{
-				return InternalState.Status;
-			}
-		}
+		public TumblerClientSessionStates Status => InternalState.Status;
 
 		public State GetInternalState()
 		{
@@ -135,7 +125,7 @@ namespace NTumbleBit.ClassicTumbler
 			InternalState.BlindedVoucherFactor = factor;
 			InternalState.Status = TumblerClientSessionStates.WaitingTumblerClientTransactionKey;
 		}
-		
+
 		/// <summary>
 		/// Receiving the Tumbler escrow key of Client Escrow.
 		/// </summary>
@@ -146,7 +136,7 @@ namespace NTumbleBit.ClassicTumbler
 			AssertState(TumblerClientSessionStates.WaitingTumblerClientTransactionKey);
 			var escrow = new Key();
 
-			InternalState.ClientEscrow = new EscrowScriptPubKeyParameters()
+			InternalState.ClientEscrow = new EscrowScriptPubKeyParameters
 			{
 				Initiator = escrow.PubKey,
 				Receiver = tumblerKey,
@@ -162,7 +152,7 @@ namespace NTumbleBit.ClassicTumbler
 			AssertState(TumblerClientSessionStates.WaitingClientTransaction);
 			return new TxOut(Parameters.Denomination + Parameters.Fee, InternalState.ClientEscrow.Hash);
 		}
-		
+
 		public SolverClientSession SetClientSignedTransaction(Transaction transaction, Script redeemDestination)
 		{
 			AssertState(TumblerClientSessionStates.WaitingClientTransaction);
@@ -209,7 +199,7 @@ namespace NTumbleBit.ClassicTumbler
 		{
 			AssertState(TumblerClientSessionStates.WaitingTumblerEscrow);
 			var escrow = EscrowScriptPubKeyParameters.GetFromCoin(escrowedCoin);
-			var expectedEscrow = new EscrowScriptPubKeyParameters()
+			var expectedEscrow = new EscrowScriptPubKeyParameters
 			{
 				Initiator = escrow?.Initiator,
 				Receiver = InternalState.TumblerEscrowKey.PubKey,
@@ -228,10 +218,7 @@ namespace NTumbleBit.ClassicTumbler
 			return session;
 		}
 
-		public CycleParameters GetCycle()
-		{
-			return Parameters.CycleGenerator.GetCycle(InternalState.CycleStart);
-		}
+		public CycleParameters GetCycle() => Parameters.CycleGenerator.GetCycle(InternalState.CycleStart);
 
 		private void AssertState(TumblerClientSessionStates state)
 		{

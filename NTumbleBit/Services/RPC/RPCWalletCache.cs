@@ -23,7 +23,7 @@ namespace NTumbleBit.Services.RPC
 	}
 
 	/// <summary>
-	/// Workaround around slow Bitcoin Core RPC. 
+	/// Workaround around slow Bitcoin Core RPC.
 	/// We are refreshing the list of received transaction once per block.
 	/// </summary>
 	public class RPCWalletCache
@@ -32,12 +32,8 @@ namespace NTumbleBit.Services.RPC
 		private readonly IRepository _Repo;
 		public RPCWalletCache(RPCClient rpc, IRepository repository)
 		{
-			if(rpc == null)
-				throw new ArgumentNullException("rpc");
-			if(repository == null)
-				throw new ArgumentNullException("repository");
-			_RPCClient = rpc;
-			_Repo = repository;
+			_RPCClient = rpc ?? throw new ArgumentNullException(nameof(rpc));
+			_Repo = repository ?? throw new ArgumentNullException(nameof(repository));
 		}
 
 		volatile uint256 _RefreshedAtBlock;
@@ -132,8 +128,7 @@ namespace NTumbleBit.Services.RPC
 		private Transaction GetCachedTransaction(uint256 txId)
 		{
 
-			Transaction tx = null;
-			if(_TransactionsByTxId.TryGetValue(txId, out tx))
+			if (_TransactionsByTxId.TryGetValue(txId, out Transaction tx))
 			{
 				return tx;
 			}
@@ -148,14 +143,14 @@ namespace NTumbleBit.Services.RPC
 		HashSet<uint256> _KnownTransactions = new HashSet<uint256>();
 		List<RPCWalletEntry> ListTransactions(ref HashSet<uint256> knownTransactions)
 		{
-			List<RPCWalletEntry> array = new List<RPCWalletEntry>();
+			var array = new List<RPCWalletEntry>();
 			knownTransactions = new HashSet<uint256>();
 			var removeFromCache = new HashSet<uint256>(_TransactionsByTxId.Values.Select(tx => tx.GetHash()));
-			int count = 100;
-			int skip = 0;
-			int highestConfirmation = 0;
+			var count = 100;
+			var skip = 0;
+			var highestConfirmation = 0;
 
-			while(true)
+			while (true)
 			{
 				var result = _RPCClient.SendCommandNoThrows("listtransactions", "*", count, skip, true);
 				skip += count;
@@ -164,9 +159,11 @@ namespace NTumbleBit.Services.RPC
 				var transactions = (JArray)result.Result;
 				foreach(var obj in transactions)
 				{
-					var entry = new RPCWalletEntry();
-					entry.Confirmations = obj["confirmations"] == null ? 0 : (int)obj["confirmations"];
-					entry.TransactionId = new uint256((string)obj["txid"]);
+					var entry = new RPCWalletEntry
+					{
+						Confirmations = obj["confirmations"] == null ? 0 : (int)obj["confirmations"],
+						TransactionId = new uint256((string)obj["txid"])
+					};
 					removeFromCache.Remove(entry.TransactionId);
 					if(knownTransactions.Add(entry.TransactionId))
 					{
@@ -182,8 +179,7 @@ namespace NTumbleBit.Services.RPC
 			}
 			foreach(var remove in removeFromCache)
 			{
-				Transaction opt;
-				_TransactionsByTxId.TryRemove(remove, out opt);
+				_TransactionsByTxId.TryRemove(remove, out Transaction opt);
 			}
 			return array;
 		}
@@ -197,7 +193,7 @@ namespace NTumbleBit.Services.RPC
 				if(_KnownTransactions.Add(transaction.GetHash()))
 				{
 					_Transactions.Insert(0,
-						new RPCWalletEntry()
+						new RPCWalletEntry
 						{
 							Confirmations = confirmations,
 							TransactionId = transaction.GetHash()

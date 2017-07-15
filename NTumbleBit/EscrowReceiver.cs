@@ -21,7 +21,7 @@ namespace NTumbleBit
 			{
 				get;
 				set;
-			}			
+			}
 		}
 
 		protected State InternalState
@@ -29,31 +29,14 @@ namespace NTumbleBit
 			get; set;
 		}
 
-		public string Id
-		{
-			get
-			{
-				return InternalState.EscrowedCoin.ScriptPubKey.ToHex();
-			}
-		}
+		public string Id => InternalState.EscrowedCoin.ScriptPubKey.ToHex();
 
 		public virtual void ConfigureEscrowedCoin(ScriptCoin escrowedCoin, Key escrowKey)
 		{
-			if(escrowedCoin == null)
-				throw new ArgumentNullException(nameof(escrowedCoin));
-			if(escrowKey == null)
-				throw new ArgumentNullException(nameof(escrowKey));
-						
-			InternalState.EscrowKey = escrowKey;
-			InternalState.EscrowedCoin = escrowedCoin;
+			InternalState.EscrowKey = escrowKey ?? throw new ArgumentNullException(nameof(escrowKey));
+			InternalState.EscrowedCoin = escrowedCoin ?? throw new ArgumentNullException(nameof(escrowedCoin));
 		}
 
-		public ScriptCoin EscrowedCoin
-		{
-			get
-			{
-				return InternalState.EscrowedCoin;
-			}
-		}
+		public ScriptCoin EscrowedCoin => InternalState.EscrowedCoin;
 	}
 }

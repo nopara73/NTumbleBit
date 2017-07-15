@@ -8,13 +8,8 @@ namespace NTumbleBit
 	public class NullDisposable : IDisposable
 	{
 		readonly static IDisposable _Instance = new NullDisposable();
-		public static IDisposable Instance
-		{
-			get
-			{
-				return _Instance;
-			}
-		}
+		public static IDisposable Instance => _Instance;
+
 		private NullDisposable()
 		{
 

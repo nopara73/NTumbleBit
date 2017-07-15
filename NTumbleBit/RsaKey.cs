@@ -39,7 +39,7 @@ namespace NTumbleBit
 				throw new ArgumentNullException(nameof(bytes));
 			try
 			{
-				DerSequence seq2 = GetRSASequence(bytes);
+				var seq2 = GetRSASequence(bytes);
 				var s = new RsaPrivateKeyStructure(seq2);
 				_Key = new RsaPrivateCrtKeyParameters(s.Modulus, s.PublicExponent, s.PrivateExponent, s.Prime1, s.Prime2, s.Exponent1, s.Exponent2, s.Coefficient);
 				_PubKey = new RsaPubKey(new RsaKeyParameters(false, s.Modulus, s.PublicExponent));
@@ -70,9 +70,9 @@ namespace NTumbleBit
 		{
 			while(true)
 			{
-				byte[] output = new byte[256];
+				var output = new byte[256];
 				nonce = new uint160(RandomUtils.GetBytes(20));
-				Sha512Digest sha512 = new Sha512Digest();
+				var sha512 = new Sha512Digest();
 				var msg = Utils.Combine(nonce.ToBytes(), data);
 				var generator = new Mgf1BytesGenerator(sha512);
 				generator.Init(new MgfParameters(msg));
@@ -94,14 +94,14 @@ namespace NTumbleBit
 			if(encrypted.CompareTo(_Key.Modulus) >= 0)
 				throw new DataLengthException("input too large for RSA cipher.");
 
-			RsaBlindedEngine engine = new RsaBlindedEngine();
+			var engine = new RsaBlindedEngine();
 			engine.Init(false, _Key);
 			return engine.ProcessBlock(encrypted);
 		}
 
 		internal static DerSequence GetRSASequence(byte[] bytes)
 		{
-			Asn1InputStream decoder = new Asn1InputStream(bytes);
+			var decoder = new Asn1InputStream(bytes);
 			var seq = (DerSequence)decoder.ReadObject();
 			if(!((DerInteger)seq[0]).Value.Equals(BigInteger.Zero))
 				throw new Exception();
@@ -115,17 +115,11 @@ namespace NTumbleBit
 		}
 
 		private readonly RsaPubKey _PubKey;
-		public RsaPubKey PubKey
-		{
-			get
-			{
-				return _PubKey;
-			}
-		}
+		public RsaPubKey PubKey => _PubKey;
 
 		public byte[] ToBytes()
 		{
-			RsaPrivateKeyStructure keyStruct = new RsaPrivateKeyStructure(
+			var keyStruct = new RsaPrivateKeyStructure(
 				_Key.Modulus,
 				_Key.PublicExponent,
 				_Key.Exponent,

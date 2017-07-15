@@ -73,14 +73,14 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			int inOff,
 			int inLen)
 		{
-			int maxLength = (bitSize + 7) / 8;
+			var maxLength = (bitSize + 7) / 8;
 
-			if(inLen > maxLength)
+			if (inLen > maxLength)
 				throw new DataLengthException("input too large for RSA cipher.");
 
-			BigInteger input = new BigInteger(1, inBuf, inOff, inLen);
+			var input = new BigInteger(1, inBuf, inOff, inLen);
 
-			if(input.CompareTo(key.Modulus) >= 0)
+			if (input.CompareTo(key.Modulus) >= 0)
 				throw new DataLengthException("input too large for RSA cipher.");
 
 			return input;
@@ -89,17 +89,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 		public virtual byte[] ConvertOutput(
 			BigInteger result)
 		{
-			byte[] output = result.ToByteArrayUnsigned();
+			var output = result.ToByteArrayUnsigned();
 
-			if(forEncryption)
+			if (forEncryption)
 			{
-				int outSize = GetOutputBlockSize();
+				var outSize = GetOutputBlockSize();
 
 				// TODO To avoid this, create version of BigInteger.ToByteArray that
 				// writes to an existing array
-				if(output.Length < outSize) // have ended up with less bytes than normal, lengthen
+				if (output.Length < outSize) // have ended up with less bytes than normal, lengthen
 				{
-					byte[] tmp = new byte[outSize];
+					var tmp = new byte[outSize];
 					output.CopyTo(tmp, tmp.Length - output.Length);
 					output = tmp;
 				}
@@ -111,20 +111,18 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 		public virtual BigInteger ProcessBlock(
 			BigInteger input)
 		{
-			if(key is RsaPrivateCrtKeyParameters)
+			//
+			// we have the extra factors, use the Chinese Remainder Theorem - the author
+			// wishes to express his thanks to Dirk Bonekaemper at rtsffm.com for
+			// advice regarding the expression of this.
+			//
+			if (key is RsaPrivateCrtKeyParameters crtKey)
 			{
-				//
-				// we have the extra factors, use the Chinese Remainder Theorem - the author
-				// wishes to express his thanks to Dirk Bonekaemper at rtsffm.com for
-				// advice regarding the expression of this.
-				//
-				RsaPrivateCrtKeyParameters crtKey = (RsaPrivateCrtKeyParameters)key;
-
-				BigInteger p = crtKey.P;
-				BigInteger q = crtKey.Q;
-				BigInteger dP = crtKey.DP;
-				BigInteger dQ = crtKey.DQ;
-				BigInteger qInv = crtKey.QInv;
+				var p = crtKey.P;
+				var q = crtKey.Q;
+				var dP = crtKey.DP;
+				var dQ = crtKey.DQ;
+				var qInv = crtKey.QInv;
 
 				BigInteger mP, mQ, h, m;
 

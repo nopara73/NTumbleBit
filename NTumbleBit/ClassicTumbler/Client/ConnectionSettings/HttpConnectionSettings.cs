@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using NTumbleBit;
 
 namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 {
@@ -14,20 +15,12 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 
 			public CustomProxy(Uri address)
 			{
-				if(address == null)
-					throw new ArgumentNullException("address");
-				_Address = address;
+				_Address = address ?? throw new ArgumentNullException(nameof(address));
 			}
 
-			public Uri GetProxy(Uri destination)
-			{
-				return _Address;
-			}
+			public Uri GetProxy(Uri destination) => _Address;
 
-			public bool IsBypassed(Uri host)
-			{
-				return false;
-			}
+			public bool IsBypassed(Uri host) => false;
 
 			public ICredentials Credentials
 			{
@@ -45,11 +38,15 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 
 		public override HttpMessageHandler CreateHttpHandler()
 		{
-			CustomProxy proxy = new CustomProxy(Proxy);
-			proxy.Credentials = Credentials;
-			HttpClientHandler handler = new HttpClientHandler();
-			handler.Proxy = proxy;
-			Utils.SetAntiFingerprint(handler);
+			var proxy = new CustomProxy(Proxy)
+			{
+				Credentials = Credentials
+			};
+			var handler = new HttpClientHandler
+			{
+				Proxy = proxy
+			};
+			handler.SetAntiFingerprint();
 			return handler;
 		}
 	}

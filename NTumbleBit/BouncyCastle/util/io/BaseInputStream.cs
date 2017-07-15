@@ -7,28 +7,13 @@ namespace NTumbleBit.BouncyCastle.Utilities.IO
 	{
 		private bool closed;
 
-		public sealed override bool CanRead
-		{
-			get
-			{
-				return !closed;
-			}
-		}
-		public sealed override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
-		public sealed override bool CanWrite
-		{
-			get
-			{
-				return false;
-			}
-		}
-        protected override void Dispose(bool disposing)
+		public sealed override bool CanRead => !closed;
+
+		public sealed override bool CanSeek => false;
+
+		public sealed override bool CanWrite => false;
+
+		protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -60,14 +45,14 @@ namespace NTumbleBit.BouncyCastle.Utilities.IO
 
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			int pos = offset;
+			var pos = offset;
 			try
 			{
-				int end = offset + count;
-				while(pos < end)
+				var end = offset + count;
+				while (pos < end)
 				{
-					int b = ReadByte();
-					if(b == -1)
+					var b = ReadByte();
+					if (b == -1)
 						break;
 					buffer[pos++] = (byte)b;
 				}

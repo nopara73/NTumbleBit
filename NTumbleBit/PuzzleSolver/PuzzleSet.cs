@@ -43,10 +43,7 @@ namespace NTumbleBit.PuzzleSolver
 			get; set;
 		}
 
-		public override string ToString()
-		{
-			return "+Real " + Puzzle;
-		}
+		public override string ToString() => "+Real " + Puzzle;
 	}
 
 	internal class FakePuzzle : PuzzleSetElement
@@ -63,9 +60,6 @@ namespace NTumbleBit.PuzzleSolver
 			private set;
 		}
 
-		public override string ToString()
-		{
-			return "-Fake " + Puzzle;
-		}
+		public override string ToString() => "-Fake " + Puzzle;
 	}
 }

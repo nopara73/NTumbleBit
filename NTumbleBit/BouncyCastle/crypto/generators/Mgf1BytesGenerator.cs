@@ -28,25 +28,19 @@ namespace NTumbleBit.BouncyCastle.Crypto.Generators
 
 		public void Init(MgfParameters parameters)
 		{
-			MgfParameters p = parameters;
+			var p = parameters;
 			seed = p.GetSeed();
 		}
 
 		/**
         * return the underlying digest.
         */
-		public IDigest Digest
-		{
-			get
-			{
-				return digest;
-			}
-		}
+		public IDigest Digest => digest;
 
 		/**
         * int to octet string.
         */
-		private void ItoOSP(
+		private static void ItoOSP(
 			int i,
 			byte[] sp)
 		{
@@ -72,9 +66,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Generators
 				throw new DataLengthException("output buffer too small");
 			}
 
-			byte[] hashBuf = new byte[hLen];
-			byte[] C = new byte[4];
-			int counter = 0;
+			var hashBuf = new byte[hLen];
+			var C = new byte[4];
+			var counter = 0;
 
 			digest.Reset();
 

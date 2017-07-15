@@ -28,11 +28,8 @@ namespace NTumbleBit
 			get;
 			set;
 		}
-		
-		public bool IsBroadcastableAt(int height)
-		{
-			return height >= BroadcastAt.Height && Transaction.IsFinal(DateTimeOffset.UtcNow, height + 1);
-		}
+
+		public bool IsBroadcastableAt(int height) => height >= BroadcastAt.Height && Transaction.IsFinal(DateTimeOffset.UtcNow, height + 1);
 
 		/// <summary>
 		/// Use BroadcastAt and Transaction locktime to know what a transaction can be broadcasted
@@ -55,9 +52,9 @@ namespace NTumbleBit
 			transaction.Inputs[0].PrevOut = coin.Outpoint;
 			var redeem = new Script(transaction.Inputs[0].ScriptSig.ToOps().Last().PushData);
 			var scriptCoin = coin.ToScriptCoin(redeem);
-			byte[] signature = transaction.SignInput(Key, scriptCoin).ToBytes();
-			List<Op> resignedScriptSig = new List<Op>();
-			foreach(var op in transaction.Inputs[0].ScriptSig.ToOps())
+			var signature = transaction.SignInput(Key, scriptCoin).ToBytes();
+			var resignedScriptSig = new List<Op>();
+			foreach (var op in transaction.Inputs[0].ScriptSig.ToOps())
 			{
 				resignedScriptSig.Add(IsPlaceholder(op) ? Op.GetPushOp(signature) : op);
 			}
@@ -65,9 +62,6 @@ namespace NTumbleBit
 			return transaction;
 		}
 
-		private static bool IsPlaceholder(Op op)
-		{
-			return op.PushData != null && op.PushData.SequenceEqual(PlaceholderSignature);
-		}
+		private static bool IsPlaceholder(Op op) => op.PushData != null && op.PushData.SequenceEqual(PlaceholderSignature);
 	}
 }

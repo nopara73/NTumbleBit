@@ -24,8 +24,8 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			byte[] output,
 			int outOff)
 		{
-			byte[] outBytes = ProcessByte(input);
-			if(outBytes == null)
+			var outBytes = ProcessByte(input);
+			if (outBytes == null)
 				return 0;
 			if(outOff + outBytes.Length > output.Length)
 				throw new DataLengthException("output buffer too short");
@@ -34,20 +34,13 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		}
 
 		public virtual byte[] ProcessBytes(
-			byte[] input)
-		{
-			return ProcessBytes(input, 0, input.Length);
-		}
-
+			byte[] input) => ProcessBytes(input, 0, input.Length);
 		public abstract byte[] ProcessBytes(byte[] input, int inOff, int length);
 
 		public virtual int ProcessBytes(
 			byte[] input,
 			byte[] output,
-			int outOff)
-		{
-			return ProcessBytes(input, 0, input.Length, output, outOff);
-		}
+			int outOff) => ProcessBytes(input, 0, input.Length, output, outOff);
 
 		public virtual int ProcessBytes(
 			byte[] input,
@@ -56,8 +49,8 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			byte[] output,
 			int outOff)
 		{
-			byte[] outBytes = ProcessBytes(input, inOff, length);
-			if(outBytes == null)
+			var outBytes = ProcessBytes(input, inOff, length);
+			if (outBytes == null)
 				return 0;
 			if(outOff + outBytes.Length > output.Length)
 				throw new DataLengthException("output buffer too short");
@@ -68,11 +61,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		public abstract byte[] DoFinal();
 
 		public virtual byte[] DoFinal(
-			byte[] input)
-		{
-			return DoFinal(input, 0, input.Length);
-		}
-
+			byte[] input) => DoFinal(input, 0, input.Length);
 		public abstract byte[] DoFinal(
 			byte[] input,
 			int inOff,
@@ -82,8 +71,8 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			byte[] output,
 			int outOff)
 		{
-			byte[] outBytes = DoFinal();
-			if(outOff + outBytes.Length > output.Length)
+			var outBytes = DoFinal();
+			if (outOff + outBytes.Length > output.Length)
 				throw new DataLengthException("output buffer too short");
 			outBytes.CopyTo(output, outOff);
 			return outBytes.Length;
@@ -92,10 +81,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		public virtual int DoFinal(
 			byte[] input,
 			byte[] output,
-			int outOff)
-		{
-			return DoFinal(input, 0, input.Length, output, outOff);
-		}
+			int outOff) => DoFinal(input, 0, input.Length, output, outOff);
 
 		public virtual int DoFinal(
 			byte[] input,
@@ -104,7 +90,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			byte[] output,
 			int outOff)
 		{
-			int len = ProcessBytes(input, inOff, length, output, outOff);
+			var len = ProcessBytes(input, inOff, length, output, outOff);
 			len += DoFinal(output, outOff + len);
 			return len;
 		}

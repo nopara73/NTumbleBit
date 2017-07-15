@@ -24,9 +24,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			{
 				return ((LimitedInputStream)input).GetRemaining();
 			}
-			else if(input is MemoryStream)
+			else if (input is MemoryStream mem)
 			{
-				MemoryStream mem = (MemoryStream)input;
 				return (int)(mem.Length - mem.Position);
 			}
 
@@ -74,9 +73,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			int tagNo,
 			int length)
 		{
-			bool isConstructed = (tag & Asn1Tags.Constructed) != 0;
+			var isConstructed = (tag & Asn1Tags.Constructed) != 0;
 
-			DefiniteLengthInputStream defIn = new DefiniteLengthInputStream(s, length);
+			var defIn = new DefiniteLengthInputStream(s, length);
 
 			if((tag & Asn1Tags.Application) != 0)
 			{
@@ -104,7 +103,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 		internal Asn1EncodableVector BuildEncodableVector()
 		{
-			Asn1EncodableVector v = new Asn1EncodableVector();
+			var v = new Asn1EncodableVector();
 
 			Asn1Object o;
 			while((o = ReadObject()) != null)
@@ -116,21 +115,15 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		}
 
 		internal virtual Asn1EncodableVector BuildDerEncodableVector(
-			DefiniteLengthInputStream dIn)
-		{
-			return new Asn1InputStream(dIn).BuildEncodableVector();
-		}
+			DefiniteLengthInputStream dIn) => new Asn1InputStream(dIn).BuildEncodableVector();
 
 		internal virtual DerSequence CreateDerSequence(
-			DefiniteLengthInputStream dIn)
-		{
-			return DerSequence.FromVector(BuildDerEncodableVector(dIn));
-		}
+			DefiniteLengthInputStream dIn) => DerSequence.FromVector(BuildDerEncodableVector(dIn));
 
 		public Asn1Object ReadObject()
 		{
-			int tag = ReadByte();
-			if(tag <= 0)
+			var tag = ReadByte();
+			if (tag <= 0)
 			{
 				if(tag == 0)
 					throw new IOException("unexpected end-of-contents marker");
@@ -141,14 +134,14 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			//
 			// calculate tag number
 			//
-			int tagNo = ReadTagNumber(s, tag);
+			var tagNo = ReadTagNumber(s, tag);
 
 			//
 			// calculate length
 			//
-			int length = ReadLength(s, limit);
+			var length = ReadLength(s, limit);
 
-			if(length < 0) // indefinite length method
+			if (length < 0) // indefinite length method
 			{
 				throw new IOException("indefinite length primitive encoding encountered");
 			}
@@ -169,20 +162,20 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			Stream s,
 			int tag)
 		{
-			int tagNo = tag & 0x1f;
+			var tagNo = tag & 0x1f;
 
 			//
 			// with tagged object tag number is bottom 5 bits, or stored at the start of the content
 			//
-			if(tagNo == 0x1f)
+			if (tagNo == 0x1f)
 			{
 				tagNo = 0;
 
-				int b = s.ReadByte();
+				var b = s.ReadByte();
 
 				// X.690-0207 8.1.2.4.2
 				// "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
-				if((b & 0x7f) == 0) // Note: -1 will pass
+				if ((b & 0x7f) == 0) // Note: -1 will pass
 				{
 					throw new IOException("Corrupted stream - invalid high tag number found");
 				}
@@ -207,8 +200,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			Stream s,
 			int limit)
 		{
-			int length = s.ReadByte();
-			if(length < 0)
+			var length = s.ReadByte();
+			if (length < 0)
 				throw new EndOfStreamException("EOF found when length expected");
 
 			if(length == 0x80)
@@ -216,18 +209,18 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 			if(length > 127)
 			{
-				int size = length & 0x7f;
+				var size = length & 0x7f;
 
 				// Note: The invalid long form "0xff" (see X.690 8.1.3.5c) will be caught here
-				if(size > 4)
+				if (size > 4)
 					throw new IOException("DER length more than 4 bytes: " + size);
 
 				length = 0;
 				for(int i = 0; i < size; i++)
 				{
-					int next = s.ReadByte();
+					var next = s.ReadByte();
 
-					if(next < 0)
+					if (next < 0)
 						throw new EndOfStreamException("EOF found reading length");
 
 					length = (length << 8) + next;
@@ -245,14 +238,14 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 		internal static byte[] GetBuffer(DefiniteLengthInputStream defIn, byte[][] tmpBuffers)
 		{
-			int len = defIn.GetRemaining();
-			if(len >= tmpBuffers.Length)
+			var len = defIn.GetRemaining();
+			if (len >= tmpBuffers.Length)
 			{
 				return defIn.ToArray();
 			}
 
-			byte[] buf = tmpBuffers[len];
-			if(buf == null)
+			var buf = tmpBuffers[len];
+			if (buf == null)
 			{
 				buf = tmpBuffers[len] = new byte[len];
 			}
@@ -277,9 +270,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 					return DerObjectIdentifier.FromOctetString(GetBuffer(defIn, tmpBuffers));
 			}
 
-			byte[] bytes = defIn.ToArray();
+			var bytes = defIn.ToArray();
 
-			switch(tagNo)
+			switch (tagNo)
 			{
 				case Asn1Tags.Integer:
 					return new DerInteger(bytes);

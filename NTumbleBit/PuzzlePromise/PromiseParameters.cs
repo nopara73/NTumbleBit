@@ -35,24 +35,16 @@ namespace NTumbleBit.PuzzlePromise
 
 		public PromiseParameters(RsaPubKey serverKey) : this()
 		{
-			if(serverKey == null)
-				throw new ArgumentNullException(nameof(serverKey));
-			ServerKey = serverKey;
+			ServerKey = serverKey ?? throw new ArgumentNullException(nameof(serverKey));
 		}
 
-		public int GetTotalTransactionsCount()
-		{
-			return FakeTransactionCount + RealTransactionCount;
-		}
+		public int GetTotalTransactionsCount() => FakeTransactionCount + RealTransactionCount;
 
 		public RsaPubKey ServerKey
 		{
 			get; set;
 		}
 
-		public uint256 CreateFakeHash(uint256 salt)
-		{
-			return Hashes.Hash256(Utils.Combine(salt.ToBytes(), FakeFormat.ToBytes()));
-		}
+		public uint256 CreateFakeHash(uint256 salt) => Hashes.Hash256(Utils.Combine(salt.ToBytes(), FakeFormat.ToBytes()));
 	}
 }

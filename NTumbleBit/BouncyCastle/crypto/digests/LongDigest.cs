@@ -126,8 +126,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		{
 			AdjustByteCounts();
 
-			long lowBitLength = byteCount1 << 3;
-			long hiBitLength = byteCount2;
+			var lowBitLength = byteCount1 << 3;
+			var hiBitLength = byteCount2;
 
 			//
 			// add the pad bytes.
@@ -212,17 +212,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			//
 			// set up working variables.
 			//
-			ulong a = H1;
-			ulong b = H2;
-			ulong c = H3;
-			ulong d = H4;
-			ulong e = H5;
-			ulong f = H6;
-			ulong g = H7;
-			ulong h = H8;
+			var a = H1;
+			var b = H2;
+			var c = H3;
+			var d = H4;
+			var e = H5;
+			var f = H6;
+			var g = H7;
+			var h = H8;
 
-			int t = 0;
-			for(int i = 0; i < 10; i++)
+			var t = 0;
+			for (int i = 0; i < 10; i++)
 			{
 				// t = 8 * i
 				h += Sum1(e) + Ch(e, f, g) + K[t] + W[t++];
@@ -282,35 +282,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		}
 
 		/* SHA-384 and SHA-512 functions (as for SHA-256 but for longs) */
-		private static ulong Ch(ulong x, ulong y, ulong z)
-		{
-			return (x & y) ^ (~x & z);
-		}
+		private static ulong Ch(ulong x, ulong y, ulong z) => (x & y) ^ (~x & z);
 
-		private static ulong Maj(ulong x, ulong y, ulong z)
-		{
-			return (x & y) ^ (x & z) ^ (y & z);
-		}
+		private static ulong Maj(ulong x, ulong y, ulong z) => (x & y) ^ (x & z) ^ (y & z);
 
-		private static ulong Sum0(ulong x)
-		{
-			return ((x << 36) | (x >> 28)) ^ ((x << 30) | (x >> 34)) ^ ((x << 25) | (x >> 39));
-		}
+		private static ulong Sum0(ulong x) => ((x << 36) | (x >> 28)) ^ ((x << 30) | (x >> 34)) ^ ((x << 25) | (x >> 39));
 
-		private static ulong Sum1(ulong x)
-		{
-			return ((x << 50) | (x >> 14)) ^ ((x << 46) | (x >> 18)) ^ ((x << 23) | (x >> 41));
-		}
+		private static ulong Sum1(ulong x) => ((x << 50) | (x >> 14)) ^ ((x << 46) | (x >> 18)) ^ ((x << 23) | (x >> 41));
 
-		private static ulong Sigma0(ulong x)
-		{
-			return ((x << 63) | (x >> 1)) ^ ((x << 56) | (x >> 8)) ^ (x >> 7);
-		}
+		private static ulong Sigma0(ulong x) => ((x << 63) | (x >> 1)) ^ ((x << 56) | (x >> 8)) ^ (x >> 7);
 
-		private static ulong Sigma1(ulong x)
-		{
-			return ((x << 45) | (x >> 19)) ^ ((x << 3) | (x >> 61)) ^ (x >> 6);
-		}
+		private static ulong Sigma1(ulong x) => ((x << 45) | (x >> 19)) ^ ((x << 3) | (x >> 61)) ^ (x >> 6);
 
 		/* SHA-384 and SHA-512 Constants
          * (represent the first 64 bits of the fractional parts of the
@@ -340,10 +322,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 		};
 
-		public int GetByteLength()
-		{
-			return MyByteLength;
-		}
+		public int GetByteLength() => MyByteLength;
 
 		public abstract string AlgorithmName
 		{

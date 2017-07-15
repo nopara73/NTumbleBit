@@ -10,18 +10,11 @@ namespace NTumbleBit
 	{
 		public Puzzle(RsaPubKey rsaPubKey, PuzzleValue puzzleValue)
 		{
-			if(rsaPubKey == null)
-				throw new ArgumentNullException(nameof(rsaPubKey));
-			if(puzzleValue == null)
-				throw new ArgumentNullException(nameof(puzzleValue));
-			_RsaPubKey = rsaPubKey;
-			_PuzzleValue = puzzleValue;
+			_RsaPubKey = rsaPubKey ?? throw new ArgumentNullException(nameof(rsaPubKey));
+			_PuzzleValue = puzzleValue ?? throw new ArgumentNullException(nameof(puzzleValue));
 		}
 
-		public Puzzle Blind(ref BlindFactor blind)
-		{
-			return new Puzzle(_RsaPubKey, new PuzzleValue(_RsaPubKey.Blind(PuzzleValue._Value, ref blind)));
-		}
+		public Puzzle Blind(ref BlindFactor blind) => new Puzzle(_RsaPubKey, new PuzzleValue(_RsaPubKey.Blind(PuzzleValue._Value, ref blind)));
 
 		public Puzzle Unblind(BlindFactor blind)
 		{
@@ -46,29 +39,15 @@ namespace NTumbleBit
 
 
 		private readonly RsaPubKey _RsaPubKey;
-		public RsaPubKey RsaPubKey
-		{
-			get
-			{
-				return _RsaPubKey;
-			}
-		}
-
+		public RsaPubKey RsaPubKey => _RsaPubKey;
 
 		private readonly PuzzleValue _PuzzleValue;
-		public PuzzleValue PuzzleValue
-		{
-			get
-			{
-				return _PuzzleValue;
-			}
-		}
-
+		public PuzzleValue PuzzleValue => _PuzzleValue;
 
 		public override bool Equals(object obj)
 		{
-			Puzzle item = obj as Puzzle;
-			if(item == null)
+			var item = obj as Puzzle;
+			if (item == null)
 				return false;
 			return PuzzleValue.Equals(item.PuzzleValue) && RsaPubKey.Equals(item.RsaPubKey);
 		}
@@ -81,19 +60,10 @@ namespace NTumbleBit
 			return a.PuzzleValue == b.PuzzleValue && a.RsaPubKey == b.RsaPubKey;
 		}
 
-		public static bool operator !=(Puzzle a, Puzzle b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(Puzzle a, Puzzle b) => !(a == b);
 
-		public override int GetHashCode()
-		{
-			return PuzzleValue.GetHashCode() ^ RsaPubKey.GetHashCode();
-		}
+		public override int GetHashCode() => PuzzleValue.GetHashCode() ^ RsaPubKey.GetHashCode();
 
-		public override string ToString()
-		{
-			return PuzzleValue.ToString();
-		}
+		public override string ToString() => PuzzleValue.ToString();
 	}
 }

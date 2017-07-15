@@ -35,25 +35,13 @@ namespace NTumbleBit.BouncyCastle.Crypto
          *
          * @return the public key parameters.
          */
-		public AsymmetricKeyParameter Public
-		{
-			get
-			{
-				return publicParameter;
-			}
-		}
+		public AsymmetricKeyParameter Public => publicParameter;
 
 		/**
          * return the private key parameters.
          *
          * @return the private key parameters.
          */
-		public AsymmetricKeyParameter Private
-		{
-			get
-			{
-				return privateParameter;
-			}
-		}
+		public AsymmetricKeyParameter Private => privateParameter;
 	}
 }

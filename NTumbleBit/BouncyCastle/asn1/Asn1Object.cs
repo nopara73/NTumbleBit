@@ -15,10 +15,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		{
 			try
 			{
-				MemoryStream input = new MemoryStream(data, false);
-				Asn1InputStream asn1 = new Asn1InputStream(input, data.Length);
-				Asn1Object result = asn1.ReadObject();
-				if(input.Position != input.Length)
+				var input = new MemoryStream(data, false);
+				var asn1 = new Asn1InputStream(input, data.Length);
+				var result = asn1.ReadObject();
+				if (input.Position != input.Length)
 					throw new IOException("extra data found after object");
 				return result;
 			}
@@ -45,17 +45,13 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			}
 		}
 
-		public sealed override Asn1Object ToAsn1Object()
-		{
-			return this;
-		}
-
+		public sealed override Asn1Object ToAsn1Object() => this;
 		internal abstract void Encode(DerOutputStream derOut);
 
 		public byte[] GetEncoded()
 		{
-			MemoryStream bOut = new MemoryStream();
-			Asn1OutputStream aOut = new Asn1OutputStream(bOut);
+			var bOut = new MemoryStream();
+			var aOut = new Asn1OutputStream(bOut);
 
 			aOut.WriteObject(this);
 
@@ -66,14 +62,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		protected abstract bool Asn1Equals(Asn1Object asn1Object);
 		protected abstract int Asn1GetHashCode();
 
-		internal bool CallAsn1Equals(Asn1Object obj)
-		{
-			return Asn1Equals(obj);
-		}
+		internal bool CallAsn1Equals(Asn1Object obj) => Asn1Equals(obj);
 
-		internal int CallAsn1GetHashCode()
-		{
-			return Asn1GetHashCode();
-		}
+		internal int CallAsn1GetHashCode() => Asn1GetHashCode();
 	}
 }

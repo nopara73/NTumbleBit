@@ -12,11 +12,8 @@ namespace NTumbleBit.JsonConverters
 {
 	public class RsaKeyJsonConverter : JsonConverter
 	{
-		public override bool CanConvert(Type objectType)
-		{
-			return typeof(RsaPubKey).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()) ||
+		public override bool CanConvert(Type objectType) => typeof(RsaPubKey).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()) ||
 				typeof(RsaKey).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
-		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{

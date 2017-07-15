@@ -14,9 +14,9 @@ namespace NTumbleBit.PuzzlePromise
 
 		public static byte[] SHA512(byte[] data, int offset, int count)
 		{
-			Sha512Digest sha512 = new Sha512Digest();
+			var sha512 = new Sha512Digest();
 			sha512.BlockUpdate(data, offset, count);
-			byte[] rv = new byte[64];
+			var rv = new byte[64];
 			sha512.DoFinal(rv, 0);
 			return rv;
 		}
@@ -33,7 +33,7 @@ namespace NTumbleBit.PuzzlePromise
 			var mac = new BouncyCastle.Crypto.Macs.HMac(new Sha256Digest());
 			mac.Init(new KeyParameter(key));
 			mac.BlockUpdate(data, 0, data.Length);
-			byte[] result = new byte[mac.GetMacSize()];
+			var result = new byte[mac.GetMacSize()];
 			mac.DoFinal(result, 0);
 			return result;
 		}

@@ -15,9 +15,7 @@ namespace NTumbleBit
 	{
 		public SerializerBase(Stream inner)
 		{
-			if(inner == null)
-				throw new ArgumentNullException(nameof(inner));
-			_Inner = inner;
+			_Inner = inner ?? throw new ArgumentNullException(nameof(inner));
 		}
 
 		protected bool littleEndian = true;
@@ -39,11 +37,7 @@ namespace NTumbleBit
 			WriteBigInteger(index._Value, KeySize);
 		}
 
-		public PuzzleSolution ReadPuzzleSolution()
-		{
-			return new PuzzleSolution(ReadBigInteger(KeySize));
-		}
-
+		public PuzzleSolution ReadPuzzleSolution() => new PuzzleSolution(ReadBigInteger(KeySize));
 
 		public void WriteUInt(long length)
 		{
@@ -66,30 +60,18 @@ namespace NTumbleBit
 			WriteBigInteger(q._Value, KeySize);
 		}
 
-		public Quotient ReadQuotient()
-		{
-			return new Quotient(ReadBigInteger(KeySize));
-		}
+		public Quotient ReadQuotient() => new Quotient(ReadBigInteger(KeySize));
 
-
-		public SolutionKey ReadPuzzleSolutionKey()
-		{
-			return new SolutionKey(ReadBytes(Utils.ChachaKeySize));
-		}
+		public SolutionKey ReadPuzzleSolutionKey() => new SolutionKey(ReadBytes(Utils.ChachaKeySize));
 
 		public void WriteBlindFactor(BlindFactor b)
 		{
 			WriteBigInteger(b._Value, KeySize);
 		}
 
-		public BlindFactor ReadBlindFactor()
-		{
-			return new BlindFactor(ReadBigInteger(KeySize));
-		}
-		public PuzzleValue ReadPuzzle()
-		{
-			return new PuzzleValue(ReadBigInteger(KeySize));
-		}
+		public BlindFactor ReadBlindFactor() => new BlindFactor(ReadBigInteger(KeySize));
+
+		public PuzzleValue ReadPuzzle() => new PuzzleValue(ReadBigInteger(KeySize));
 
 		public ulong ReadULong()
 		{
@@ -138,7 +120,7 @@ namespace NTumbleBit
 
 			if(size > maxSize || size < 0)
 				throw new FormatException("Byte array too big to deserialize");
-			byte[] result = new byte[size];
+			var result = new byte[size];
 			Inner.Read(result, 0, result.Length);
 			return result;
 		}
@@ -172,12 +154,6 @@ namespace NTumbleBit
 
 
 		private readonly Stream _Inner;
-		public Stream Inner
-		{
-			get
-			{
-				return _Inner;
-			}
-		}
+		public Stream Inner => _Inner;
 	}
 }

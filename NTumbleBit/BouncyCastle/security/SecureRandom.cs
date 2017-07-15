@@ -13,10 +13,7 @@ namespace NTumbleBit.BouncyCastle.Security
 		{
 		}
 
-		public override int Next()
-		{
-			return RandomUtils.GetInt32();
-		}
+		public override int Next() => RandomUtils.GetInt32();
 
 		public override int Next(int maxValue)
 		{

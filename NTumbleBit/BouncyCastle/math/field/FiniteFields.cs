@@ -31,8 +31,8 @@ namespace NTumbleBit.BouncyCastle.Math.Field
 
 		public static IFiniteField GetPrimeField(BigInteger characteristic)
 		{
-			int bitLength = characteristic.BitLength;
-			if(characteristic.SignValue <= 0 || bitLength < 2)
+			var bitLength = characteristic.BitLength;
+			if (characteristic.SignValue <= 0 || bitLength < 2)
 			{
 				throw new ArgumentException("Must be >= 2", nameof(characteristic));
 			}

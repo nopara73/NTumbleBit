@@ -196,66 +196,43 @@ namespace NTumbleBit.ClassicTumbler
 			stream.ReadWrite(ref _RealTransactionCount);
 		}
 
-		public bool Check(PromiseParameters promiseParams)
-		{
-			return promiseParams.FakeTransactionCount == FakeTransactionCount &&
+		public bool Check(PromiseParameters promiseParams) => promiseParams.FakeTransactionCount == FakeTransactionCount &&
 				promiseParams.RealTransactionCount == RealTransactionCount;
-		}
 
-		public bool Check(SolverParameters solverParams)
-		{
-			return solverParams.FakePuzzleCount == FakePuzzleCount &&
+		public bool Check(SolverParameters solverParams) => solverParams.FakePuzzleCount == FakePuzzleCount &&
 				solverParams.RealPuzzleCount == RealPuzzleCount;
-		}
 
-		public SolverParameters CreateSolverParamaters()
+		public SolverParameters CreateSolverParamaters() => new SolverParameters
 		{
-			return new SolverParameters
-			{
-				FakePuzzleCount = FakePuzzleCount,
-				RealPuzzleCount = RealPuzzleCount,
-				ServerKey = ServerKey
-			};
-		}
+			FakePuzzleCount = FakePuzzleCount,
+			RealPuzzleCount = RealPuzzleCount,
+			ServerKey = ServerKey
+		};
 
-		public PromiseParameters CreatePromiseParamaters()
+		public PromiseParameters CreatePromiseParamaters() => new PromiseParameters
 		{
-			return new PromiseParameters
-			{
-				FakeFormat = FakeFormat,
-				FakeTransactionCount = FakeTransactionCount,
-				RealTransactionCount = RealTransactionCount,
-				ServerKey = ServerKey
-			};
-		}
-
+			FakeFormat = FakeFormat,
+			FakeTransactionCount = FakeTransactionCount,
+			RealTransactionCount = RealTransactionCount,
+			ServerKey = ServerKey
+		};
 
 		public override bool Equals(object obj)
 		{
-			ClassicTumblerParameters item = obj as ClassicTumblerParameters;
-			if(item == null)
+			var item = obj as ClassicTumblerParameters;
+			if (item == null)
 				return false;
 			return GetHash().Equals(item.GetHash());
 		}
 
-		public bool IsStandard()
-		{
-			//TODO check RSA proof for the pubkeys
-			return
-				this.FakePuzzleCount == 285 &&
+		public bool IsStandard() => this.FakePuzzleCount == 285 &&
 				this.RealPuzzleCount == 15 &&
 				this.RealTransactionCount == 42 &&
 				this.FakeTransactionCount == 42 &&
 				this.Fee < this.Denomination &&
 				this.FakeFormat == new uint256(Enumerable.Range(0, 32).Select(o => o == 0 ? (byte)0 : (byte)1).ToArray());
 
-		}
-
-
-		public uint160 GetHash()
-		{
-			return Hashes.Hash160(this.ToBytes());
-		}
+		public uint160 GetHash() => Hashes.Hash160(this.ToBytes());
 
 		public static bool operator ==(ClassicTumblerParameters a, ClassicTumblerParameters b)
 		{
@@ -266,10 +243,7 @@ namespace NTumbleBit.ClassicTumbler
 			return a.GetHash() == b.GetHash();
 		}
 
-		public static bool operator !=(ClassicTumblerParameters a, ClassicTumblerParameters b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(ClassicTumblerParameters a, ClassicTumblerParameters b) => !(a == b);
 
 		public static uint160 ExtractHashFromUrl(Uri serverUrl)
 		{
@@ -282,9 +256,6 @@ namespace NTumbleBit.ClassicTumbler
 			return new uint160(path.Substring(prefix.Length, 20 * 2));
 		}
 
-		public override int GetHashCode()
-		{
-			return GetHash().GetHashCode();
-		}
+		public override int GetHashCode() => GetHash().GetHashCode();
 	}
 }

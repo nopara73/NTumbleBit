@@ -22,9 +22,6 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			Array.Copy(seed, off, this.seed, 0, len);
 		}
 
-		public byte[] GetSeed()
-		{
-			return (byte[])seed.Clone();
-		}
+		public byte[] GetSeed() => (byte[])seed.Clone();
 	}
 }

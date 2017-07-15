@@ -14,19 +14,11 @@ namespace NTumbleBit.Services.RPC
 	{
 		public RPCWalletService(RPCClient rpc)
 		{
-			if(rpc == null)
-				throw new ArgumentNullException(nameof(rpc));
-			_RPCClient = rpc;
+			_RPCClient = rpc ?? throw new ArgumentNullException(nameof(rpc));
 		}
 
 		private readonly RPCClient _RPCClient;
-		public RPCClient RPCClient
-		{
-			get
-			{
-				return _RPCClient;
-			}
-		}
+		public RPCClient RPCClient => _RPCClient;
 
 		public IDestination GenerateAddress()
 		{
@@ -34,7 +26,7 @@ namespace NTumbleBit.Services.RPC
 			return BitcoinAddress.Create(result.ResultString, _RPCClient.Network);
 		}
 
-		public Coin AsCoin(UnspentCoin c)
+		public static Coin AsCoin(UnspentCoin c)
 		{
 			var coin = new Coin(c.OutPoint, new TxOut(c.Amount, c.ScriptPubKey));
 			if(c.RedeemScript != null)
@@ -44,7 +36,7 @@ namespace NTumbleBit.Services.RPC
 
 		public Transaction FundTransaction(TxOut txOut, FeeRate feeRate)
 		{
-			Transaction tx = new Transaction();
+			var tx = new Transaction();
 			tx.Outputs.Add(txOut);
 
 			var changeAddress = _RPCClient.GetRawChangeAddress();
@@ -52,7 +44,7 @@ namespace NTumbleBit.Services.RPC
 			FundRawTransactionResponse response = null;
 			try
 			{
-				response = _RPCClient.FundRawTransaction(tx, new FundRawTransactionOptions()
+				response = _RPCClient.FundRawTransaction(tx, new FundRawTransactionOptions
 				{
 					ChangeAddress = changeAddress,
 					FeeRate = feeRate,

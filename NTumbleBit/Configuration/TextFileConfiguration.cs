@@ -38,8 +38,8 @@ namespace NTumbleBit.Configuration
 
 			foreach(var arg in args)
 			{
-				bool isParamName = arg.StartsWith("-", StringComparison.Ordinal);
-				if(isParamName)
+				var isParamName = arg.StartsWith("-", StringComparison.Ordinal);
+				if (isParamName)
 				{
 					var splitted = arg.Split('=');
 					if(splitted.Length > 1)
@@ -69,13 +69,12 @@ namespace NTumbleBit.Configuration
 		private void Add(string key, string value, bool sourcePriority)
 		{
 			key = NormalizeKey(key);
-			List<string> list;
-			if(!_Args.TryGetValue(key, out list))
+			if (!_Args.TryGetValue(key, out List<string> list))
 			{
 				list = new List<string>();
 				_Args.Add(key, list);
 			}
-			if(sourcePriority)
+			if (sourcePriority)
 				list.Insert(0, value);
 			else
 				list.Add(value);
@@ -108,10 +107,10 @@ namespace NTumbleBit.Configuration
 
 		public static TextFileConfiguration Parse(string data)
 		{
-			Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+			var result = new Dictionary<string, List<string>>();
 			var lines = data.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-			int lineCount = -1;
-			foreach(var l in lines)
+			var lineCount = -1;
+			foreach (var l in lines)
 			{
 				lineCount++;
 				var line = l.Trim();
@@ -125,8 +124,7 @@ namespace NTumbleBit.Configuration
 
 				var key = split[0];
 				key = NormalizeKey(key);
-				List<string> values;
-				if(!result.TryGetValue(key, out values))
+				if (!result.TryGetValue(key, out List<string> values))
 				{
 					values = new List<string>();
 					result.Add(key, values);
@@ -137,15 +135,11 @@ namespace NTumbleBit.Configuration
 			return new TextFileConfiguration(result);
 		}
 
-		public bool Contains(string key)
-		{
-			List<string> values;
-			return _Args.TryGetValue(key, out values);
-		}
+		public bool Contains(string key) => _Args.TryGetValue(key, out List<string> values);
+
 		public string[] GetAll(string key)
 		{
-			List<string> values;
-			if(!_Args.TryGetValue(key, out values))
+			if (!_Args.TryGetValue(key, out List<string> values))
 				return new string[0];
 			return values.ToArray();
 		}
@@ -171,10 +165,9 @@ namespace NTumbleBit.Configuration
 
 			foreach(var alias in aliases)
 			{
-				List<string> values;
-				if(!_Args.TryGetValue(alias, out values))
+				if (!_Args.TryGetValue(alias, out List<string> values))
 					continue;
-				if(values.Count == 0)
+				if (values.Count == 0)
 					continue;
 				try
 				{
@@ -185,7 +178,7 @@ namespace NTumbleBit.Configuration
 			return defaultValue;
 		}
 
-		private T ConvertValue<T>(string str)
+		private static T ConvertValue<T>(string str)
 		{
 			if(typeof(T) == typeof(bool))
 			{

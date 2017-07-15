@@ -14,15 +14,9 @@ namespace NTumbleBit.ClassicTumbler.CLI
 
 	public class AcceptAllClientInteraction : ClientInteraction
 	{
-		public Task AskConnectToTorAsync(string torPath, string args)
-		{
-			return Task.CompletedTask;
-		}
+		public Task AskConnectToTorAsync(string torPath, string args) => Task.CompletedTask;
 
-		public Task ConfirmParametersAsync(ClassicTumblerParameters parameters, StandardCycle standardCyle)
-		{
-			return Task.CompletedTask;
-		}
+		public Task ConfirmParametersAsync(ClassicTumblerParameters parameters, StandardCycle standardCyle) => Task.CompletedTask;
 	}
 
 	public class ClientInteractionException : Exception

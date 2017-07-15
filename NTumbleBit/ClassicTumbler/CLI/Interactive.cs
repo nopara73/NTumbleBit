@@ -28,13 +28,7 @@ namespace NTumbleBit.ClassicTumbler.CLI
 
 
 		private readonly List<TumblerServiceBase> _Services = new List<TumblerServiceBase>();
-		public List<TumblerServiceBase> Services
-		{
-			get
-			{
-				return _Services;
-			}
-		}
+		public List<TumblerServiceBase> Services => _Services;
 
 		public void StartInteractive()
 		{
@@ -43,8 +37,8 @@ namespace NTumbleBit.ClassicTumbler.CLI
 			Console.WriteLine(" -- TumbleBit Implementation in .NET Core");
 			Console.WriteLine("Type \"help\" or \"help <command>\" for more information.");
 
-			bool quit = false;
-			while(!quit)
+			var quit = false;
+			while (!quit)
 			{
 				Console.Write(">>> ");
 				var split = InterruptableConsole.ReadLine().Split(null);
@@ -75,7 +69,7 @@ namespace NTumbleBit.ClassicTumbler.CLI
 
 		private void StopAll()
 		{
-			ProcessServices(new ServicesOptions() { Action = "stop", Target = "all" });
+			ProcessServices(new ServicesOptions { Action = "stop", Target = "all" });
 		}
 
 		private void ProcessServices(ServicesOptions opt)
@@ -110,7 +104,7 @@ namespace NTumbleBit.ClassicTumbler.CLI
 			}
 			else if(opt.Action.Equals("stop", StringComparison.OrdinalIgnoreCase))
 			{
-				object l = new object();
+				var l = new object();
 				var stoppingServices = services.Where(s => s.Started).Select(c => c.Stop().ContinueWith(t =>
 				{
 					lock(l)
@@ -137,7 +131,7 @@ namespace NTumbleBit.ClassicTumbler.CLI
 			options.Query = options?.Query?.Trim() ?? String.Empty;
 			if(!string.IsNullOrWhiteSpace(options.Query))
 			{
-				bool parsed = false;
+				var parsed = false;
 				try
 				{
 					options.CycleId = int.Parse(options.Query);
@@ -234,8 +228,8 @@ namespace NTumbleBit.ClassicTumbler.CLI
 				}
 
 				var knownTransaction = Runtime.Services.TrustedBroadcastService.GetKnownTransaction(txId);
-				Transaction tx = knownTransaction?.Transaction;
-				if(knownTransaction != null)
+				var tx = knownTransaction?.Transaction;
+				if (knownTransaction != null)
 				{
 					if(knownTransaction.BroadcastableHeight != 0)
 					{

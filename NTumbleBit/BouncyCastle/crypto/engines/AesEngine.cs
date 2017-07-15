@@ -227,10 +227,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			0x4257b8d0
 		};
 
-		private static uint Shift(uint r, int shift)
-		{
-			return (r >> shift) | (r << (32 - shift));
-		}
+		private static uint Shift(uint r, int shift) => (r >> shift) | (r << (32 - shift));
 
 		/* multiply four bytes in GF(2^8) by 'x' {02} in parallel */
 
@@ -240,15 +237,12 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 		private const uint m4 = 0xC0C0C0C0;
 		private const uint m5 = 0x3f3f3f3f;
 
-		private static uint FFmulX(uint x)
-		{
-			return ((x & m2) << 1) ^ (((x & m1) >> 7) * m3);
-		}
+		private static uint FFmulX(uint x) => ((x & m2) << 1) ^ (((x & m1) >> 7) * m3);
 
 		private static uint FFmulX2(uint x)
 		{
-			uint t0 = (x & m5) << 2;
-			uint t1 = (x & m4);
+			var t0 = (x & m5) << 2;
+			var t1 = (x & m4);
 			t1 ^= (t1 >> 1);
 			return t0 ^ (t1 >> 2) ^ (t1 >> 5);
 		}
@@ -274,13 +268,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			return t0;
 		}
 
-		private static uint SubWord(uint x)
-		{
-			return (uint)S[x & 255]
+		private static uint SubWord(uint x) => (uint)S[x & 255]
 				| (((uint)S[(x >> 8) & 255]) << 8)
 				| (((uint)S[(x >> 16) & 255]) << 16)
 				| (((uint)S[(x >> 24) & 255]) << 24);
-		}
 
 		/**
         * Calculate the necessary round keys
@@ -290,15 +281,15 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
         */
 		private uint[][] GenerateWorkingKey(byte[] key, bool forEncryption)
 		{
-			int keyLen = key.Length;
-			if(keyLen < 16 || keyLen > 32 || (keyLen & 7) != 0)
+			var keyLen = key.Length;
+			if (keyLen < 16 || keyLen > 32 || (keyLen & 7) != 0)
 				throw new ArgumentException("Key length not 128/192/256 bits.");
 
-			int KC = keyLen >> 2;
+			var KC = keyLen >> 2;
 			ROUNDS = KC + 6;  // This is not always true for the generalized Rijndael that allows larger block sizes
 
-			uint[][] W = new uint[ROUNDS + 1][]; // 4 words in a block
-			for(int i = 0; i <= ROUNDS; ++i)
+			var W = new uint[ROUNDS + 1][]; // 4 words in a block
+			for (int i = 0; i <= ROUNDS; ++i)
 			{
 				W[i] = new uint[4];
 			}
@@ -307,18 +298,18 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			{
 				case 4:
 					{
-						uint t0 = Pack.LE_To_UInt32(key, 0);
+						var t0 = Pack.LE_To_UInt32(key, 0);
 						W[0][0] = t0;
-						uint t1 = Pack.LE_To_UInt32(key, 4);
+						var t1 = Pack.LE_To_UInt32(key, 4);
 						W[0][1] = t1;
-						uint t2 = Pack.LE_To_UInt32(key, 8);
+						var t2 = Pack.LE_To_UInt32(key, 8);
 						W[0][2] = t2;
-						uint t3 = Pack.LE_To_UInt32(key, 12);
+						var t3 = Pack.LE_To_UInt32(key, 12);
 						W[0][3] = t3;
 
 						for(int i = 1; i <= 10; ++i)
 						{
-							uint u = SubWord(Shift(t3, 8)) ^ rcon[i - 1];
+							var u = SubWord(Shift(t3, 8)) ^ rcon[i - 1];
 							t0 ^= u;
 							W[i][0] = t0;
 							t1 ^= t0;
@@ -333,21 +324,21 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 					}
 				case 6:
 					{
-						uint t0 = Pack.LE_To_UInt32(key, 0);
+						var t0 = Pack.LE_To_UInt32(key, 0);
 						W[0][0] = t0;
-						uint t1 = Pack.LE_To_UInt32(key, 4);
+						var t1 = Pack.LE_To_UInt32(key, 4);
 						W[0][1] = t1;
-						uint t2 = Pack.LE_To_UInt32(key, 8);
+						var t2 = Pack.LE_To_UInt32(key, 8);
 						W[0][2] = t2;
-						uint t3 = Pack.LE_To_UInt32(key, 12);
+						var t3 = Pack.LE_To_UInt32(key, 12);
 						W[0][3] = t3;
-						uint t4 = Pack.LE_To_UInt32(key, 16);
+						var t4 = Pack.LE_To_UInt32(key, 16);
 						W[1][0] = t4;
-						uint t5 = Pack.LE_To_UInt32(key, 20);
+						var t5 = Pack.LE_To_UInt32(key, 20);
 						W[1][1] = t5;
 
 						uint rcon = 1;
-						uint u = SubWord(Shift(t5, 8)) ^ rcon;
+						var u = SubWord(Shift(t5, 8)) ^ rcon;
 						rcon <<= 1;
 						t0 ^= u;
 						W[1][2] = t0;
@@ -408,21 +399,21 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 					}
 				case 8:
 					{
-						uint t0 = Pack.LE_To_UInt32(key, 0);
+						var t0 = Pack.LE_To_UInt32(key, 0);
 						W[0][0] = t0;
-						uint t1 = Pack.LE_To_UInt32(key, 4);
+						var t1 = Pack.LE_To_UInt32(key, 4);
 						W[0][1] = t1;
-						uint t2 = Pack.LE_To_UInt32(key, 8);
+						var t2 = Pack.LE_To_UInt32(key, 8);
 						W[0][2] = t2;
-						uint t3 = Pack.LE_To_UInt32(key, 12);
+						var t3 = Pack.LE_To_UInt32(key, 12);
 						W[0][3] = t3;
-						uint t4 = Pack.LE_To_UInt32(key, 16);
+						var t4 = Pack.LE_To_UInt32(key, 16);
 						W[1][0] = t4;
-						uint t5 = Pack.LE_To_UInt32(key, 20);
+						var t5 = Pack.LE_To_UInt32(key, 20);
 						W[1][1] = t5;
-						uint t6 = Pack.LE_To_UInt32(key, 24);
+						var t6 = Pack.LE_To_UInt32(key, 24);
 						W[1][2] = t6;
-						uint t7 = Pack.LE_To_UInt32(key, 28);
+						var t7 = Pack.LE_To_UInt32(key, 28);
 						W[1][3] = t7;
 
 						uint u, rcon = 1;
@@ -472,8 +463,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			{
 				for(int j = 1; j < ROUNDS; j++)
 				{
-					uint[] w = W[j];
-					for(int i = 0; i < 4; i++)
+					var w = W[j];
+					for (int i = 0; i < 4; i++)
 					{
 						w[i] = Inv_Mcol(w[i]);
 					}
@@ -509,9 +500,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			bool forEncryption,
 			ICipherParameters parameters)
 		{
-			KeyParameter keyParameter = parameters as KeyParameter;
+			var keyParameter = parameters as KeyParameter;
 
-			if(keyParameter == null)
+			if (keyParameter == null)
 				throw new ArgumentException("invalid parameter passed to AES init - "
 					+ Platform.GetTypeName(parameters));
 
@@ -520,26 +511,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			this.forEncryption = forEncryption;
 		}
 
-		public virtual string AlgorithmName
-		{
-			get
-			{
-				return "AES";
-			}
-		}
+		public virtual string AlgorithmName => "AES";
 
-		public virtual bool IsPartialBlockOkay
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public virtual bool IsPartialBlockOkay => false;
 
-		public virtual int GetBlockSize()
-		{
-			return BLOCK_SIZE;
-		}
+		public virtual int GetBlockSize() => BLOCK_SIZE;
 
 		public virtual int ProcessBlock(
 			byte[] input,
@@ -595,14 +571,14 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 
 		private void EncryptBlock(uint[][] KW)
 		{
-			uint[] kw = KW[0];
-			uint t0 = C0 ^ kw[0];
-			uint t1 = C1 ^ kw[1];
-			uint t2 = C2 ^ kw[2];
+			var kw = KW[0];
+			var t0 = C0 ^ kw[0];
+			var t1 = C1 ^ kw[1];
+			var t2 = C2 ^ kw[2];
 
 			uint r0, r1, r2, r3 = C3 ^ kw[3];
-			int r = 1;
-			while(r < ROUNDS - 1)
+			var r = 1;
+			while (r < ROUNDS - 1)
 			{
 				kw = KW[r++];
 				r0 = T0[t0 & 255] ^ Shift(T0[(t1 >> 8) & 255], 24) ^ Shift(T0[(t2 >> 16) & 255], 16) ^ Shift(T0[(r3 >> 24) & 255], 8) ^ kw[0];
@@ -633,14 +609,14 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 
 		private void DecryptBlock(uint[][] KW)
 		{
-			uint[] kw = KW[ROUNDS];
-			uint t0 = C0 ^ kw[0];
-			uint t1 = C1 ^ kw[1];
-			uint t2 = C2 ^ kw[2];
+			var kw = KW[ROUNDS];
+			var t0 = C0 ^ kw[0];
+			var t1 = C1 ^ kw[1];
+			var t2 = C2 ^ kw[2];
 
 			uint r0, r1, r2, r3 = C3 ^ kw[3];
-			int r = ROUNDS - 1;
-			while(r > 1)
+			var r = ROUNDS - 1;
+			while (r > 1)
 			{
 				kw = KW[r--];
 				r0 = Tinv0[t0 & 255] ^ Shift(Tinv0[(r3 >> 8) & 255], 24) ^ Shift(Tinv0[(t2 >> 16) & 255], 16) ^ Shift(Tinv0[(t1 >> 24) & 255], 8) ^ kw[0];

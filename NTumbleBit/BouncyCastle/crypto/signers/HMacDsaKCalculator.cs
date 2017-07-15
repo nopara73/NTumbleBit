@@ -32,13 +32,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Signers
 			K = new byte[hMac.GetMacSize()];
 		}
 
-		public virtual bool IsDeterministic
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public virtual bool IsDeterministic => true;
 
 		public virtual void Init(BigInteger n, SecureRandom random)
 		{
@@ -52,21 +46,21 @@ namespace NTumbleBit.BouncyCastle.Crypto.Signers
 			Arrays.Fill(V, (byte)0x01);
 			Arrays.Fill(K, (byte)0);
 
-			byte[] x = new byte[(n.BitLength + 7) / 8];
-			byte[] dVal = BigIntegers.AsUnsignedByteArray(d);
+			var x = new byte[(n.BitLength + 7) / 8];
+			var dVal = BigIntegers.AsUnsignedByteArray(d);
 
 			Array.Copy(dVal, 0, x, x.Length - dVal.Length, dVal.Length);
 
-			byte[] m = new byte[(n.BitLength + 7) / 8];
+			var m = new byte[(n.BitLength + 7) / 8];
 
-			BigInteger mInt = BitsToInt(message);
+			var mInt = BitsToInt(message);
 
-			if(mInt.CompareTo(n) >= 0)
+			if (mInt.CompareTo(n) >= 0)
 			{
 				mInt = mInt.Subtract(n);
 			}
 
-			byte[] mVal = BigIntegers.AsUnsignedByteArray(mInt);
+			var mVal = BigIntegers.AsUnsignedByteArray(mInt);
 
 			Array.Copy(mVal, 0, m, m.Length - mVal.Length, mVal.Length);
 
@@ -101,26 +95,26 @@ namespace NTumbleBit.BouncyCastle.Crypto.Signers
 
 		public virtual BigInteger NextK()
 		{
-			byte[] t = new byte[((n.BitLength + 7) / 8)];
+			var t = new byte[((n.BitLength + 7) / 8)];
 
-			for(;;)
+			for (;;)
 			{
-				int tOff = 0;
+				var tOff = 0;
 
-				while(tOff < t.Length)
+				while (tOff < t.Length)
 				{
 					hMac.BlockUpdate(V, 0, V.Length);
 
 					hMac.DoFinal(V, 0);
 
-					int len = System.Math.Min(t.Length - tOff, V.Length);
+					var len = System.Math.Min(t.Length - tOff, V.Length);
 					Array.Copy(V, 0, t, tOff, len);
 					tOff += len;
 				}
 
-				BigInteger k = BitsToInt(t);
+				var k = BitsToInt(t);
 
-				if(k.SignValue > 0 && k.CompareTo(n) < 0)
+				if (k.SignValue > 0 && k.CompareTo(n) < 0)
 				{
 					return k;
 				}
@@ -140,9 +134,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Signers
 
 		private BigInteger BitsToInt(byte[] t)
 		{
-			BigInteger v = new BigInteger(1, t);
+			var v = new BigInteger(1, t);
 
-			if(t.Length * 8 > n.BitLength)
+			if (t.Length * 8 > n.BitLength)
 			{
 				v = v.ShiftRight(t.Length * 8 - n.BitLength);
 			}

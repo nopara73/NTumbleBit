@@ -26,15 +26,11 @@ namespace NTumbleBit.ClassicTumbler.Client
 		public ClientDestinationWallet(BitcoinExtPubKey extPubKey, KeyPath derivationPath, IRepository repository, Network network)
 		{
 			if(derivationPath == null)
-				throw new ArgumentNullException("derivationPath");
+				throw new ArgumentNullException(nameof(derivationPath));
 			if(extPubKey == null)
-				throw new ArgumentNullException("extPubKey");
-			if(repository == null)
-				throw new ArgumentNullException("repository");
-			if(network == null)
-				throw new ArgumentNullException("network");
-			_Network = network;
-			_Repository = repository;
+				throw new ArgumentNullException(nameof(extPubKey));
+			_Network = network ?? throw new ArgumentNullException(nameof(network));
+			_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
 			_ExtPubKey = extPubKey.ExtPubKey.Derive(derivationPath);
 			_DerivationPath = derivationPath;
 			_WalletId = "Wallet_" + Encoders.Base58.EncodeData(Hashes.Hash160(Encoding.UTF8.GetBytes(_ExtPubKey.ToString() + "-" + derivationPath.ToString())).ToBytes());
@@ -43,18 +39,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 		private readonly IRepository _Repository;
 		private readonly string _WalletId;
 
-		public IRepository Repository
-		{
-			get
-			{
-				return _Repository;
-			}
-		}
-
-		private string GetPartition(string walletName)
-		{
-			return "Wallet-" + walletName;
-		}
+		public IRepository Repository => _Repository;
 
 		public Script GetNewDestination()
 		{
@@ -63,7 +48,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 				var index = Repository.Get<uint>(_WalletId, "");
 				var address = _ExtPubKey.Derive((uint)index).PubKey.Hash.ScriptPubKey;
 				index++;
-				bool conflict = false;
+				var conflict = false;
 				Repository.UpdateOrInsert(_WalletId, "", index, (o, n) =>
 				{
 					conflict = o + 1 != n;

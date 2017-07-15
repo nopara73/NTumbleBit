@@ -49,18 +49,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			xOff = t.xOff;
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return "RIPEMD160";
-			}
-		}
+		public override string AlgorithmName => "RIPEMD160";
 
-		public override int GetDigestSize()
-		{
-			return DigestLength;
-		}
+		public override int GetDigestSize() => DigestLength;
 
 		internal override void ProcessWord(
 			byte[] input,
@@ -87,7 +78,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			X[15] = (int)((ulong)bitLength >> 32);
 		}
 
-		private void UnpackWord(
+		private static void UnpackWord(
 			int word,
 			byte[] outBytes,
 			int outOff)
@@ -139,12 +130,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		/*
         * rotate int x left n bits.
         */
-		private int RL(
+		private static int RL(
 			int x,
-			int n)
-		{
-			return (x << n) | (int)((uint)x >> (32 - n));
-		}
+			int n) => (x << n) | (int)((uint)x >> (32 - n));
 
 		/*
         * f1,f2,f3,f4,f5 are the basic RipeMD160 functions.
@@ -153,57 +141,42 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		/*
         * rounds 0-15
         */
-		private int F1(
+		private static int F1(
 			int x,
 			int y,
-			int z)
-		{
-			return x ^ y ^ z;
-		}
+			int z) => x ^ y ^ z;
 
 		/*
         * rounds 16-31
         */
-		private int F2(
+		private static int F2(
 			int x,
 			int y,
-			int z)
-		{
-			return (x & y) | (~x & z);
-		}
+			int z) => (x & y) | (~x & z);
 
 		/*
         * rounds 32-47
         */
-		private int F3(
+		private static int F3(
 			int x,
 			int y,
-			int z)
-		{
-			return (x | ~y) ^ z;
-		}
+			int z) => (x | ~y) ^ z;
 
 		/*
         * rounds 48-63
         */
-		private int F4(
+		private static int F4(
 			int x,
 			int y,
-			int z)
-		{
-			return (x & z) | (y & ~z);
-		}
+			int z) => (x & z) | (y & ~z);
 
 		/*
         * rounds 64-79
         */
-		private int F5(
+		private static int F5(
 			int x,
 			int y,
-			int z)
-		{
-			return x ^ (y | ~z);
-		}
+			int z) => x ^ (y | ~z);
 
 		internal override void ProcessBlock()
 		{
@@ -591,14 +564,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			}
 		}
 
-		public override IMemoable Copy()
-		{
-			return new RipeMD160Digest(this);
-		}
+		public override IMemoable Copy() => new RipeMD160Digest(this);
 
 		public override void Reset(IMemoable other)
 		{
-			RipeMD160Digest d = (RipeMD160Digest)other;
+			var d = (RipeMD160Digest)other;
 
 			CopyIn(d);
 		}

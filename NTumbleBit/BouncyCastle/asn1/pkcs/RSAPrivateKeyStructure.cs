@@ -41,8 +41,8 @@ namespace Org.BouncyCastle.Asn1.Pkcs
 		public RsaPrivateKeyStructure(
 			Asn1Sequence seq)
 		{
-			BigInteger version = ((DerInteger)seq[0]).Value;
-			if(version.IntValue != 0)
+			var version = ((DerInteger)seq[0]).Value;
+			if (version.IntValue != 0)
 				throw new ArgumentException("wrong version for RSA private key");
 
 			modulus = ((DerInteger)seq[1]).Value;
@@ -55,69 +55,21 @@ namespace Org.BouncyCastle.Asn1.Pkcs
 			coefficient = ((DerInteger)seq[8]).Value;
 		}
 
-		public BigInteger Modulus
-		{
-			get
-			{
-				return modulus;
-			}
-		}
+		public BigInteger Modulus => modulus;
 
-		public BigInteger PublicExponent
-		{
-			get
-			{
-				return publicExponent;
-			}
-		}
+		public BigInteger PublicExponent => publicExponent;
 
-		public BigInteger PrivateExponent
-		{
-			get
-			{
-				return privateExponent;
-			}
-		}
+		public BigInteger PrivateExponent => privateExponent;
 
-		public BigInteger Prime1
-		{
-			get
-			{
-				return prime1;
-			}
-		}
+		public BigInteger Prime1 => prime1;
 
-		public BigInteger Prime2
-		{
-			get
-			{
-				return prime2;
-			}
-		}
+		public BigInteger Prime2 => prime2;
 
-		public BigInteger Exponent1
-		{
-			get
-			{
-				return exponent1;
-			}
-		}
+		public BigInteger Exponent1 => exponent1;
 
-		public BigInteger Exponent2
-		{
-			get
-			{
-				return exponent2;
-			}
-		}
+		public BigInteger Exponent2 => exponent2;
 
-		public BigInteger Coefficient
-		{
-			get
-			{
-				return coefficient;
-			}
-		}
+		public BigInteger Coefficient => coefficient;
 
 		/**
          * This outputs the key in Pkcs1v2 format.
@@ -138,9 +90,7 @@ namespace Org.BouncyCastle.Asn1.Pkcs
          * </pre>
          * <p>This routine is written to output Pkcs1 version 0, private keys.</p>
          */
-		public override Asn1Object ToAsn1Object()
-		{
-			return new DerSequence(
+		public override Asn1Object ToAsn1Object() => new DerSequence(
 				new DerInteger(0), // version
 				new DerInteger(Modulus),
 				new DerInteger(PublicExponent),
@@ -150,6 +100,5 @@ namespace Org.BouncyCastle.Asn1.Pkcs
 				new DerInteger(Exponent1),
 				new DerInteger(Exponent2),
 				new DerInteger(Coefficient));
-		}
 	}
 }

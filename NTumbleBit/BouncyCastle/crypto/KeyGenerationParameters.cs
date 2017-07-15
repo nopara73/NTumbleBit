@@ -23,12 +23,10 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			SecureRandom random,
 			int strength)
 		{
-			if(random == null)
-				throw new ArgumentNullException(nameof(random));
-			if(strength < 1)
+			if (strength < 1)
 				throw new ArgumentException("strength must be a positive value", nameof(strength));
 
-			this.random = random;
+			this.random = random ?? throw new ArgumentNullException(nameof(random));
 			this.strength = strength;
 		}
 
@@ -38,25 +36,13 @@ namespace NTumbleBit.BouncyCastle.Crypto
          *
          * @return the generators random source.
          */
-		public SecureRandom Random
-		{
-			get
-			{
-				return random;
-			}
-		}
+		public SecureRandom Random => random;
 
 		/**
          * return the bit strength for keys produced by this generator,
          *
          * @return the strength of the keys this generator produces (in bits).
          */
-		public int Strength
-		{
-			get
-			{
-				return strength;
-			}
-		}
+		public int Strength => strength;
 	}
 }

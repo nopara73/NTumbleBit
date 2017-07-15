@@ -30,17 +30,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			Array.Copy(iv, ivOff, this.iv, 0, ivLen);
 		}
 
-		public byte[] GetIV()
-		{
-			return (byte[])iv.Clone();
-		}
+		public byte[] GetIV() => (byte[])iv.Clone();
 
-		public ICipherParameters Parameters
-		{
-			get
-			{
-				return parameters;
-			}
-		}
+		public ICipherParameters Parameters => parameters;
 	}
 }

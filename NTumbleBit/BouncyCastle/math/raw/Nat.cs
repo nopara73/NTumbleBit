@@ -24,7 +24,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint Add33At(int len, uint x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			ulong c = (ulong)z[zPos + 0] + x;
+			var c = (ulong)z[zPos + 0] + x;
 			z[zPos + 0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zPos + 1] + 1;
@@ -36,7 +36,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint Add33At(int len, uint x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			ulong c = (ulong)z[zOff + zPos] + x;
+			var c = (ulong)z[zOff + zPos] + x;
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zOff + zPos + 1] + 1;
@@ -47,7 +47,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint Add33To(int len, uint x, uint[] z)
 		{
-			ulong c = (ulong)z[0] + x;
+			var c = (ulong)z[0] + x;
 			z[0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[1] + 1;
@@ -58,7 +58,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint Add33To(int len, uint x, uint[] z, int zOff)
 		{
-			ulong c = (ulong)z[zOff + 0] + x;
+			var c = (ulong)z[zOff + 0] + x;
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zOff + 1] + 1;
@@ -94,7 +94,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint AddDWordAt(int len, ulong x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			ulong c = (ulong)z[zPos + 0] + (x & M);
+			var c = (ulong)z[zPos + 0] + (x & M);
 			z[zPos + 0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zPos + 1] + (x >> 32);
@@ -106,7 +106,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint AddDWordAt(int len, ulong x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			ulong c = (ulong)z[zOff + zPos] + (x & M);
+			var c = (ulong)z[zOff + zPos] + (x & M);
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zOff + zPos + 1] + (x >> 32);
@@ -117,7 +117,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint AddDWordTo(int len, ulong x, uint[] z)
 		{
-			ulong c = (ulong)z[0] + (x & M);
+			var c = (ulong)z[0] + (x & M);
 			z[0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[1] + (x >> 32);
@@ -128,7 +128,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint AddDWordTo(int len, ulong x, uint[] z, int zOff)
 		{
-			ulong c = (ulong)z[zOff + 0] + (x & M);
+			var c = (ulong)z[zOff + 0] + (x & M);
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
 			c += (ulong)z[zOff + 1] + (x >> 32);
@@ -164,7 +164,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint AddWordAt(int len, uint x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 1));
-			ulong c = (ulong)x + z[zPos];
+			var c = (ulong)x + z[zPos];
 			z[zPos] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : IncAt(len, z, zPos + 1);
@@ -173,7 +173,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint AddWordAt(int len, uint x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 1));
-			ulong c = (ulong)x + z[zOff + zPos];
+			var c = (ulong)x + z[zOff + zPos];
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : IncAt(len, z, zOff, zPos + 1);
@@ -181,7 +181,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint AddWordTo(int len, uint x, uint[] z)
 		{
-			ulong c = (ulong)x + z[0];
+			var c = (ulong)x + z[0];
 			z[0] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : IncAt(len, z, 1);
@@ -189,7 +189,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint AddWordTo(int len, uint x, uint[] z, int zOff)
 		{
-			ulong c = (ulong)x + z[zOff];
+			var c = (ulong)x + z[zOff];
 			z[zOff] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : IncAt(len, z, zOff, 1);
@@ -202,20 +202,14 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint[] Copy(int len, uint[] x)
 		{
-			uint[] z = new uint[len];
+			var z = new uint[len];
 			Array.Copy(x, 0, z, 0, len);
 			return z;
 		}
 
-		public static uint[] Create(int len)
-		{
-			return new uint[len];
-		}
+		public static uint[] Create(int len) => new uint[len];
 
-		public static ulong[] Create64(int len)
-		{
-			return new ulong[len];
-		}
+		public static ulong[] Create64(int len) => new ulong[len];
 
 		public static int Dec(int len, uint[] z)
 		{
@@ -231,10 +225,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int Dec(int len, uint[] x, uint[] z)
 		{
-			int i = 0;
-			while(i < len)
+			var i = 0;
+			while (i < len)
 			{
-				uint c = x[i] - 1;
+				var c = x[i] - 1;
 				z[i] = c;
 				++i;
 				if(c != uint.MaxValue)
@@ -293,10 +287,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			if(x.SignValue < 0 || x.BitLength > bits)
 				throw new ArgumentException();
 
-			int len = (bits + 31) >> 5;
-			uint[] z = Create(len);
-			int i = 0;
-			while(x.SignValue != 0)
+			var len = (bits + 31) >> 5;
+			var z = Create(len);
+			var i = 0;
+			while (x.SignValue != 0)
 			{
 				z[i++] = (uint)x.IntValue;
 				x = x.ShiftRight(32);
@@ -310,12 +304,12 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			{
 				return x[0] & 1;
 			}
-			int w = bit >> 5;
-			if(w < 0 || w >= x.Length)
+			var w = bit >> 5;
+			if (w < 0 || w >= x.Length)
 			{
 				return 0;
 			}
-			int b = bit & 31;
+			var b = bit & 31;
 			return (x[w] >> b) & 1;
 		}
 
@@ -323,8 +317,9 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = len - 1; i >= 0; --i)
 			{
-				uint x_i = x[i], y_i = y[i];
-				if(x_i < y_i)
+				var x_i = x[i];
+				var y_i = y[i];
+				if (x_i < y_i)
 					return false;
 				if(x_i > y_i)
 					return true;
@@ -346,10 +341,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint Inc(int len, uint[] x, uint[] z)
 		{
-			int i = 0;
-			while(i < len)
+			var i = 0;
+			while (i < len)
 			{
-				uint c = x[i] + 1;
+				var c = x[i] + 1;
 				z[i] = c;
 				++i;
 				if(c != 0)
@@ -446,7 +441,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint Mul31BothAdd(int len, uint a, uint[] x, uint b, uint[] y, uint[] z, int zOff)
 		{
 			ulong c = 0, aVal = (ulong)a, bVal = (ulong)b;
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += aVal * x[i] + bVal * y[i] + z[zOff + i];
@@ -460,7 +455,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint MulWord(int len, uint x, uint[] y, uint[] z)
 		{
 			ulong c = 0, xVal = (ulong)x;
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * y[i];
@@ -474,7 +469,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint MulWord(int len, uint x, uint[] y, int yOff, uint[] z, int zOff)
 		{
 			ulong c = 0, xVal = (ulong)x;
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * y[yOff + i];
@@ -488,7 +483,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint MulWordAddTo(int len, uint x, uint[] y, int yOff, uint[] z, int zOff)
 		{
 			ulong c = 0, xVal = (ulong)x;
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * y[yOff + i] + z[zOff + i];
@@ -517,10 +512,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint ShiftDownBit(int len, uint[] z, uint c)
 		{
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = z[i];
+				var next = z[i];
 				z[i] = (next >> 1) | (c << 31);
 				c = next;
 			}
@@ -529,10 +524,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint ShiftDownBit(int len, uint[] z, int zOff, uint c)
 		{
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = z[zOff + i];
+				var next = z[zOff + i];
 				z[zOff + i] = (next >> 1) | (c << 31);
 				c = next;
 			}
@@ -541,10 +536,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint ShiftDownBit(int len, uint[] x, uint c, uint[] z)
 		{
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = x[i];
+				var next = x[i];
 				z[i] = (next >> 1) | (c << 31);
 				c = next;
 			}
@@ -553,10 +548,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint ShiftDownBit(int len, uint[] x, int xOff, uint c, uint[] z, int zOff)
 		{
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next >> 1) | (c << 31);
 				c = next;
 			}
@@ -566,10 +561,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint ShiftDownBits(int len, uint[] z, int bits, uint c)
 		{
 			Debug.Assert(bits > 0 && bits < 32);
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = z[i];
+				var next = z[i];
 				z[i] = (next >> bits) | (c << -bits);
 				c = next;
 			}
@@ -579,10 +574,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint ShiftDownBits(int len, uint[] z, int zOff, int bits, uint c)
 		{
 			Debug.Assert(bits > 0 && bits < 32);
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = z[zOff + i];
+				var next = z[zOff + i];
 				z[zOff + i] = (next >> bits) | (c << -bits);
 				c = next;
 			}
@@ -592,10 +587,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint ShiftDownBits(int len, uint[] x, int bits, uint c, uint[] z)
 		{
 			Debug.Assert(bits > 0 && bits < 32);
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = x[i];
+				var next = x[i];
 				z[i] = (next >> bits) | (c << -bits);
 				c = next;
 			}
@@ -605,10 +600,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint ShiftDownBits(int len, uint[] x, int xOff, int bits, uint c, uint[] z, int zOff)
 		{
 			Debug.Assert(bits > 0 && bits < 32);
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next >> bits) | (c << -bits);
 				c = next;
 			}
@@ -617,10 +612,10 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static uint ShiftDownWord(int len, uint[] z, uint c)
 		{
-			int i = len;
-			while(--i >= 0)
+			var i = len;
+			while (--i >= 0)
 			{
-				uint next = z[i];
+				var next = z[i];
 				z[i] = c;
 				c = next;
 			}
@@ -631,7 +626,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = z[i];
+				var next = z[i];
 				z[i] = (next << 1) | (c >> 31);
 				c = next;
 			}
@@ -642,7 +637,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = z[zOff + i];
+				var next = z[zOff + i];
 				z[zOff + i] = (next << 1) | (c >> 31);
 				c = next;
 			}
@@ -653,7 +648,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = x[i];
+				var next = x[i];
 				z[i] = (next << 1) | (c >> 31);
 				c = next;
 			}
@@ -664,7 +659,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next << 1) | (c >> 31);
 				c = next;
 			}
@@ -675,7 +670,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		{
 			for(int i = 0; i < len; ++i)
 			{
-				ulong next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next << 1) | (c >> 63);
 				c = next;
 			}
@@ -687,7 +682,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 32);
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = z[i];
+				var next = z[i];
 				z[i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -699,7 +694,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 32);
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = z[zOff + i];
+				var next = z[zOff + i];
 				z[zOff + i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -711,7 +706,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 64);
 			for(int i = 0; i < len; ++i)
 			{
-				ulong next = z[zOff + i];
+				var next = z[zOff + i];
 				z[zOff + i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -723,7 +718,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 32);
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = x[i];
+				var next = x[i];
 				z[i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -735,7 +730,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 32);
 			for(int i = 0; i < len; ++i)
 			{
-				uint next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -747,7 +742,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 			Debug.Assert(bits > 0 && bits < 64);
 			for(int i = 0; i < len; ++i)
 			{
-				ulong next = x[xOff + i];
+				var next = x[xOff + i];
 				z[zOff + i] = (next << bits) | (c >> -bits);
 				c = next;
 			}
@@ -756,13 +751,14 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static void Square(int len, uint[] x, uint[] zz)
 		{
-			int extLen = len << 1;
+			var extLen = len << 1;
 			uint c = 0;
-			int j = len, k = extLen;
+			var j = len;
+			var k = extLen;
 			do
 			{
-				ulong xVal = (ulong)x[--j];
-				ulong p = xVal * xVal;
+				var xVal = (ulong)x[--j];
+				var p = xVal * xVal;
 				zz[--k] = (c << 31) | (uint)(p >> 33);
 				zz[--k] = (uint)(p >> 1);
 				c = (uint)p;
@@ -780,13 +776,14 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static void Square(int len, uint[] x, int xOff, uint[] zz, int zzOff)
 		{
-			int extLen = len << 1;
+			var extLen = len << 1;
 			uint c = 0;
-			int j = len, k = extLen;
+			var j = len;
+			var k = extLen;
 			do
 			{
-				ulong xVal = (ulong)x[xOff + --j];
-				ulong p = xVal * xVal;
+				var xVal = (ulong)x[xOff + --j];
+				var p = xVal * xVal;
 				zz[zzOff + --k] = (c << 31) | (uint)(p >> 33);
 				zz[zzOff + --k] = (uint)(p >> 1);
 				c = (uint)p;
@@ -805,7 +802,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint SquareWordAdd(uint[] x, int xPos, uint[] z)
 		{
 			ulong c = 0, xVal = (ulong)x[xPos];
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * x[i] + z[xPos + i];
@@ -819,7 +816,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static uint SquareWordAdd(uint[] x, int xOff, int xPos, uint[] z, int zOff)
 		{
 			ulong c = 0, xVal = (ulong)x[xOff + xPos];
-			int i = 0;
+			var i = 0;
 			do
 			{
 				c += xVal * (x[xOff + i] & M) + (z[xPos + zOff] & M);
@@ -857,7 +854,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int Sub33At(int len, uint x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			long c = (long)z[zPos + 0] - x;
+			var c = (long)z[zPos + 0] - x;
 			z[zPos + 0] = (uint)c;
 			c >>= 32;
 			c += (long)z[zPos + 1] - 1;
@@ -869,7 +866,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int Sub33At(int len, uint x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			long c = (long)z[zOff + zPos] - x;
+			var c = (long)z[zOff + zPos] - x;
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			c += (long)z[zOff + zPos + 1] - 1;
@@ -880,7 +877,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int Sub33From(int len, uint x, uint[] z)
 		{
-			long c = (long)z[0] - x;
+			var c = (long)z[0] - x;
 			z[0] = (uint)c;
 			c >>= 32;
 			c += (long)z[1] - 1;
@@ -891,7 +888,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int Sub33From(int len, uint x, uint[] z, int zOff)
 		{
-			long c = (long)z[zOff + 0] - x;
+			var c = (long)z[zOff + 0] - x;
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
 			c += (long)z[zOff + 1] - 1;
@@ -927,7 +924,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int SubDWordAt(int len, ulong x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			long c = (long)z[zPos + 0] - (long)(x & M);
+			var c = (long)z[zPos + 0] - (long)(x & M);
 			z[zPos + 0] = (uint)c;
 			c >>= 32;
 			c += (long)z[zPos + 1] - (long)(x >> 32);
@@ -939,7 +936,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int SubDWordAt(int len, ulong x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 2));
-			long c = (long)z[zOff + zPos] - (long)(x & M);
+			var c = (long)z[zOff + zPos] - (long)(x & M);
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			c += (long)z[zOff + zPos + 1] - (long)(x >> 32);
@@ -950,7 +947,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int SubDWordFrom(int len, ulong x, uint[] z)
 		{
-			long c = (long)z[0] - (long)(x & M);
+			var c = (long)z[0] - (long)(x & M);
 			z[0] = (uint)c;
 			c >>= 32;
 			c += (long)z[1] - (long)(x >> 32);
@@ -961,7 +958,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int SubDWordFrom(int len, ulong x, uint[] z, int zOff)
 		{
-			long c = (long)z[zOff + 0] - (long)(x & M);
+			var c = (long)z[zOff + 0] - (long)(x & M);
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
 			c += (long)z[zOff + 1] - (long)(x >> 32);
@@ -997,7 +994,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int SubWordAt(int len, uint x, uint[] z, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 1));
-			long c = (long)z[zPos] - x;
+			var c = (long)z[zPos] - x;
 			z[zPos] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : DecAt(len, z, zPos + 1);
@@ -1006,7 +1003,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 		public static int SubWordAt(int len, uint x, uint[] z, int zOff, int zPos)
 		{
 			Debug.Assert(zPos <= (len - 1));
-			long c = (long)z[zOff + zPos] - x;
+			var c = (long)z[zOff + zPos] - x;
 			z[zOff + zPos] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : DecAt(len, z, zOff, zPos + 1);
@@ -1014,7 +1011,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int SubWordFrom(int len, uint x, uint[] z)
 		{
-			long c = (long)z[0] - x;
+			var c = (long)z[0] - x;
 			z[0] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : DecAt(len, z, 1);
@@ -1022,7 +1019,7 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static int SubWordFrom(int len, uint x, uint[] z, int zOff)
 		{
-			long c = (long)z[zOff + 0] - x;
+			var c = (long)z[zOff + 0] - x;
 			z[zOff + 0] = (uint)c;
 			c >>= 32;
 			return c == 0 ? 0 : DecAt(len, z, zOff, 1);
@@ -1030,11 +1027,11 @@ namespace NTumbleBit.BouncyCastle.Math.Raw
 
 		public static BigInteger ToBigInteger(int len, uint[] x)
 		{
-			byte[] bs = new byte[len << 2];
-			for(int i = 0; i < len; ++i)
+			var bs = new byte[len << 2];
+			for (int i = 0; i < len; ++i)
 			{
-				uint x_i = x[i];
-				if(x_i != 0)
+				var x_i = x[i];
+				if (x_i != 0)
 				{
 					Pack.UInt32_To_BE(x_i, bs, (len - 1 - i) << 2);
 				}

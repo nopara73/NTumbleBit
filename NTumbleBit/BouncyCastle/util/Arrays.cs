@@ -56,10 +56,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
 		[Obsolete("Use 'AreEqual' method instead")]
 		public static bool AreSame(
 			byte[] a,
-			byte[] b)
-		{
-			return AreEqual(a, b);
-		}
+			byte[] b) => AreEqual(a, b);
 
 		/// <summary>
 		/// A constant time equals comparison - does not terminate early if
@@ -72,11 +69,11 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			byte[] a,
 			byte[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
-			int cmp = 0;
-			while(i != 0)
+			var cmp = 0;
+			while (i != 0)
 			{
 				--i;
 				cmp |= (a[i] ^ b[i]);
@@ -113,8 +110,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			bool[] a,
 			bool[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
 			while(i != 0)
 			{
@@ -129,8 +126,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			char[] a,
 			char[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
 			while(i != 0)
 			{
@@ -145,8 +142,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			byte[] a,
 			byte[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
 			while(i != 0)
 			{
@@ -161,8 +158,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			int[] a,
 			int[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
 			while(i != 0)
 			{
@@ -175,8 +172,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 
 		private static bool HaveSameContents(uint[] a, uint[] b)
 		{
-			int i = a.Length;
-			if(i != b.Length)
+			var i = a.Length;
+			if (i != b.Length)
 				return false;
 			while(i != 0)
 			{
@@ -190,8 +187,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 		public static string ToString(
 			object[] a)
 		{
-			StringBuilder sb = new StringBuilder('[');
-			if(a.Length > 0)
+			var sb = new StringBuilder('[');
+			if (a.Length > 0)
 			{
 				sb.Append(a[0]);
 				for(int index = 1; index < a.Length; ++index)
@@ -210,10 +207,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 				return 0;
 			}
 
-			int i = data.Length;
-			int hc = i + 1;
+			var i = data.Length;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= data[i];
@@ -229,10 +226,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 				return 0;
 			}
 
-			int i = len;
-			int hc = i + 1;
+			var i = len;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= data[off + i];
@@ -246,10 +243,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = data.Length;
-			int hc = i + 1;
+			var i = data.Length;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= data[i];
@@ -263,10 +260,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = len;
-			int hc = i + 1;
+			var i = len;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= data[off + i];
@@ -281,10 +278,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = data.Length;
-			int hc = i + 1;
+			var i = data.Length;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= (int)data[i];
@@ -299,10 +296,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = len;
-			int hc = i + 1;
+			var i = len;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
 				hc *= 257;
 				hc ^= (int)data[off + i];
@@ -317,12 +314,12 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = data.Length;
-			int hc = i + 1;
+			var i = data.Length;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
-				ulong di = data[i];
+				var di = data[i];
 				hc *= 257;
 				hc ^= (int)di;
 				hc *= 257;
@@ -338,12 +335,12 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(data == null)
 				return 0;
 
-			int i = len;
-			int hc = i + 1;
+			var i = len;
+			var hc = i + 1;
 
-			while(--i >= 0)
+			while (--i >= 0)
 			{
-				ulong di = data[off + i];
+				var di = data[off + i];
 				hc *= 257;
 				hc ^= (int)di;
 				hc *= 257;
@@ -354,10 +351,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
 		}
 
 		public static byte[] Clone(
-			byte[] data)
-		{
-			return data == null ? null : (byte[])data.Clone();
-		}
+			byte[] data) => data == null ? null : (byte[])data.Clone();
 
 		public static byte[] Clone(
 			byte[] data,
@@ -376,28 +370,14 @@ namespace NTumbleBit.BouncyCastle.Utilities
 		}
 
 		public static int[] Clone(
-			int[] data)
-		{
-			return data == null ? null : (int[])data.Clone();
-		}
+			int[] data) => data == null ? null : (int[])data.Clone();
 
-		internal static uint[] Clone(uint[] data)
-		{
-			return data == null ? null : (uint[])data.Clone();
-		}
+		internal static uint[] Clone(uint[] data) => data == null ? null : (uint[])data.Clone();
 
-		public static long[] Clone(long[] data)
-		{
-			return data == null ? null : (long[])data.Clone();
-		}
-
+		public static long[] Clone(long[] data) => data == null ? null : (long[])data.Clone();
 
 		public static ulong[] Clone(
-			ulong[] data)
-		{
-			return data == null ? null : (ulong[])data.Clone();
-		}
-
+			ulong[] data) => data == null ? null : (ulong[])data.Clone();
 
 		public static ulong[] Clone(
 			ulong[] data,
@@ -449,8 +429,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			byte[] buf,
 			byte b)
 		{
-			int i = buf.Length;
-			while(i > 0)
+			var i = buf.Length;
+			while (i > 0)
 			{
 				buf[--i] = b;
 			}
@@ -458,35 +438,35 @@ namespace NTumbleBit.BouncyCastle.Utilities
 
 		public static byte[] CopyOf(byte[] data, int newLength)
 		{
-			byte[] tmp = new byte[newLength];
+			var tmp = new byte[newLength];
 			Array.Copy(data, 0, tmp, 0, System.Math.Min(newLength, data.Length));
 			return tmp;
 		}
 
 		public static char[] CopyOf(char[] data, int newLength)
 		{
-			char[] tmp = new char[newLength];
+			var tmp = new char[newLength];
 			Array.Copy(data, 0, tmp, 0, System.Math.Min(newLength, data.Length));
 			return tmp;
 		}
 
 		public static int[] CopyOf(int[] data, int newLength)
 		{
-			int[] tmp = new int[newLength];
+			var tmp = new int[newLength];
 			Array.Copy(data, 0, tmp, 0, System.Math.Min(newLength, data.Length));
 			return tmp;
 		}
 
 		public static long[] CopyOf(long[] data, int newLength)
 		{
-			long[] tmp = new long[newLength];
+			var tmp = new long[newLength];
 			Array.Copy(data, 0, tmp, 0, System.Math.Min(newLength, data.Length));
 			return tmp;
 		}
 
 		public static BigInteger[] CopyOf(BigInteger[] data, int newLength)
 		{
-			BigInteger[] tmp = new BigInteger[newLength];
+			var tmp = new BigInteger[newLength];
 			Array.Copy(data, 0, tmp, 0, System.Math.Min(newLength, data.Length));
 			return tmp;
 		}
@@ -504,40 +484,40 @@ namespace NTumbleBit.BouncyCastle.Utilities
          */
 		public static byte[] CopyOfRange(byte[] data, int from, int to)
 		{
-			int newLength = GetLength(from, to);
-			byte[] tmp = new byte[newLength];
+			var newLength = GetLength(from, to);
+			var tmp = new byte[newLength];
 			Array.Copy(data, from, tmp, 0, System.Math.Min(newLength, data.Length - from));
 			return tmp;
 		}
 
 		public static int[] CopyOfRange(int[] data, int from, int to)
 		{
-			int newLength = GetLength(from, to);
-			int[] tmp = new int[newLength];
+			var newLength = GetLength(from, to);
+			var tmp = new int[newLength];
 			Array.Copy(data, from, tmp, 0, System.Math.Min(newLength, data.Length - from));
 			return tmp;
 		}
 
 		public static long[] CopyOfRange(long[] data, int from, int to)
 		{
-			int newLength = GetLength(from, to);
-			long[] tmp = new long[newLength];
+			var newLength = GetLength(from, to);
+			var tmp = new long[newLength];
 			Array.Copy(data, from, tmp, 0, System.Math.Min(newLength, data.Length - from));
 			return tmp;
 		}
 
 		public static BigInteger[] CopyOfRange(BigInteger[] data, int from, int to)
 		{
-			int newLength = GetLength(from, to);
-			BigInteger[] tmp = new BigInteger[newLength];
+			var newLength = GetLength(from, to);
+			var tmp = new BigInteger[newLength];
 			Array.Copy(data, from, tmp, 0, System.Math.Min(newLength, data.Length - from));
 			return tmp;
 		}
 
 		private static int GetLength(int from, int to)
 		{
-			int newLength = to - from;
-			if(newLength < 0)
+			var newLength = to - from;
+			if (newLength < 0)
 				throw new ArgumentException(from + " > " + to);
 			return newLength;
 		}
@@ -547,8 +527,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new byte[] { b };
 
-			int length = a.Length;
-			byte[] result = new byte[length + 1];
+			var length = a.Length;
+			var result = new byte[length + 1];
 			Array.Copy(a, 0, result, 0, length);
 			result[length] = b;
 			return result;
@@ -559,8 +539,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new short[] { b };
 
-			int length = a.Length;
-			short[] result = new short[length + 1];
+			var length = a.Length;
+			var result = new short[length + 1];
 			Array.Copy(a, 0, result, 0, length);
 			result[length] = b;
 			return result;
@@ -571,8 +551,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new int[] { b };
 
-			int length = a.Length;
-			int[] result = new int[length + 1];
+			var length = a.Length;
+			var result = new int[length + 1];
 			Array.Copy(a, 0, result, 0, length);
 			result[length] = b;
 			return result;
@@ -585,7 +565,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(b == null)
 				return Clone(a);
 
-			byte[] rv = new byte[a.Length + b.Length];
+			var rv = new byte[a.Length + b.Length];
 			Array.Copy(a, 0, rv, 0, a.Length);
 			Array.Copy(b, 0, rv, a.Length, b.Length);
 			return rv;
@@ -593,26 +573,25 @@ namespace NTumbleBit.BouncyCastle.Utilities
 
 		public static byte[] ConcatenateAll(params byte[][] vs)
 		{
-			byte[][] nonNull = new byte[vs.Length][];
-			int count = 0;
-			int totalLength = 0;
+			var nonNull = new byte[vs.Length][];
+			var count = 0;
+			var totalLength = 0;
 
-			for(int i = 0; i < vs.Length; ++i)
+			foreach (var v in vs)
 			{
-				byte[] v = vs[i];
-				if(v != null)
+				if (v != null)
 				{
 					nonNull[count++] = v;
 					totalLength += v.Length;
 				}
 			}
 
-			byte[] result = new byte[totalLength];
-			int pos = 0;
+			var result = new byte[totalLength];
+			var pos = 0;
 
-			for(int j = 0; j < count; ++j)
+			for (int j = 0; j < count; ++j)
 			{
-				byte[] v = nonNull[j];
+				var v = nonNull[j];
 				Array.Copy(v, 0, result, pos, v.Length);
 				pos += v.Length;
 			}
@@ -627,7 +606,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(b == null)
 				return Clone(a);
 
-			int[] rv = new int[a.Length + b.Length];
+			var rv = new int[a.Length + b.Length];
 			Array.Copy(a, 0, rv, 0, a.Length);
 			Array.Copy(b, 0, rv, a.Length, b.Length);
 			return rv;
@@ -638,8 +617,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new byte[] { b };
 
-			int length = a.Length;
-			byte[] result = new byte[length + 1];
+			var length = a.Length;
+			var result = new byte[length + 1];
 			Array.Copy(a, 0, result, 1, length);
 			result[0] = b;
 			return result;
@@ -650,8 +629,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new short[] { b };
 
-			int length = a.Length;
-			short[] result = new short[length + 1];
+			var length = a.Length;
+			var result = new short[length + 1];
 			Array.Copy(a, 0, result, 1, length);
 			result[0] = b;
 			return result;
@@ -662,8 +641,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return new int[] { b };
 
-			int length = a.Length;
-			int[] result = new int[length + 1];
+			var length = a.Length;
+			var result = new int[length + 1];
 			Array.Copy(a, 0, result, 1, length);
 			result[0] = b;
 			return result;
@@ -674,10 +653,11 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return null;
 
-			int p1 = 0, p2 = a.Length;
-			byte[] result = new byte[p2];
+			var p1 = 0;
+			var p2 = a.Length;
+			var result = new byte[p2];
 
-			while(--p2 >= 0)
+			while (--p2 >= 0)
 			{
 				result[p2] = a[p1++];
 			}
@@ -690,10 +670,11 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			if(a == null)
 				return null;
 
-			int p1 = 0, p2 = a.Length;
-			int[] result = new int[p2];
+			var p1 = 0;
+			var p2 = a.Length;
+			var result = new int[p2];
 
-			while(--p2 >= 0)
+			while (--p2 >= 0)
 			{
 				result[p2] = a[p1++];
 			}

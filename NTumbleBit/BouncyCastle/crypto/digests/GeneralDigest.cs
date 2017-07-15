@@ -60,8 +60,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			//
 			// fill the current word
 			//
-			int i = 0;
-			if(xBufOff != 0)
+			var i = 0;
+			if (xBufOff != 0)
 			{
 				while(i < length)
 				{
@@ -78,8 +78,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			//
 			// process whole words.
 			//
-			int limit = ((length - i) & ~3) + i;
-			for(; i < limit; i += 4)
+			var limit = ((length - i) & ~3) + i;
+			for (; i < limit; i += 4)
 			{
 				ProcessWord(input, inOff + i);
 			}
@@ -97,7 +97,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 
 		public void Finish()
 		{
-			long bitLength = (byteCount << 3);
+			var bitLength = (byteCount << 3);
 
 			//
 			// add the pad bytes.
@@ -117,11 +117,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			Array.Clear(xBuf, 0, xBuf.Length);
 		}
 
-		public int GetByteLength()
-		{
-			return BYTE_LENGTH;
-		}
-
+		public int GetByteLength() => BYTE_LENGTH;
 		internal abstract void ProcessWord(byte[] input, int inOff);
 		internal abstract void ProcessLength(long bitLength);
 		internal abstract void ProcessBlock();

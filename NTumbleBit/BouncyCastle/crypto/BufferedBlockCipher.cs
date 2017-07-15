@@ -35,21 +35,12 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		public BufferedBlockCipher(
 			IBlockCipher cipher)
 		{
-			if(cipher == null)
-				throw new ArgumentNullException(nameof(cipher));
-
-			this.cipher = cipher;
+			this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 			buf = new byte[cipher.GetBlockSize()];
 			bufOff = 0;
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return cipher.AlgorithmName;
-			}
-		}
+		public override string AlgorithmName => cipher.AlgorithmName;
 
 		/**
 		* initialise the cipher.
@@ -77,10 +68,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		*
 		* @return the blocksize for the underlying cipher.
 		*/
-		public override int GetBlockSize()
-		{
-			return cipher.GetBlockSize();
-		}
+		public override int GetBlockSize() => cipher.GetBlockSize();
 
 		/**
 		* return the size of the output buffer required for an update
@@ -93,8 +81,8 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		public override int GetUpdateOutputSize(
 			int length)
 		{
-			int total = length + bufOff;
-			int leftOver = total % buf.Length;
+			var total = length + bufOff;
+			var leftOver = total % buf.Length;
 			return total - leftOver;
 		}
 
@@ -107,11 +95,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		* with len bytes of input.
 		*/
 		public override int GetOutputSize(
-			int length)
-		{
-			// Note: Can assume IsPartialBlockOkay is true for purposes of this calculation
-			return length + bufOff;
-		}
+			int length) => length + bufOff;
 
 		/**
 		* process a single byte, producing an output block if necessary.
@@ -145,15 +129,15 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		public override byte[] ProcessByte(
 			byte input)
 		{
-			int outLength = GetUpdateOutputSize(1);
+			var outLength = GetUpdateOutputSize(1);
 
-			byte[] outBytes = outLength > 0 ? new byte[outLength] : null;
+			var outBytes = outLength > 0 ? new byte[outLength] : null;
 
-			int pos = ProcessByte(input, outBytes, 0);
+			var pos = ProcessByte(input, outBytes, 0);
 
-			if(outLength > 0 && pos < outLength)
+			if (outLength > 0 && pos < outLength)
 			{
-				byte[] tmp = new byte[pos];
+				var tmp = new byte[pos];
 				Array.Copy(outBytes, 0, tmp, 0, pos);
 				outBytes = tmp;
 			}
@@ -171,15 +155,15 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			if(length < 1)
 				return null;
 
-			int outLength = GetUpdateOutputSize(length);
+			var outLength = GetUpdateOutputSize(length);
 
-			byte[] outBytes = outLength > 0 ? new byte[outLength] : null;
+			var outBytes = outLength > 0 ? new byte[outLength] : null;
 
-			int pos = ProcessBytes(input, inOff, length, outBytes, 0);
+			var pos = ProcessBytes(input, inOff, length, outBytes, 0);
 
-			if(outLength > 0 && pos < outLength)
+			if (outLength > 0 && pos < outLength)
 			{
-				byte[] tmp = new byte[pos];
+				var tmp = new byte[pos];
 				Array.Copy(outBytes, 0, tmp, 0, pos);
 				outBytes = tmp;
 			}
@@ -214,17 +198,17 @@ namespace NTumbleBit.BouncyCastle.Crypto
 				return 0;
 			}
 
-			int blockSize = GetBlockSize();
-			int outLength = GetUpdateOutputSize(length);
+			var blockSize = GetBlockSize();
+			var outLength = GetUpdateOutputSize(length);
 
-			if(outLength > 0)
+			if (outLength > 0)
 			{
 				Check.OutputLength(output, outOff, outLength, "output buffer too short");
 			}
 
-			int resultLen = 0;
-			int gapLen = buf.Length - bufOff;
-			if(length > gapLen)
+			var resultLen = 0;
+			var gapLen = buf.Length - bufOff;
+			if (length > gapLen)
 			{
 				Array.Copy(input, inOff, buf, bufOff, gapLen);
 				resultLen += cipher.ProcessBlock(buf, 0, output, outOff);
@@ -250,17 +234,17 @@ namespace NTumbleBit.BouncyCastle.Crypto
 
 		public override byte[] DoFinal()
 		{
-			byte[] outBytes = EmptyBuffer;
+			var outBytes = EmptyBuffer;
 
-			int length = GetOutputSize(0);
-			if(length > 0)
+			var length = GetOutputSize(0);
+			if (length > 0)
 			{
 				outBytes = new byte[length];
 
-				int pos = DoFinal(outBytes, 0);
-				if(pos < outBytes.Length)
+				var pos = DoFinal(outBytes, 0);
+				if (pos < outBytes.Length)
 				{
-					byte[] tmp = new byte[pos];
+					var tmp = new byte[pos];
 					Array.Copy(outBytes, 0, tmp, 0, pos);
 					outBytes = tmp;
 				}
@@ -281,15 +265,15 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			if(input == null)
 				throw new ArgumentNullException(nameof(input));
 
-			int length = GetOutputSize(inLen);
+			var length = GetOutputSize(inLen);
 
-			byte[] outBytes = EmptyBuffer;
+			var outBytes = EmptyBuffer;
 
-			if(length > 0)
+			if (length > 0)
 			{
 				outBytes = new byte[length];
 
-				int pos = (inLen > 0)
+				var pos = (inLen > 0)
 					? ProcessBytes(input, inOff, inLen, outBytes, 0)
 					: 0;
 
@@ -297,7 +281,7 @@ namespace NTumbleBit.BouncyCastle.Crypto
 
 				if(pos < outBytes.Length)
 				{
-					byte[] tmp = new byte[pos];
+					var tmp = new byte[pos];
 					Array.Copy(outBytes, 0, tmp, 0, pos);
 					outBytes = tmp;
 				}

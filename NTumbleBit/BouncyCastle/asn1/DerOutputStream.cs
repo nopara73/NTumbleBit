@@ -18,10 +18,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		{
 			if(length > 127)
 			{
-				int size = 1;
-				uint val = (uint)length;
+				var size = 1;
+				var val = (uint)length;
 
-				while((val >>= 8) != 0)
+				while ((val >>= 8) != 0)
 				{
 					size++;
 				}
@@ -87,8 +87,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 				}
 				else
 				{
-					byte[] stack = new byte[5];
-					int pos = stack.Length;
+					var stack = new byte[5];
+					var pos = stack.Length;
 
 					stack[--pos] = (byte)(tagNo & 0x7F);
 

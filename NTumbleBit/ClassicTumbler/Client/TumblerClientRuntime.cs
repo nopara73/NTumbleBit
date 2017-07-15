@@ -32,14 +32,11 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 	public class TumblerClientRuntime : IDisposable
 	{
-		public static TumblerClientRuntime FromConfiguration(TumblerClientConfiguration configuration, ClientInteraction interaction)
-		{
-			return FromConfigurationAsync(configuration, interaction).GetAwaiter().GetResult();
-		}
+		public static TumblerClientRuntime FromConfiguration(TumblerClientConfiguration configuration, ClientInteraction interaction) => FromConfigurationAsync(configuration, interaction).GetAwaiter().GetResult();
 
 		public static async Task<TumblerClientRuntime> FromConfigurationAsync(TumblerClientConfiguration configuration, ClientInteraction interaction)
 		{
-			TumblerClientRuntime runtime = new TumblerClientRuntime();
+			var runtime = new TumblerClientRuntime();
 			try
 			{
 				await runtime.ConfigureAsync(configuration, interaction).ConfigureAwait(false);
@@ -96,8 +93,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 			else
 				throw new ConfigException("Missing configuration for outputwallet");
 
-			TumblerParameters = dbreeze.Get<ClassicTumbler.ClassicTumblerParameters>("Configuration", configuration.TumblerServer.AbsoluteUri);
-			var parameterHash = ClassicTumbler.ClassicTumblerParameters.ExtractHashFromUrl(configuration.TumblerServer);
+			TumblerParameters = dbreeze.Get<ClassicTumblerParameters>("Configuration", configuration.TumblerServer.AbsoluteUri);
+			var parameterHash = ClassicTumblerParameters.ExtractHashFromUrl(configuration.TumblerServer);
 
 			if(TumblerParameters != null && TumblerParameters.GetHash() != parameterHash)
 				TumblerParameters = null;
@@ -152,10 +149,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			_Disposables.Add(await tor.SetupAsync(interaction, torPath).ConfigureAwait(false));
 		}
 
-		public BroadcasterJob CreateBroadcasterJob()
-		{
-			return new BroadcasterJob(Services);
-		}
+		public BroadcasterJob CreateBroadcasterJob() => new BroadcasterJob(Services);
 
 		public ConnectionSettingsBase BobSettings
 		{
@@ -200,10 +194,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			return client;
 		}
 
-		public StateMachinesExecutor CreateStateMachineJob()
-		{
-			return new StateMachinesExecutor(this);
-		}
+		public StateMachinesExecutor CreateStateMachineJob() => new StateMachinesExecutor(this);
 
 		private static T Retry<T>(int count, Func<T> act)
 		{

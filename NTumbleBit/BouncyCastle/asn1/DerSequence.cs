@@ -10,10 +10,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		public static readonly DerSequence Empty = new DerSequence();
 
 		public static DerSequence FromVector(
-			Asn1EncodableVector v)
-		{
-			return v.Count < 1 ? Empty : new DerSequence(v);
-		}
+			Asn1EncodableVector v) => v.Count < 1 ? Empty : new DerSequence(v);
 
 		/**
 		 * create an empty sequence
@@ -68,17 +65,17 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			DerOutputStream derOut)
 		{
 			// TODO Intermediate buffer could be avoided if we could calculate expected length
-			MemoryStream bOut = new MemoryStream();
-			DerOutputStream dOut = new DerOutputStream(bOut);
+			var bOut = new MemoryStream();
+			var dOut = new DerOutputStream(bOut);
 
-			foreach(Asn1Encodable obj in this)
+			foreach (Asn1Encodable obj in this)
 			{
 				dOut.WriteObject(obj);
 			}
 
 			Platform.Dispose(dOut);
 
-			byte[] bytes = bOut.ToArray();
+			var bytes = bOut.ToArray();
 
 			derOut.WriteEncoded(Asn1Tags.Sequence | Asn1Tags.Constructed, bytes);
 		}

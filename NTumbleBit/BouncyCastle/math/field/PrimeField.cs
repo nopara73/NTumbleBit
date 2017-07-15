@@ -10,21 +10,9 @@
 			this.characteristic = characteristic;
 		}
 
-		public virtual BigInteger Characteristic
-		{
-			get
-			{
-				return characteristic;
-			}
-		}
+		public virtual BigInteger Characteristic => characteristic;
 
-		public virtual int Dimension
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		public virtual int Dimension => 1;
 
 		public override bool Equals(object obj)
 		{
@@ -32,17 +20,14 @@
 			{
 				return true;
 			}
-			PrimeField other = obj as PrimeField;
-			if(null == other)
+			var other = obj as PrimeField;
+			if (null == other)
 			{
 				return false;
 			}
 			return characteristic.Equals(other.characteristic);
 		}
 
-		public override int GetHashCode()
-		{
-			return characteristic.GetHashCode();
-		}
+		public override int GetHashCode() => characteristic.GetHashCode();
 	}
 }

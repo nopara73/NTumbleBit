@@ -22,14 +22,8 @@ namespace NTumbleBit.PuzzleSolver
 		private byte[] _Bytes;
 		public static readonly long KeySize = 16;
 
-		public byte[] ToBytes(bool @unsafe)
-		{
-			return @unsafe ? _Bytes : _Bytes.ToArray();
-		}
+		public byte[] ToBytes(bool @unsafe) => @unsafe ? _Bytes : _Bytes.ToArray();
 
-		public uint160 GetHash()
-		{
-			return new uint160(Hashes.RIPEMD160(_Bytes, _Bytes.Length));
-		}
+		public uint160 GetHash() => new uint160(Hashes.RIPEMD160(_Bytes, _Bytes.Length));
 	}
 }

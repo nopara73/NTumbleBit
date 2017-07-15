@@ -12,13 +12,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			_out = outStream;
 		}
 
-		protected Stream Out
-		{
-			get
-			{
-				return _out;
-			}
-		}
+		protected Stream Out => _out;
 
 		public abstract void AddObject(Asn1Encodable obj);
 

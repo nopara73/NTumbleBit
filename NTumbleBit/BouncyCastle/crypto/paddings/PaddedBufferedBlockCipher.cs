@@ -73,10 +73,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 		public override int GetOutputSize(
 			int length)
 		{
-			int total = length + bufOff;
-			int leftOver = total % buf.Length;
+			var total = length + bufOff;
+			var leftOver = total % buf.Length;
 
-			if(leftOver == 0)
+			if (leftOver == 0)
 			{
 				if(forEncryption)
 				{
@@ -100,10 +100,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 		public override int GetUpdateOutputSize(
 			int length)
 		{
-			int total = length + bufOff;
-			int leftOver = total % buf.Length;
+			var total = length + bufOff;
+			var leftOver = total % buf.Length;
 
-			if(leftOver == 0)
+			if (leftOver == 0)
 			{
 				return total - buf.Length;
 			}
@@ -126,9 +126,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 			byte[] output,
 			int outOff)
 		{
-			int resultLen = 0;
+			var resultLen = 0;
 
-			if(bufOff == buf.Length)
+			if (bufOff == buf.Length)
 			{
 				resultLen = cipher.ProcessBlock(buf, 0, output, outOff);
 				bufOff = 0;
@@ -163,18 +163,18 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 				throw new ArgumentException("Can't have a negative input length!");
 			}
 
-			int blockSize = GetBlockSize();
-			int outLength = GetUpdateOutputSize(length);
+			var blockSize = GetBlockSize();
+			var outLength = GetUpdateOutputSize(length);
 
-			if(outLength > 0)
+			if (outLength > 0)
 			{
 				Check.OutputLength(output, outOff, outLength, "output buffer too short");
 			}
 
-			int resultLen = 0;
-			int gapLen = buf.Length - bufOff;
+			var resultLen = 0;
+			var gapLen = buf.Length - bufOff;
 
-			if(length > gapLen)
+			if (length > gapLen)
 			{
 				Array.Copy(input, inOff, buf, bufOff, gapLen);
 
@@ -218,10 +218,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 			byte[] output,
 			int outOff)
 		{
-			int blockSize = cipher.GetBlockSize();
-			int resultLen = 0;
+			var blockSize = cipher.GetBlockSize();
+			var resultLen = 0;
 
-			if(forEncryption)
+			if (forEncryption)
 			{
 				if(bufOff == blockSize)
 				{

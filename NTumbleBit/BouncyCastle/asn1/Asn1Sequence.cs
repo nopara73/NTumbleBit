@@ -41,9 +41,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			}
 			else if(obj is Asn1Encodable)
 			{
-				Asn1Object primitive = ((Asn1Encodable)obj).ToAsn1Object();
+				var primitive = ((Asn1Encodable)obj).ToAsn1Object();
 
-				if(primitive is Asn1Sequence)
+				if (primitive is Asn1Sequence)
 				{
 					return (Asn1Sequence)primitive;
 				}
@@ -58,16 +58,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			seq = Platform.CreateArrayList(capacity);
 		}
 
-		public virtual IEnumerator GetEnumerator()
-		{
-			return seq.GetEnumerator();
-		}
+		public virtual IEnumerator GetEnumerator() => seq.GetEnumerator();
 
 		[Obsolete("Use GetEnumerator() instead")]
-		public IEnumerator GetObjects()
-		{
-			return GetEnumerator();
-		}
+		public IEnumerator GetObjects() => GetEnumerator();
 
 		private class Asn1SequenceParserImpl
 			: Asn1SequenceParser
@@ -88,9 +82,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 				if(index == max)
 					return null;
 
-				Asn1Encodable obj = outer[index++];
+				var obj = outer[index++];
 
-				if(obj is Asn1Sequence)
+				if (obj is Asn1Sequence)
 					return ((Asn1Sequence)obj).Parser;
 
 				// NB: Asn1OctetString implements Asn1OctetStringParser directly
@@ -100,19 +94,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 				return obj;
 			}
 
-			public Asn1Object ToAsn1Object()
-			{
-				return outer;
-			}
+			public Asn1Object ToAsn1Object() => outer;
 		}
 
-		public virtual Asn1SequenceParser Parser
-		{
-			get
-			{
-				return new Asn1SequenceParserImpl(this);
-			}
-		}
+		public virtual Asn1SequenceParser Parser => new Asn1SequenceParserImpl(this);
 
 		/**
          * return the object at the sequence position indicated by index.
@@ -120,43 +105,22 @@ namespace NTumbleBit.BouncyCastle.Asn1
          * @param index the sequence number (starting at zero) of the object
          * @return the object at the sequence position indicated by index.
          */
-		public virtual Asn1Encodable this[int index]
-		{
-			get
-			{
-				return (Asn1Encodable)seq[index];
-			}
-		}
+		public virtual Asn1Encodable this[int index] => (Asn1Encodable)seq[index];
 
 		[Obsolete("Use 'object[index]' syntax instead")]
 		public Asn1Encodable GetObjectAt(
-			int index)
-		{
-			return this[index];
-		}
+			int index) => this[index];
 
 		[Obsolete("Use 'Count' property instead")]
-		public int Size
-		{
-			get
-			{
-				return Count;
-			}
-		}
+		public int Size => Count;
 
-		public virtual int Count
-		{
-			get
-			{
-				return seq.Count;
-			}
-		}
+		public virtual int Count => seq.Count;
 
 		protected override int Asn1GetHashCode()
 		{
-			int hc = Count;
+			var hc = Count;
 
-			foreach(object o in this)
+			foreach (object o in this)
 			{
 				hc *= 17;
 				if(o == null)
@@ -175,21 +139,21 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		protected override bool Asn1Equals(
 			Asn1Object asn1Object)
 		{
-			Asn1Sequence other = asn1Object as Asn1Sequence;
+			var other = asn1Object as Asn1Sequence;
 
-			if(other == null)
+			if (other == null)
 				return false;
 
 			if(Count != other.Count)
 				return false;
 
-			IEnumerator s1 = GetEnumerator();
-			IEnumerator s2 = other.GetEnumerator();
+			var s1 = GetEnumerator();
+			var s2 = other.GetEnumerator();
 
-			while(s1.MoveNext() && s2.MoveNext())
+			while (s1.MoveNext() && s2.MoveNext())
 			{
-				Asn1Object o1 = GetCurrent(s1).ToAsn1Object();
-				Asn1Object o2 = GetCurrent(s2).ToAsn1Object();
+				var o1 = GetCurrent(s1).ToAsn1Object();
+				var o2 = GetCurrent(s2).ToAsn1Object();
 
 				if(!o1.Equals(o2))
 					return false;
@@ -198,9 +162,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			return true;
 		}
 
-		private Asn1Encodable GetCurrent(IEnumerator e)
+		private static Asn1Encodable GetCurrent(IEnumerator e)
 		{
-			Asn1Encodable encObj = (Asn1Encodable)e.Current;
+			var encObj = (Asn1Encodable)e.Current;
 
 			// unfortunately null was allowed as a substitute for DER null
 			if(encObj == null)

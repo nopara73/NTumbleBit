@@ -10,24 +10,14 @@ namespace NTumbleBit.ClassicTumbler.CLI
 	{
 
 		private readonly string[] _Args;
-		public string[] Args
-		{
-			get
-			{
-				return _Args;
-			}
-		}
+		public string[] Args => _Args;
+
 		public CommandLineParser(string[] args)
 		{
-			if(args == null)
-				throw new ArgumentNullException(nameof(args));
-			_Args = args;
+			_Args = args ?? throw new ArgumentNullException(nameof(args));
 		}
 
-		public bool GetBool(string key)
-		{
-			return Args.Contains(key);
-		}
+		public bool GetBool(string key) => Args.Contains(key);
 
 		public string GetRequiredString(string key)
 		{

@@ -15,31 +15,17 @@ namespace NTumbleBit.Services.RPC
 		RPCWalletCache _Cache;
 		public RPCBlockExplorerService(RPCClient client, RPCWalletCache cache, IRepository repo)
 		{
-			if(client == null)
-				throw new ArgumentNullException(nameof(client));
-			if(repo == null)
-				throw new ArgumentNullException("repo");
-			if(cache == null)
-				throw new ArgumentNullException("cache");
-			_RPCClient = client;
-			_Repo = repo;
-			_Cache = cache;
+			_RPCClient = client ?? throw new ArgumentNullException(nameof(client));
+			_Repo = repo ?? throw new ArgumentNullException(nameof(repo));
+			_Cache = cache ?? throw new ArgumentNullException(nameof(cache));
 		}
 
 		IRepository _Repo;
 		private readonly RPCClient _RPCClient;
 
-		public RPCClient RPCClient
-		{
-			get
-			{
-				return _RPCClient;
-			}
-		}
-		public int GetCurrentHeight()
-		{
-			return _Cache.BlockCount;
-		}
+		public RPCClient RPCClient => _RPCClient;
+
+		public int GetCurrentHeight() => _Cache.BlockCount;
 
 		public uint256 WaitBlock(uint256 currentBlock, CancellationToken cancellation = default(CancellationToken))
 		{
@@ -66,9 +52,9 @@ namespace NTumbleBit.Services.RPC
 				return new TransactionInformation[0];
 
 			var walletTransactions = _Cache.GetEntries();
-			List<TransactionInformation> results = Filter(walletTransactions, !withProof, address);
+			var results = Filter(walletTransactions, !withProof, address);
 
-			if(withProof)
+			if (withProof)
 			{
 				foreach(var tx in results.ToList())
 				{
@@ -94,9 +80,9 @@ namespace NTumbleBit.Services.RPC
 			if(transactions == null)
 				return null;
 
-			HashSet<uint256> resultsSet = new HashSet<uint256>();
-			List<TransactionInformation> results = new List<TransactionInformation>();
-			foreach(var txIdObj in transactions)
+			var resultsSet = new HashSet<uint256>();
+			var results = new List<TransactionInformation>();
+			foreach (var txIdObj in transactions)
 			{
 				var txId = new uint256(txIdObj.ToString());
 				//May have duplicates
@@ -114,9 +100,9 @@ namespace NTumbleBit.Services.RPC
 
 		private List<TransactionInformation> Filter(RPCWalletEntry[] entries, bool includeUnconf, BitcoinAddress address)
 		{
-			List<TransactionInformation> results = new List<TransactionInformation>();
-			HashSet<uint256> resultsSet = new HashSet<uint256>();
-			foreach(var obj in entries)
+			var results = new List<TransactionInformation>();
+			var resultsSet = new HashSet<uint256>();
+			foreach (var obj in entries)
 			{
 				//May have duplicates
 				if(!resultsSet.Contains(obj.TransactionId))
@@ -132,7 +118,7 @@ namespace NTumbleBit.Services.RPC
 					{
 
 						resultsSet.Add(obj.TransactionId);
-						results.Add(new TransactionInformation()
+						results.Add(new TransactionInformation
 						{
 							Transaction = tx,
 							Confirmations = confirmations

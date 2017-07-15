@@ -24,9 +24,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 		public PaymentStateMachine(
 			TumblerClientRuntime runtime)
 		{
-			if(runtime == null)
-				throw new ArgumentNullException("runtime");
-			Runtime = runtime;
+			Runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 		}
 
 
@@ -55,28 +53,12 @@ namespace NTumbleBit.ClassicTumbler.Client
 			get; set;
 		}
 
-		public Tracker Tracker
-		{
-			get
-			{
-				return Runtime.Tracker;
-			}
-		}
-		public ExternalServices Services
-		{
-			get
-			{
-				return Runtime.Services;
-			}
-		}
+		public Tracker Tracker => Runtime.Tracker;
 
-		public ClassicTumblerParameters Parameters
-		{
-			get
-			{
-				return Runtime.TumblerParameters;
-			}
-		}
+		public ExternalServices Services => Runtime.Services;
+
+		public ClassicTumblerParameters Parameters => Runtime.TumblerParameters;
+
 		public int StartCycle
 		{
 			get; set;
@@ -95,20 +77,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 			get;
 			private set;
 		}
-		public IDestinationWallet DestinationWallet
-		{
-			get
-			{
-				return Runtime.DestinationWallet;
-			}
-		}
-		public bool Cooperative
-		{
-			get
-			{
-				return Runtime.Cooperative;
-			}
-		}
+		public IDestinationWallet DestinationWallet => Runtime.DestinationWallet;
+
+		public bool Cooperative => Runtime.Cooperative;
 
 		public class State
 		{
@@ -135,8 +106,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 		public State GetInternalState()
 		{
-			State s = new State();
-			if(SolverClientSession != null)
+			var s = new State();
+			if (SolverClientSession != null)
 				s.SolverClientState = SolverClientSession.GetInternalState();
 			if(PromiseClientSession != null)
 				s.PromiseClientState = PromiseClientSession.GetInternalState();
@@ -148,7 +119,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 		public void Update()
 		{
-			int height = Services.BlockExplorerService.GetCurrentHeight();
+			var height = Services.BlockExplorerService.GetCurrentHeight();
 			CycleParameters cycle;
 			CyclePhase phase;
 			if(ClientChannelNegotiation == null)
@@ -249,7 +220,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 						else if(ClientChannelNegotiation.Status == TumblerClientSessionStates.WaitingSolvedVoucher)
 						{
 							alice = Runtime.CreateTumblerClient(cycle.Start, Identity.Alice);
-							TransactionInformation clientTx = GetTransactionInformation(SolverClientSession.EscrowedCoin, true);
+							var clientTx = GetTransactionInformation(SolverClientSession.EscrowedCoin, true);
 							var state = ClientChannelNegotiation.GetInternalState();
 							if(clientTx != null && clientTx.Confirmations >= cycle.SafetyPeriodDuration)
 							{
@@ -300,9 +271,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 					case CyclePhase.PaymentPhase:
 						if(PromiseClientSession != null)
 						{
-							TransactionInformation tumblerTx = GetTransactionInformation(PromiseClientSession.EscrowedCoin, false);
+							var tumblerTx = GetTransactionInformation(PromiseClientSession.EscrowedCoin, false);
 							//Ensure the tumbler coin is confirmed before paying anything
-							if(tumblerTx != null || tumblerTx.Confirmations >= cycle.SafetyPeriodDuration)
+							if (tumblerTx != null || tumblerTx.Confirmations >= cycle.SafetyPeriodDuration)
 							{
 								Logs.Client.LogInformation($"Client escrow reached {cycle.SafetyPeriodDuration} confirmations");
 
@@ -331,7 +302,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 										var tumblingSolution = SolverClientSession.GetSolution();
 										var transaction = PromiseClientSession.GetSignedTransaction(tumblingSolution);
 										Logs.Client.LogInformation("Got puzzle solution cooperatively from the tumbler");
-										Services.TrustedBroadcastService.Broadcast(cycle.Start, TransactionType.TumblerCashout, correlation, new TrustedBroadcastRequest()
+										Services.TrustedBroadcastService.Broadcast(cycle.Start, TransactionType.TumblerCashout, correlation, new TrustedBroadcastRequest
 										{
 											BroadcastAt = cycle.GetPeriods().ClientCashout.Start,
 											Transaction = transaction
@@ -385,10 +356,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}
 		}
 
-		private uint GetCorrelation(ScriptCoin escrowCoin)
-		{
-			return new uint160(escrowCoin.Redeem.Hash.ToString()).GetLow32();
-		}
+		private static uint GetCorrelation(ScriptCoin escrowCoin) => new uint160(escrowCoin.Redeem.Hash.ToString()).GetLow32();
 
 		private TransactionInformation GetTransactionInformation(ICoin coin, bool withProof)
 		{
@@ -398,12 +366,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 			return tx;
 		}
 
-		private FeeRate GetFeeRate()
-		{
-			return Services.FeeService.GetFeeRate();
-		}
+		private FeeRate GetFeeRate() => Services.FeeService.GetFeeRate();
 
-		private void Assert(bool test, string error)
+		private static void Assert(bool test, string error)
 		{
 			if(!test)
 				throw new PuzzleException(error);

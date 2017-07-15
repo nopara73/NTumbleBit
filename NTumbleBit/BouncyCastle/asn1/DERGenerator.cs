@@ -34,10 +34,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		{
 			if(length > 127)
 			{
-				int size = 1;
-				int val = length;
+				var size = 1;
+				var val = length;
 
-				while((val >>= 8) != 0)
+				while ((val >>= 8) != 0)
 				{
 					size++;
 				}
@@ -71,12 +71,12 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		{
 			if(_tagged)
 			{
-				int tagNum = _tagNo | Asn1Tags.Tagged;
+				var tagNum = _tagNo | Asn1Tags.Tagged;
 
-				if(_isExplicit)
+				if (_isExplicit)
 				{
-					int newTag = _tagNo | Asn1Tags.Constructed | Asn1Tags.Tagged;
-					MemoryStream bOut = new MemoryStream();
+					var newTag = _tagNo | Asn1Tags.Constructed | Asn1Tags.Tagged;
+					var bOut = new MemoryStream();
 					WriteDerEncoded(bOut, tag, bytes);
 					WriteDerEncoded(Out, newTag, bOut.ToArray());
 				}

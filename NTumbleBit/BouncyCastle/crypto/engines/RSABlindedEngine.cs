@@ -9,7 +9,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 {
 
     /**
-    NOTE: MODIFIED FROM ORIGINAL VERSION 
+    NOTE: MODIFIED FROM ORIGINAL VERSION
 
     - `ProcessBlock` was modified to accept BigInteger as input and output BigInteger
     - Added `ConvertOutput` that convert BigInteger to byte[]
@@ -25,69 +25,58 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
         private RsaKeyParameters key;
         private SecureRandom random;
 
-        public virtual string AlgorithmName
-        {
-            get { return "RSA"; }
-        }
+		public virtual string AlgorithmName => "RSA";
 
-        /**
+		/**
          * initialise the RSA engine.
          *
          * @param forEncryption true if we are encrypting, false otherwise.
          * @param param the necessary RSA key parameters.
          */
-        public virtual void Init(
+		public virtual void Init(
             bool forEncryption,
             ICipherParameters param)
         {
             core.Init(forEncryption, param);
 
-            if (param is ParametersWithRandom)
-            {
-                ParametersWithRandom rParam = (ParametersWithRandom)param;
-
-                key = (RsaKeyParameters)rParam.Parameters;
-                random = rParam.Random;
-            }
-            else
-            {
-                key = (RsaKeyParameters)param;
-                random = new SecureRandom();
-            }
-        }
-
-        public virtual byte[] ConvertOutput(
-			BigInteger result)
-		{
-            return core.ConvertOutput(result);
+			if (param is ParametersWithRandom rParam)
+			{
+				key = (RsaKeyParameters)rParam.Parameters;
+				random = rParam.Random;
+			}
+			else
+			{
+				key = (RsaKeyParameters)param;
+				random = new SecureRandom();
+			}
 		}
 
+		public virtual byte[] ConvertOutput(
+			BigInteger result) => core.ConvertOutput(result);
 
-        /**
+
+		/**
          * Return the maximum size for an input block to this engine.
          * For RSA this is always one byte less than the key size on
          * encryption, and the same length as the key size on decryption.
          *
          * @return maximum size for an input block.
          */
-        public virtual int GetInputBlockSize()
+		public virtual int GetInputBlockSize()
         {
             return core.GetInputBlockSize();
         }
 
-        /**
+		/**
          * Return the maximum size for an output block to this engine.
          * For RSA this is always one byte less than the key size on
          * decryption, and the same length as the key size on encryption.
          *
          * @return maximum size for an output block.
          */
-        public virtual int GetOutputBlockSize()
-        {
-            return core.GetOutputBlockSize();
-        }
+		public virtual int GetOutputBlockSize() => core.GetOutputBlockSize();
 
-        public virtual BigInteger ProcessBlock(BigInteger input)
+		public virtual BigInteger ProcessBlock(BigInteger input)
         {
             if (key == null)
                 throw new InvalidOperationException("RSA engine not initialised");
@@ -95,37 +84,36 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
             // BigInteger input = core.ConvertInput(inBuf, inOff, inLen);
 
             BigInteger result;
-            if (key is RsaPrivateCrtKeyParameters)
-            {
-                RsaPrivateCrtKeyParameters k = (RsaPrivateCrtKeyParameters)key;
-                BigInteger e = k.PublicExponent;
-                if (e != null)   // can't do blinding without a public exponent
-                {
-                    BigInteger m = k.Modulus;
-                    BigInteger r = BigIntegers.CreateRandomInRange(
-                        BigInteger.One, m.Subtract(BigInteger.One), random);
+			if (key is RsaPrivateCrtKeyParameters k)
+			{
+				var e = k.PublicExponent;
+				if (e != null)   // can't do blinding without a public exponent
+				{
+					var m = k.Modulus;
+					var r = BigIntegers.CreateRandomInRange(
+						BigInteger.One, m.Subtract(BigInteger.One), random);
 
-                    BigInteger blindedInput = r.ModPow(e, m).Multiply(input).Mod(m);
-                    BigInteger blindedResult = core.ProcessBlock(blindedInput);
+					var blindedInput = r.ModPow(e, m).Multiply(input).Mod(m);
+					var blindedResult = core.ProcessBlock(blindedInput);
 
-                    BigInteger rInv = r.ModInverse(m);
-                    result = blindedResult.Multiply(rInv).Mod(m);
+					var rInv = r.ModInverse(m);
+					result = blindedResult.Multiply(rInv).Mod(m);
 
-                    // defence against Arjen Lenstra�s CRT attack
-                    if (!input.Equals(result.ModPow(e, m)))
-                        throw new InvalidOperationException("RSA engine faulty decryption/signing detected");
-                }
-                else
-                {
-                    result = core.ProcessBlock(input);
-                }
-            }
-            else
-            {
-                result = core.ProcessBlock(input);
-            }
+					// defence against Arjen Lenstra�s CRT attack
+					if (!input.Equals(result.ModPow(e, m)))
+						throw new InvalidOperationException("RSA engine faulty decryption/signing detected");
+				}
+				else
+				{
+					result = core.ProcessBlock(input);
+				}
+			}
+			else
+			{
+				result = core.ProcessBlock(input);
+			}
 
-            return result;
+			return result;
         }
     }
 }

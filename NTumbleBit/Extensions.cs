@@ -70,18 +70,12 @@ namespace NTumbleBit
 			}
 		}
 
-		public static RPCResponse SendCommandNoThrows(this RPCClient client, string commandName, params object[] parameters)
+		public static RPCResponse SendCommandNoThrows(this RPCClient client, string commandName, params object[] parameters) => client.SendCommand(new RPCRequest
 		{
-			return client.SendCommand(new RPCRequest
-			{
-				Method = commandName,
-				Params = parameters
-			}, throwIfRPCError: false);
-		}
+			Method = commandName,
+			Params = parameters
+		}, throwIfRPCError: false);
 
-		public static ScriptCoin Clone(this ScriptCoin scriptCoin)
-		{
-			return new ScriptCoin(scriptCoin, scriptCoin.Redeem);
-		}
+		public static ScriptCoin Clone(this ScriptCoin scriptCoin) => new ScriptCoin(scriptCoin, scriptCoin.Redeem);
 	}
 }

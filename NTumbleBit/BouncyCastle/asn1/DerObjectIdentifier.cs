@@ -34,18 +34,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		}
 
 		// TODO Change to ID?
-		public string Id
-		{
-			get
-			{
-				return identifier;
-			}
-		}
+		public string Id => identifier;
 
-		public virtual DerObjectIdentifier Branch(string branchID)
-		{
-			return new DerObjectIdentifier(this, branchID);
-		}
+		public virtual DerObjectIdentifier Branch(string branchID) => new DerObjectIdentifier(this, branchID);
 
 		/**
          * Return  true if this oid is an extension of the passed in branch, stem.
@@ -54,7 +45,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
          */
 		public virtual bool On(DerObjectIdentifier stem)
 		{
-			string id = Id, stemId = stem.Id;
+			var id = Id;
+			var stemId = stem.Id;
 			return id.Length > stemId.Length && id[stemId.Length] == '.' && Platform.StartsWith(id, stemId);
 		}
 
@@ -64,12 +56,12 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			body = Arrays.Clone(bytes);
 		}
 
-		private void WriteField(
+		private static void WriteField(
 			Stream outputStream,
 			long fieldValue)
 		{
-			byte[] result = new byte[9];
-			int pos = 8;
+			var result = new byte[9];
+			var pos = 8;
 			result[pos] = (byte)(fieldValue & 0x7f);
 			while(fieldValue >= (1L << 7))
 			{
@@ -79,20 +71,20 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			outputStream.Write(result, pos, 9 - pos);
 		}
 
-		private void WriteField(
+		private static void WriteField(
 			Stream outputStream,
 			BigInteger fieldValue)
 		{
-			int byteCount = (fieldValue.BitLength + 6) / 7;
-			if(byteCount == 0)
+			var byteCount = (fieldValue.BitLength + 6) / 7;
+			if (byteCount == 0)
 			{
 				outputStream.WriteByte(0);
 			}
 			else
 			{
-				BigInteger tmpValue = fieldValue;
-				byte[] tmp = new byte[byteCount];
-				for(int i = byteCount - 1; i >= 0; i--)
+				var tmpValue = fieldValue;
+				var tmp = new byte[byteCount];
+				for (int i = byteCount - 1; i >= 0; i--)
 				{
 					tmp[i] = (byte)((tmpValue.IntValue & 0x7f) | 0x80);
 					tmpValue = tmpValue.ShiftRight(7);
@@ -102,39 +94,33 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			}
 		}
 
-		protected override int Asn1GetHashCode()
-		{
-			return identifier.GetHashCode();
-		}
+		protected override int Asn1GetHashCode() => identifier.GetHashCode();
 
 		protected override bool Asn1Equals(
 			Asn1Object asn1Object)
 		{
-			DerObjectIdentifier other = asn1Object as DerObjectIdentifier;
+			var other = asn1Object as DerObjectIdentifier;
 
-			if(other == null)
+			if (other == null)
 				return false;
 
 			return identifier.Equals(other.identifier);
 		}
 
-		public override string ToString()
-		{
-			return identifier;
-		}
+		public override string ToString() => identifier;
 
 		private static bool IsValidBranchID(
 			String branchID, int start)
 		{
-			bool periodAllowed = false;
+			var periodAllowed = false;
 
-			int pos = branchID.Length;
-			while(--pos >= start)
+			var pos = branchID.Length;
+			while (--pos >= start)
 			{
-				char ch = branchID[pos];
+				var ch = branchID[pos];
 
 				// TODO Leading zeroes?
-				if('0' <= ch && ch <= '9')
+				if ('0' <= ch && ch <= '9')
 				{
 					periodAllowed = true;
 					continue;
@@ -160,8 +146,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			if(identifier.Length < 3 || identifier[1] != '.')
 				return false;
 
-			char first = identifier[0];
-			if(first < '0' || first > '2')
+			var first = identifier[0];
+			if (first < '0' || first > '2')
 				return false;
 
 			return IsValidBranchID(identifier, 2);
@@ -172,12 +158,12 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		private static string MakeOidStringFromBytes(
 			byte[] bytes)
 		{
-			StringBuilder objId = new StringBuilder();
+			var objId = new StringBuilder();
 			long value = 0;
 			BigInteger bigValue = null;
-			bool first = true;
+			var first = true;
 
-			for(int i = 0; i != bytes.Length; i++)
+			for (int i = 0; i != bytes.Length; i++)
 			{
 				int b = bytes[i];
 
@@ -253,7 +239,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			{
 				if(body == null)
 				{
-					MemoryStream bOut = new MemoryStream();
+					var bOut = new MemoryStream();
 					DoOutput(bOut);
 					body = bOut.ToArray();
 				}
@@ -264,10 +250,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 		private void DoOutput(MemoryStream bOut)
 		{
-			OidTokenizer tok = new OidTokenizer(identifier);
+			var tok = new OidTokenizer(identifier);
 
-			string token = tok.NextToken();
-			int first = int.Parse(token) * 40;
+			var token = tok.NextToken();
+			var first = int.Parse(token) * 40;
 
 			token = tok.NextToken();
 			if(token.Length <= 18)
@@ -300,13 +286,13 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 		internal static Asn1Object FromOctetString(byte[] enc)
 		{
-			int hashCode = Arrays.GetHashCode(enc);
-			int first = hashCode & 1023;
+			var hashCode = Arrays.GetHashCode(enc);
+			var first = hashCode & 1023;
 
-			lock(cache)
+			lock (cache)
 			{
-				DerObjectIdentifier entry = cache[first];
-				if(entry != null && Arrays.AreEqual(enc, entry.GetBody()))
+				var entry = cache[first];
+				if (entry != null && Arrays.AreEqual(enc, entry.GetBody()))
 				{
 					return entry;
 				}

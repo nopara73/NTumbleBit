@@ -25,10 +25,7 @@ namespace NTumbleBit.JsonConverters
 			return _Inner.CanConvert(objectType);
 		}
 
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-		{
-			return _Inner.ReadJson(reader, objectType, existingValue, serializer);
-		}
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) => _Inner.ReadJson(reader, objectType, existingValue, serializer);
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{

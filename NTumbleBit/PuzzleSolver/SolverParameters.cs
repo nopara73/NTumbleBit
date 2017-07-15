@@ -17,9 +17,7 @@ namespace NTumbleBit.PuzzleSolver
 
 		public SolverParameters(RsaPubKey serverKey) : this()
 		{
-			if(serverKey == null)
-				throw new ArgumentNullException(nameof(serverKey));
-			ServerKey = serverKey;
+			ServerKey = serverKey ?? throw new ArgumentNullException(nameof(serverKey));
 		}
 
 
@@ -36,9 +34,6 @@ namespace NTumbleBit.PuzzleSolver
 			get; set;
 		}
 
-		public int GetTotalCount()
-		{
-			return RealPuzzleCount + FakePuzzleCount;
-		}
+		public int GetTotalCount() => RealPuzzleCount + FakePuzzleCount;
 	}
 }

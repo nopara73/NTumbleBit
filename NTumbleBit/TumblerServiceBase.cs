@@ -32,13 +32,7 @@ namespace NTumbleBit
 			_Stopping.SetResult(true);
 		}
 
-		public bool Started
-		{
-			get
-			{
-				return _Stopping != null && !_Stopping.Task.IsCompleted;
-			}
-		}
+		public bool Started => _Stopping != null && !_Stopping.Task.IsCompleted;
 
 		public Task Stop()
 		{

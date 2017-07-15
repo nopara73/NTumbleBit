@@ -19,22 +19,17 @@ namespace NTumbleBit
 
 		internal PuzzleSolution(BigInteger value)
 		{
-			if(value == null)
-				throw new ArgumentNullException(nameof(value));
-			_Value = value;
+			_Value = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
 		internal readonly BigInteger _Value;
 
-		public byte[] ToBytes()
-		{
-			return _Value.ToByteArrayUnsigned();
-		}
+		public byte[] ToBytes() => _Value.ToByteArrayUnsigned();
 
 		public override bool Equals(object obj)
 		{
-			PuzzleSolution item = obj as PuzzleSolution;
-			if(item == null)
+			var item = obj as PuzzleSolution;
+			if (item == null)
 				return false;
 			return _Value.Equals(item._Value);
 		}
@@ -47,15 +42,9 @@ namespace NTumbleBit
 			return a._Value.Equals(b._Value);
 		}
 
-		public static bool operator !=(PuzzleSolution a, PuzzleSolution b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(PuzzleSolution a, PuzzleSolution b) => !(a == b);
 
-		public override int GetHashCode()
-		{
-			return _Value.GetHashCode();
-		}
+		public override int GetHashCode() => _Value.GetHashCode();
 
 		public PuzzleSolution Unblind(RsaPubKey rsaPubKey, BlindFactor blind)
 		{
@@ -66,9 +55,6 @@ namespace NTumbleBit
 			return new PuzzleSolution(rsaPubKey.Unblind(_Value, blind));
 		}
 
-		public override string ToString()
-		{
-			return Encoders.Hex.EncodeData(ToBytes());
-		}
+		public override string ToString() => Encoders.Hex.EncodeData(ToBytes());
 	}
 }

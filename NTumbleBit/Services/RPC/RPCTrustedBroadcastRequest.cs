@@ -59,38 +59,20 @@ namespace NTumbleBit.Services.RPC
 
 		public RPCTrustedBroadcastService(RPCClient rpc, IBroadcastService innerBroadcast, IBlockExplorerService explorer, IRepository repository, RPCWalletCache cache, Tracker tracker)
 		{
-			if(rpc == null)
-				throw new ArgumentNullException(nameof(rpc));
-			if(innerBroadcast == null)
-				throw new ArgumentNullException(nameof(innerBroadcast));
-			if(repository == null)
-				throw new ArgumentNullException(nameof(repository));
-			if(explorer == null)
-				throw new ArgumentNullException(nameof(explorer));
-			if(tracker == null)
-				throw new ArgumentNullException(nameof(tracker));
-			if(cache == null)
-				throw new ArgumentNullException(nameof(cache));
-			_Repository = repository;
-			_RPCClient = rpc;
-			_Broadcaster = innerBroadcast;
+			_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
+			_RPCClient = rpc ?? throw new ArgumentNullException(nameof(rpc));
+			_Broadcaster = innerBroadcast ?? throw new ArgumentNullException(nameof(innerBroadcast));
 			TrackPreviousScriptPubKey = true;
-			_BlockExplorer = explorer;
-			_Tracker = tracker;
-			_Cache = cache;
+			_BlockExplorer = explorer ?? throw new ArgumentNullException(nameof(explorer));
+			_Tracker = tracker ?? throw new ArgumentNullException(nameof(tracker));
+			_Cache = cache ?? throw new ArgumentNullException(nameof(cache));
 		}
 
 		private Tracker _Tracker;
 		private IBroadcastService _Broadcaster;
 
 		private readonly RPCClient _RPCClient;
-		public RPCClient RPCClient
-		{
-			get
-			{
-				return _RPCClient;
-			}
-		}
+		public RPCClient RPCClient => _RPCClient;
 
 		public bool TrackPreviousScriptPubKey
 		{
@@ -128,13 +110,7 @@ namespace NTumbleBit.Services.RPC
 		}
 
 		private readonly IRepository _Repository;
-		public IRepository Repository
-		{
-			get
-			{
-				return _Repository;
-			}
-		}
+		public IRepository Repository => _Repository;
 
 		public Record[] GetRequests()
 		{
@@ -151,11 +127,11 @@ namespace NTumbleBit.Services.RPC
 		{
 			var height = _Cache.BlockCount;
 
-			DateTimeOffset startTime = DateTimeOffset.UtcNow;
-			int totalEntries = 0;
-			HashSet<uint256> knownBroadcastedSet = new HashSet<uint256>(knownBroadcasted ?? new uint256[0]);
+			var startTime = DateTimeOffset.UtcNow;
+			var totalEntries = 0;
+			var knownBroadcastedSet = new HashSet<uint256>(knownBroadcasted ?? new uint256[0]);
 
-			List<Transaction> broadcasted = new List<Transaction>();
+			var broadcasted = new List<Transaction>();
 			foreach(var broadcast in GetRequests())
 			{
 				totalEntries++;
@@ -213,14 +189,14 @@ namespace NTumbleBit.Services.RPC
 			return broadcasted.ToArray();
 		}
 
-		private void LogBroadcasted(Record broadcast)
+		private static void LogBroadcasted(Record broadcast)
 		{
 			Logs.Broadcasters.LogInformation($"Broadcasted {broadcast.TransactionType} of cycle {broadcast.Cycle} planned on block {broadcast.Request.BroadcastableHeight}");
 		}
 
 		private void RecordMaping(Record broadcast, Transaction transaction, uint256 txHash)
 		{
-			var txToRecord = new TxToRecord()
+			var txToRecord = new TxToRecord
 			{
 				RecordHash = broadcast.Request.Transaction.GetHash(),
 				Transaction = transaction
@@ -243,14 +219,7 @@ namespace NTumbleBit.Services.RPC
 		private readonly IBlockExplorerService _BlockExplorer;
 		private readonly RPCWalletCache _Cache;
 
-		public IBlockExplorerService BlockExplorer
-		{
-			get
-			{
-				return _BlockExplorer;
-			}
-		}
-
+		public IBlockExplorerService BlockExplorer => _BlockExplorer;
 
 		public Transaction[] GetReceivedTransactions(Script scriptPubKey)
 		{

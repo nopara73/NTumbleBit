@@ -60,12 +60,12 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 						Logs.Configuration.LogError($"Failed to start Tor, please verify your configuration settings \"torpath\": {ex.Message}");
 					}
 				}
-				throw new ConfigException($"Unable to connect to SOCKS {Proxy.Address}:{Proxy.Port}");			
+				throw new ConfigException($"Unable to connect to SOCKS {Proxy.Address}:{Proxy.Port}");
 			}
 			return NullDisposable.Instance;
 		}
 
-		private async Task<bool> TestConnectionAsync(IPEndPoint proxy)
+		private async static Task<bool> TestConnectionAsync(IPEndPoint proxy)
 		{
 			var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			try
@@ -83,7 +83,7 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 
 		public override HttpMessageHandler CreateHttpHandler()
 		{
-			SocksPortHandler handler = new SocksPortHandler(Proxy);
+			var handler = new SocksPortHandler(Proxy);
 			return handler;
 		}
 	}

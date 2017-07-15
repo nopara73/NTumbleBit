@@ -62,18 +62,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			xOff = t.xOff;
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return "SHA-224";
-			}
-		}
+		public override string AlgorithmName => "SHA-224";
 
-		public override int GetDigestSize()
-		{
-			return DigestLength;
-		}
+		public override int GetDigestSize() => DigestLength;
 
 		internal override void ProcessWord(
 			byte[] input,
@@ -153,17 +144,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			//
 			// set up working variables.
 			//
-			uint a = H1;
-			uint b = H2;
-			uint c = H3;
-			uint d = H4;
-			uint e = H5;
-			uint f = H6;
-			uint g = H7;
-			uint h = H8;
+			var a = H1;
+			var b = H2;
+			var c = H3;
+			var d = H4;
+			var e = H5;
+			var f = H6;
+			var g = H7;
+			var h = H8;
 
-			int t = 0;
-			for(int i = 0; i < 8; i++)
+			var t = 0;
+			for (int i = 0; i < 8; i++)
 			{
 				// t = 8 * i
 				h += Sum1(e) + Ch(e, f, g) + K[t] + X[t];
@@ -231,35 +222,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		}
 
 		/* SHA-224 functions */
-		private static uint Ch(uint x, uint y, uint z)
-		{
-			return (x & y) ^ (~x & z);
-		}
+		private static uint Ch(uint x, uint y, uint z) => (x & y) ^ (~x & z);
 
-		private static uint Maj(uint x, uint y, uint z)
-		{
-			return (x & y) ^ (x & z) ^ (y & z);
-		}
+		private static uint Maj(uint x, uint y, uint z) => (x & y) ^ (x & z) ^ (y & z);
 
-		private static uint Sum0(uint x)
-		{
-			return ((x >> 2) | (x << 30)) ^ ((x >> 13) | (x << 19)) ^ ((x >> 22) | (x << 10));
-		}
+		private static uint Sum0(uint x) => ((x >> 2) | (x << 30)) ^ ((x >> 13) | (x << 19)) ^ ((x >> 22) | (x << 10));
 
-		private static uint Sum1(uint x)
-		{
-			return ((x >> 6) | (x << 26)) ^ ((x >> 11) | (x << 21)) ^ ((x >> 25) | (x << 7));
-		}
+		private static uint Sum1(uint x) => ((x >> 6) | (x << 26)) ^ ((x >> 11) | (x << 21)) ^ ((x >> 25) | (x << 7));
 
-		private static uint Theta0(uint x)
-		{
-			return ((x >> 7) | (x << 25)) ^ ((x >> 18) | (x << 14)) ^ (x >> 3);
-		}
+		private static uint Theta0(uint x) => ((x >> 7) | (x << 25)) ^ ((x >> 18) | (x << 14)) ^ (x >> 3);
 
-		private static uint Theta1(uint x)
-		{
-			return ((x >> 17) | (x << 15)) ^ ((x >> 19) | (x << 13)) ^ (x >> 10);
-		}
+		private static uint Theta1(uint x) => ((x >> 17) | (x << 15)) ^ ((x >> 19) | (x << 13)) ^ (x >> 10);
 
 		/* SHA-224 Constants
          * (represent the first 32 bits of the fractional parts of the
@@ -276,14 +249,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 		};
 
-		public override IMemoable Copy()
-		{
-			return new Sha224Digest(this);
-		}
+		public override IMemoable Copy() => new Sha224Digest(this);
 
 		public override void Reset(IMemoable other)
 		{
-			Sha224Digest d = (Sha224Digest)other;
+			var d = (Sha224Digest)other;
 
 			CopyIn(d);
 		}

@@ -21,21 +21,9 @@ namespace NTumbleBit.BouncyCastle.Asn1.Pkcs
 			this.algID = algID;
 		}
 
-		public AlgorithmIdentifier AlgorithmID
-		{
-			get
-			{
-				return algID;
-			}
-		}
+		public AlgorithmIdentifier AlgorithmID => algID;
 
-		public Asn1Object PrivateKey
-		{
-			get
-			{
-				return privKey;
-			}
-		}
+		public Asn1Object PrivateKey => privKey;
 
 		/**
          * write out an RSA private key with its associated information
@@ -56,7 +44,7 @@ namespace NTumbleBit.BouncyCastle.Asn1.Pkcs
          */
 		public override Asn1Object ToAsn1Object()
 		{
-			Asn1EncodableVector v = new Asn1EncodableVector(
+			var v = new Asn1EncodableVector(
 				new DerInteger(0),
 				algID,
 				new DerOctetString(privKey.GetEncoded()));

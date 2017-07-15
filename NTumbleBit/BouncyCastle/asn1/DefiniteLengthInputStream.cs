@@ -30,22 +30,16 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			}
 		}
 
-		internal int Remaining
-		{
-			get
-			{
-				return _remaining;
-			}
-		}
+		internal int Remaining => _remaining;
 
 		public override int ReadByte()
 		{
 			if(_remaining == 0)
 				return -1;
 
-			int b = _in.ReadByte();
+			var b = _in.ReadByte();
 
-			if(b < 0)
+			if (b < 0)
 				throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
 			if(--_remaining == 0)
@@ -64,10 +58,10 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			if(_remaining == 0)
 				return 0;
 
-			int toRead = System.Math.Min(len, _remaining);
-			int numRead = _in.Read(buf, off, toRead);
+			var toRead = System.Math.Min(len, _remaining);
+			var numRead = _in.Read(buf, off, toRead);
 
-			if(numRead < 1)
+			if (numRead < 1)
 				throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
 			if((_remaining -= numRead) == 0)
@@ -93,8 +87,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			if(_remaining == 0)
 				return EmptyBytes;
 
-			byte[] bytes = new byte[_remaining];
-			if((_remaining -= Streams.ReadFully(_in, bytes)) != 0)
+			var bytes = new byte[_remaining];
+			if ((_remaining -= Streams.ReadFully(_in, bytes)) != 0)
 				throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 			SetParentEofDetect(true);
 			return bytes;

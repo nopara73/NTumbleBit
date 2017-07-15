@@ -84,18 +84,11 @@ namespace NTumbleBit.PuzzleSolver
 				set;
 			}
 
-			public PubKey GetClientEscrowPubKey()
-			{
-				return EscrowScriptPubKeyParameters.GetFromCoin(EscrowedCoin).Initiator;
-			}
+			public PubKey GetClientEscrowPubKey() => EscrowScriptPubKeyParameters.GetFromCoin(EscrowedCoin).Initiator;
 		}
 
 
-		public State GetInternalState()
-		{
-			return Serializer.Clone(InternalState);
-		}
-
+		public State GetInternalState() => Serializer.Clone(InternalState);
 
 		protected new State InternalState
 		{
@@ -135,30 +128,12 @@ namespace NTumbleBit.PuzzleSolver
 
 
 		private readonly RsaKey _ServerKey;
-		public RsaKey ServerKey
-		{
-			get
-			{
-				return _ServerKey;
-			}
-		}
+		public RsaKey ServerKey => _ServerKey;
 
 		private SolverParameters _Parameters;
-		public SolverParameters Parameters
-		{
-			get
-			{
-				return _Parameters;
-			}
-		}
+		public SolverParameters Parameters => _Parameters;
 
-		public SolverServerStates Status
-		{
-			get
-			{
-				return InternalState.Status;
-			}
-		}
+		public SolverServerStates Status => InternalState.Status;
 
 		public override void ConfigureEscrowedCoin(ScriptCoin escrowedCoin, Key escrowKey)
 		{
@@ -174,15 +149,15 @@ namespace NTumbleBit.PuzzleSolver
 			if(puzzles.Length != Parameters.GetTotalCount())
 				throw new ArgumentException("Expecting " + Parameters.GetTotalCount() + " puzzles");
 			AssertState(SolverServerStates.WaitingPuzzles);
-			List<ServerCommitment> commitments = new List<ServerCommitment>();
-			List<SolvedPuzzle> solvedPuzzles = new List<SolvedPuzzle>();
-			foreach(var puzzle in puzzles)
+			var commitments = new List<ServerCommitment>();
+			var solvedPuzzles = new List<SolvedPuzzle>();
+			foreach (var puzzle in puzzles)
 			{
 				var solution = puzzle.Solve(ServerKey);
 				byte[] key = null;
 				var encryptedSolution = Utils.ChachaEncrypt(solution.ToBytes(), ref key);
 				var solutionKey = new SolutionKey(key);
-				uint160 keyHash = solutionKey.GetHash();
+				var keyHash = solutionKey.GetHash();
 				commitments.Add(new ServerCommitment(keyHash, encryptedSolution));
 				solvedPuzzles.Add(new SolvedPuzzle(puzzle, solutionKey, solution));
 			}
@@ -201,8 +176,8 @@ namespace NTumbleBit.PuzzleSolver
 
 
 
-			List<SolvedPuzzle> fakePuzzles = new List<SolvedPuzzle>();
-			for(int i = 0; i < Parameters.FakePuzzleCount; i++)
+			var fakePuzzles = new List<SolvedPuzzle>();
+			for (int i = 0; i < Parameters.FakePuzzleCount; i++)
 			{
 				var index = revelation.FakeIndexes[i];
 				var solvedPuzzle = InternalState.SolvedPuzzles[index];
@@ -213,8 +188,8 @@ namespace NTumbleBit.PuzzleSolver
 				fakePuzzles.Add(solvedPuzzle);
 			}
 
-			List<SolvedPuzzle> realPuzzles = new List<SolvedPuzzle>();
-			for(int i = 0; i < Parameters.GetTotalCount(); i++)
+			var realPuzzles = new List<SolvedPuzzle>();
+			for (int i = 0; i < Parameters.GetTotalCount(); i++)
 			{
 				if(Array.IndexOf(revelation.FakeIndexes, i) == -1)
 				{
@@ -234,8 +209,8 @@ namespace NTumbleBit.PuzzleSolver
 				throw new ArgumentException("Expecting " + Parameters.RealPuzzleCount + " blind factors");
 			AssertState(SolverServerStates.WaitingBlindFactor);
 			Puzzle unblindedPuzzle = null;
-			int y = 0;
-			for(int i = 0; i < Parameters.RealPuzzleCount; i++)
+			var y = 0;
+			for (int i = 0; i < Parameters.RealPuzzleCount; i++)
 			{
 				var solvedPuzzle = InternalState.SolvedPuzzles[i];
 				var unblinded = new Puzzle(Parameters.ServerKey, solvedPuzzle.Puzzle).Unblind(blindFactors[i]);
@@ -247,9 +222,9 @@ namespace NTumbleBit.PuzzleSolver
 			}
 
 			InternalState.FulfillKey = new Key();
-			
-			Transaction dummy = new Transaction();
-			dummy.AddInput(new TxIn(InternalState.EscrowedCoin.Outpoint));				
+
+			var dummy = new Transaction();
+			dummy.AddInput(new TxIn(InternalState.EscrowedCoin.Outpoint));
 			dummy.Inputs[0].ScriptSig = new Script(
 				Op.GetPushOp(TrustedBroadcastRequest.PlaceholderSignature),
 				Op.GetPushOp(TrustedBroadcastRequest.PlaceholderSignature),
@@ -278,11 +253,11 @@ namespace NTumbleBit.PuzzleSolver
 				Fee = offerTransactionFee
 			};
 		}
-		
+
 
 		Transaction GetUnsignedOfferTransaction()
 		{
-			Transaction tx = new Transaction();
+			var tx = new Transaction();
 			tx.AddInput(new TxIn(InternalState.EscrowedCoin.Outpoint));
 			tx.AddOutput(InternalState.OfferCoin.TxOut);
 			return tx;
@@ -336,7 +311,7 @@ namespace NTumbleBit.PuzzleSolver
 			AssertState(SolverServerStates.WaitingFulfillment);
 
 			var offer = GetUnsignedOfferTransaction();
-			PubKey clientKey = AssertValidSignature(clientSignature, offer);
+			var clientKey = AssertValidSignature(clientSignature, offer);
 			offer.Inputs[0].ScriptSig = new Script(
 					Op.GetPushOp(clientSignature.ToBytes()),
 					Op.GetPushOp(CreateOfferSignature().ToBytes()),
@@ -346,9 +321,9 @@ namespace NTumbleBit.PuzzleSolver
 			if(!offer.Inputs.AsIndexedInputs().First().VerifyScript(InternalState.EscrowedCoin))
 				throw new PuzzleException("invalid-tumbler-signature");
 
-			
+
 			var solutions = InternalState.SolvedPuzzles.Select(s => s.SolutionKey).ToArray();
-			Transaction fulfill = new Transaction();
+			var fulfill = new Transaction();
 			fulfill.Inputs.Add(new TxIn());
 			fulfill.Outputs.Add(new TxOut(InternalState.OfferCoin.Amount, cashout));
 
@@ -385,7 +360,7 @@ namespace NTumbleBit.PuzzleSolver
 				throw new PuzzleException("invalid-sighash");
 
 
-			var escapeTx = new Transaction();			
+			var escapeTx = new Transaction();
 			escapeTx.AddInput(new TxIn(InternalState.EscrowedCoin.Outpoint));
 			escapeTx.AddOutput(new TxOut(InternalState.EscrowedCoin.Amount, cashout));
 			escapeTx.Inputs[0].ScriptSig = new Script(
@@ -402,12 +377,12 @@ namespace NTumbleBit.PuzzleSolver
 				Op.GetPushOp(tumblerSignature.ToBytes()),
 				Op.GetPushOp(InternalState.EscrowedCoin.Redeem.ToBytes())
 				);
-			
+
 			if(!escapeTx.Inputs.AsIndexedInputs().First().VerifyScript(InternalState.EscrowedCoin))
 				throw new PuzzleException("invalid-tumbler-signature");
 
 			return escapeTx;
-		}		
+		}
 
 		private OfferScriptPubKeyParameters CreateOfferScriptParameters()
 		{
@@ -419,6 +394,6 @@ namespace NTumbleBit.PuzzleSolver
 				Expiration = escrow.LockTime,
 				RedeemKey = escrow.Initiator
 			};
-		}	
+		}
 	}
 }

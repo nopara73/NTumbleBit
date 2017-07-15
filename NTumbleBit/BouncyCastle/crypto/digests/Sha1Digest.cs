@@ -51,18 +51,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			xOff = t.xOff;
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return "SHA-1";
-			}
-		}
+		public override string AlgorithmName => "SHA-1";
 
-		public override int GetDigestSize()
-		{
-			return DigestLength;
-		}
+		public override int GetDigestSize() => DigestLength;
 
 		internal override void ProcessWord(
 			byte[] input,
@@ -129,20 +120,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		private const uint Y3 = 0x8f1bbcdc;
 		private const uint Y4 = 0xca62c1d6;
 
-		private static uint F(uint u, uint v, uint w)
-		{
-			return (u & v) | (~u & w);
-		}
+		private static uint F(uint u, uint v, uint w) => (u & v) | (~u & w);
 
-		private static uint H(uint u, uint v, uint w)
-		{
-			return u ^ v ^ w;
-		}
+		private static uint H(uint u, uint v, uint w) => u ^ v ^ w;
 
-		private static uint G(uint u, uint v, uint w)
-		{
-			return (u & v) | (u & w) | (v & w);
-		}
+		private static uint G(uint u, uint v, uint w) => (u & v) | (u & w) | (v & w);
 
 		internal override void ProcessBlock()
 		{
@@ -151,25 +133,25 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			//
 			for(int i = 16; i < 80; i++)
 			{
-				uint t = X[i - 3] ^ X[i - 8] ^ X[i - 14] ^ X[i - 16];
+				var t = X[i - 3] ^ X[i - 8] ^ X[i - 14] ^ X[i - 16];
 				X[i] = t << 1 | t >> 31;
 			}
 
 			//
 			// set up working variables.
 			//
-			uint A = H1;
-			uint B = H2;
-			uint C = H3;
-			uint D = H4;
-			uint E = H5;
+			var A = H1;
+			var B = H2;
+			var C = H3;
+			var D = H4;
+			var E = H5;
 
 			//
 			// round 1
 			//
-			int idx = 0;
+			var idx = 0;
 
-			for(int j = 0; j < 4; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				// E = rotateLeft(A, 5) + F(B, C, D) + E + X[idx++] + Y1
 				// B = rotateLeft(B, 30)
@@ -271,14 +253,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			Array.Clear(X, 0, 16);
 		}
 
-		public override IMemoable Copy()
-		{
-			return new Sha1Digest(this);
-		}
+		public override IMemoable Copy() => new Sha1Digest(this);
 
 		public override void Reset(IMemoable other)
 		{
-			Sha1Digest d = (Sha1Digest)other;
+			var d = (Sha1Digest)other;
 
 			CopyIn(d);
 		}

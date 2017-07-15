@@ -19,10 +19,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
         * @return a byte array without a leading zero byte if present in the signed encoding.
         */
 		public static byte[] AsUnsignedByteArray(
-			BigInteger n)
-		{
-			return n.ToByteArrayUnsigned();
-		}
+			BigInteger n) => n.ToByteArrayUnsigned();
 
 		/**
          * Return the passed in value as an unsigned byte array of specified length, zero-extended as necessary.
@@ -33,22 +30,22 @@ namespace NTumbleBit.BouncyCastle.Utilities
          */
 		public static byte[] AsUnsignedByteArray(int length, BigInteger n)
 		{
-			byte[] bytes = n.ToByteArrayUnsigned();
+			var bytes = n.ToByteArrayUnsigned();
 
-			if(bytes.Length > length)
+			if (bytes.Length > length)
 				throw new ArgumentException("standard length exceeded", nameof(n));
 
 			if(bytes.Length == length)
 				return bytes;
 
-			byte[] tmp = new byte[length];
+			var tmp = new byte[length];
 			Array.Copy(bytes, 0, tmp, tmp.Length - bytes.Length, bytes.Length);
 			return tmp;
 		}
 
 		/**
         * Return a random BigInteger not less than 'min' and not greater than 'max'
-        * 
+        *
         * @param min the least value that may be generated
         * @param max the greatest value that may be generated
         * @param random the source of randomness
@@ -60,8 +57,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			// TODO Should have been just Random class
 			SecureRandom random)
 		{
-			int cmp = min.CompareTo(max);
-			if(cmp >= 0)
+			var cmp = min.CompareTo(max);
+			if (cmp >= 0)
 			{
 				if(cmp > 0)
 					throw new ArgumentException("'min' may not be greater than 'max'");
@@ -76,8 +73,8 @@ namespace NTumbleBit.BouncyCastle.Utilities
 
 			for(int i = 0; i < MaxIterations; ++i)
 			{
-				BigInteger x = new BigInteger(max.BitLength, random);
-				if(x.CompareTo(min) >= 0 && x.CompareTo(max) <= 0)
+				var x = new BigInteger(max.BitLength, random);
+				if (x.CompareTo(min) >= 0 && x.CompareTo(max) <= 0)
 				{
 					return x;
 				}

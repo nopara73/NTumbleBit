@@ -11,20 +11,14 @@ namespace NTumbleBit.BouncyCastle.Crypto
 			this.privateKey = privateKey;
 		}
 
-		public bool IsPrivate
-		{
-			get
-			{
-				return privateKey;
-			}
-		}
+		public bool IsPrivate => privateKey;
 
 		public override bool Equals(
 			object obj)
 		{
-			AsymmetricKeyParameter other = obj as AsymmetricKeyParameter;
+			var other = obj as AsymmetricKeyParameter;
 
-			if(other == null)
+			if (other == null)
 			{
 				return false;
 			}
@@ -33,14 +27,8 @@ namespace NTumbleBit.BouncyCastle.Crypto
 		}
 
 		protected bool Equals(
-			AsymmetricKeyParameter other)
-		{
-			return privateKey == other.privateKey;
-		}
+			AsymmetricKeyParameter other) => privateKey == other.privateKey;
 
-		public override int GetHashCode()
-		{
-			return privateKey.GetHashCode();
-		}
+		public override int GetHashCode() => privateKey.GetHashCode();
 	}
 }

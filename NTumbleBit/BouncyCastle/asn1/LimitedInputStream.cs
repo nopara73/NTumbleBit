@@ -18,11 +18,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			_limit = limit;
 		}
 
-		internal virtual int GetRemaining()
-		{
-			// TODO: maybe one day this can become more accurate
-			return _limit;
-		}
+		internal virtual int GetRemaining() => _limit;
 
 		protected virtual void SetParentEofDetect(bool on)
 		{

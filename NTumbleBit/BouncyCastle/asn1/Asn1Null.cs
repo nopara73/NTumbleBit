@@ -10,9 +10,6 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		{
 		}
 
-		public override string ToString()
-		{
-			return "NULL";
-		}
+		public override string ToString() => "NULL";
 	}
 }

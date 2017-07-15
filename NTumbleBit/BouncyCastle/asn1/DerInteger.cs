@@ -47,25 +47,13 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			this.bytes = bytes;
 		}
 
-		public BigInteger Value
-		{
-			get
-			{
-				return new BigInteger(bytes);
-			}
-		}
+		public BigInteger Value => new BigInteger(bytes);
 
 		/**
          * in some cases positive values Get crammed into a space,
          * that's not quite big enough...
          */
-		public BigInteger PositiveValue
-		{
-			get
-			{
-				return new BigInteger(1, bytes);
-			}
-		}
+		public BigInteger PositiveValue => new BigInteger(1, bytes);
 
 		internal override void Encode(
 			DerOutputStream derOut)
@@ -73,25 +61,19 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			derOut.WriteEncoded(Asn1Tags.Integer, bytes);
 		}
 
-		protected override int Asn1GetHashCode()
-		{
-			return Arrays.GetHashCode(bytes);
-		}
+		protected override int Asn1GetHashCode() => Arrays.GetHashCode(bytes);
 
 		protected override bool Asn1Equals(
 			Asn1Object asn1Object)
 		{
-			DerInteger other = asn1Object as DerInteger;
+			var other = asn1Object as DerInteger;
 
-			if(other == null)
+			if (other == null)
 				return false;
 
 			return Arrays.AreEqual(bytes, other.bytes);
 		}
 
-		public override string ToString()
-		{
-			return Value.ToString();
-		}
+		public override string ToString() => Value.ToString();
 	}
 }

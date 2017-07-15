@@ -27,10 +27,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			new DerOutputStream(_bOut).WriteObject(obj);
 		}
 
-		public override Stream GetRawOutputStream()
-		{
-			return _bOut;
-		}
+		public override Stream GetRawOutputStream() => _bOut;
 
 		public override void Close()
 		{

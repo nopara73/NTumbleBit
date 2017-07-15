@@ -31,7 +31,7 @@ namespace NTumbleBit
 				throw new ArgumentNullException(nameof(bytes));
 			try
 			{
-				DerSequence seq2 = RsaKey.GetRSASequence(bytes);
+				var seq2 = RsaKey.GetRSASequence(bytes);
 				var s = new RsaPublicKeyStructure(seq2);
 				_Key = new RsaKeyParameters(false, s.Modulus, s.PublicExponent);
 			}
@@ -44,14 +44,12 @@ namespace NTumbleBit
 		internal readonly RsaKeyParameters _Key;
 		internal RsaPubKey(RsaKeyParameters key)
 		{
-			if(key == null)
-				throw new ArgumentNullException(nameof(key));
-			_Key = key;
+			_Key = key ?? throw new ArgumentNullException(nameof(key));
 		}
 
 		public byte[] ToBytes()
 		{
-			RsaPublicKeyStructure keyStruct = new RsaPublicKeyStructure(
+			var keyStruct = new RsaPublicKeyStructure(
 				_Key.Modulus,
 				_Key.Exponent);
 			var privInfo = new PrivateKeyInfo(RsaKey.algID, keyStruct.ToAsn1Object());
@@ -60,9 +58,9 @@ namespace NTumbleBit
 
 		public bool Verify(byte[] signature, byte[] data, uint160 nonce)
 		{
-			byte[] output = new byte[256];
+			var output = new byte[256];
 			var msg = Utils.Combine(nonce.ToBytes(), data);
-			Sha512Digest sha512 = new Sha512Digest();
+			var sha512 = new Sha512Digest();
 			var generator = new Mgf1BytesGenerator(sha512);
 			generator.Init(new MgfParameters(msg));
 			generator.GenerateBytes(output, 0, output.Length);
@@ -79,10 +77,7 @@ namespace NTumbleBit
 			return input.Equals(engine.ProcessBlock(signatureInt));
 		}
 
-		public uint256 GetHash()
-		{
-			return Hashes.Hash256(ToBytes());
-		}
+		public uint256 GetHash() => Hashes.Hash256(ToBytes());
 
 		public Puzzle GeneratePuzzle(ref PuzzleSolution solution)
 		{
@@ -96,8 +91,8 @@ namespace NTumbleBit
 				throw new ArgumentNullException(nameof(data));
 			if(data.CompareTo(_Key.Modulus) >= 0)
 				throw new ArgumentException("input too large for RSA cipher.");
-				
-			RsaBlindedEngine engine = new RsaBlindedEngine();
+
+			var engine = new RsaBlindedEngine();
 			engine.Init(true, _Key);
 			return engine.ProcessBlock(data);
 		}
@@ -136,16 +131,12 @@ namespace NTumbleBit
 			return Blind(blindFactor._Value.ModInverse(_Key.Modulus), data);
 		}
 
-		internal BigInteger Blind(BigInteger multiplier, BigInteger msg)
-		{
-			return msg.Multiply(multiplier).Mod(_Key.Modulus);
-		}
-
+		internal BigInteger Blind(BigInteger multiplier, BigInteger msg) => msg.Multiply(multiplier).Mod(_Key.Modulus);
 
 		public override bool Equals(object obj)
 		{
-			RsaPubKey item = obj as RsaPubKey;
-			if(item == null)
+			var item = obj as RsaPubKey;
+			if (item == null)
 				return false;
 			return _Key.Equals(item._Key);
 		}
@@ -158,14 +149,8 @@ namespace NTumbleBit
 			return a._Key.Equals(b._Key);
 		}
 
-		public static bool operator !=(RsaPubKey a, RsaPubKey b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(RsaPubKey a, RsaPubKey b) => !(a == b);
 
-		public override int GetHashCode()
-		{
-			return _Key.GetHashCode();
-		}
+		public override int GetHashCode() => _Key.GetHashCode();
 	}
 }

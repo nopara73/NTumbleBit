@@ -18,16 +18,11 @@ namespace NTumbleBit
 
 		internal BlindFactor(BigInteger v)
 		{
-			if(v == null)
-				throw new ArgumentNullException(nameof(v));
-			_Value = v;
+			_Value = v ?? throw new ArgumentNullException(nameof(v));
 		}
 
 		internal BigInteger _Value;
 
-		public byte[] ToBytes()
-		{
-			return _Value.ToByteArrayUnsigned();
-		}
+		public byte[] ToBytes() => _Value.ToByteArrayUnsigned();
 	}
 }

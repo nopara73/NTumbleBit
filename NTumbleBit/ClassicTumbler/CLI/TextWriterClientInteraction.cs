@@ -15,12 +15,8 @@ namespace NTumbleBit
 		TextWriter _Output;
 		public TextWriterClientInteraction(TextWriter output, TextReader input)
 		{
-			if(input == null)
-				throw new ArgumentNullException("input");
-			if(output == null)
-				throw new ArgumentNullException("output");
-			_Input = input;
-			_Output = output;
+			_Input = input ?? throw new ArgumentNullException(nameof(input));
+			_Output = output ?? throw new ArgumentNullException(nameof(output));
 		}
 
 		public Task AskConnectToTorAsync(string torPath, string args)
@@ -71,12 +67,6 @@ namespace NTumbleBit
 			return Task.CompletedTask;
 		}
 
-		private string PrettyPrint(TimeSpan t)
-		{
-			return string.Format("{0:D2}d:{1:D2}h:{2:D2}m",
-						t.Days,
-						t.Hours,
-						t.Minutes);
-		}
+		private static string PrettyPrint(TimeSpan t) => $"{t.Days:D2}d:{t.Hours:D2}h:{t.Minutes:D2}m";
 	}
 }

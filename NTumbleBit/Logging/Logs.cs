@@ -15,12 +15,12 @@ namespace NTumbleBit.Logging
 		}
 		public static void Configure(ILoggerFactory factory)
 		{
-			Configuration = factory.CreateLogger("Configuration");
-			Tumbler = factory.CreateLogger("Tumbler");
-			Client = factory.CreateLogger("Client");
-			Broadcasters = factory.CreateLogger("Broadcasters");
-			Tracker = factory.CreateLogger("Tracker");
-			Wallet = factory.CreateLogger("Wallet");
+			Configuration = factory.CreateLogger(nameof(Configuration));
+			Tumbler = factory.CreateLogger(nameof(Tumbler));
+			Client = factory.CreateLogger(nameof(Client));
+			Broadcasters = factory.CreateLogger(nameof(Broadcasters));
+			Tracker = factory.CreateLogger(nameof(Tracker));
+			Wallet = factory.CreateLogger(nameof(Wallet));
 		}
 		public static ILogger Tumbler
 		{

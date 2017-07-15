@@ -25,44 +25,21 @@ namespace NTumbleBit.Services.RPC
 		RPCWalletCache _Cache;
 		public RPCBroadcastService(RPCClient rpc, RPCWalletCache cache, IRepository repository)
 		{
-			if(rpc == null)
-				throw new ArgumentNullException(nameof(rpc));
-			if(repository == null)
-				throw new ArgumentNullException(nameof(repository));
-			_RPCClient = rpc;
-			_Repository = repository;
+			_RPCClient = rpc ?? throw new ArgumentNullException(nameof(rpc));
+			_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
 			_Cache = cache;
 			_BlockExplorerService = new RPCBlockExplorerService(rpc, cache, repository);
 		}
 
 
 		private readonly RPCBlockExplorerService _BlockExplorerService;
-		public RPCBlockExplorerService BlockExplorerService
-		{
-			get
-			{
-				return _BlockExplorerService;
-			}
-		}
-
+		public RPCBlockExplorerService BlockExplorerService => _BlockExplorerService;
 
 		private readonly IRepository _Repository;
-		public IRepository Repository
-		{
-			get
-			{
-				return _Repository;
-			}
-		}
+		public IRepository Repository => _Repository;
 
 		private readonly RPCClient _RPCClient;
-		public RPCClient RPCClient
-		{
-			get
-			{
-				return _RPCClient;
-			}
-		}
+		public RPCClient RPCClient => _RPCClient;
 
 		public Record[] GetTransactions()
 		{
@@ -79,12 +56,12 @@ namespace NTumbleBit.Services.RPC
 		public Transaction[] TryBroadcast(ref uint256[] knownBroadcasted)
 		{
 			var startTime = DateTimeOffset.UtcNow;
-			int totalEntries = 0;
-			List<Transaction> broadcasted = new List<Transaction>();
+			var totalEntries = 0;
+			var broadcasted = new List<Transaction>();
 
-			HashSet<uint256> knownBroadcastedSet = new HashSet<uint256>(knownBroadcasted ?? new uint256[0]);
-			int height = _Cache.BlockCount;
-			foreach(var obj in _Cache.GetEntries())
+			var knownBroadcastedSet = new HashSet<uint256>(knownBroadcasted ?? new uint256[0]);
+			var height = _Cache.BlockCount;
+			foreach (var obj in _Cache.GetEntries())
 			{
 				if(obj.Confirmations > 0)
 					knownBroadcastedSet.Add(obj.TransactionId);
@@ -107,9 +84,8 @@ namespace NTumbleBit.Services.RPC
 
 		private bool TryBroadcastCore(Record tx, int currentHeight)
 		{
-			bool remove;
-			var result = TryBroadcastCore(tx, currentHeight, out remove);
-			if(remove)
+			var result = TryBroadcastCore(tx, currentHeight, out bool remove);
+			if (remove)
 				RemoveRecord(tx);
 			return result;
 		}
@@ -122,8 +98,8 @@ namespace NTumbleBit.Services.RPC
 			if(tx.Transaction.Inputs.Count == 0 || tx.Transaction.Inputs[0].PrevOut.Hash == uint256.Zero)
 				return false;
 
-			bool isFinal = tx.Transaction.IsFinal(DateTimeOffset.UtcNow, currentHeight + 1);
-			if(!isFinal || IsDoubleSpend(tx.Transaction))
+			var isFinal = tx.Transaction.IsFinal(DateTimeOffset.UtcNow, currentHeight + 1);
+			if (!isFinal || IsDoubleSpend(tx.Transaction))
 				return false;
 
 			try
@@ -149,7 +125,7 @@ namespace NTumbleBit.Services.RPC
 				}
 			}
 			return false;
-		}		
+		}
 
 		private bool IsDoubleSpend(Transaction tx)
 		{
@@ -179,8 +155,10 @@ namespace NTumbleBit.Services.RPC
 
 		public bool Broadcast(Transaction transaction)
 		{
-			var record = new Record();
-			record.Transaction = transaction;
+			var record = new Record
+			{
+				Transaction = transaction
+			};
 			var height = _Cache.BlockCount;
 			//3 days expiration
 			record.Expiration = height + (int)(TimeSpan.FromDays(3).Ticks / Network.Main.Consensus.PowTargetSpacing.Ticks);
@@ -188,10 +166,7 @@ namespace NTumbleBit.Services.RPC
 			return TryBroadcastCore(record, height);
 		}
 
-		public Transaction GetKnownTransaction(uint256 txId)
-		{
-			return Repository.Get<Record>("Broadcasts", txId.ToString())?.Transaction ??
+		public Transaction GetKnownTransaction(uint256 txId) => Repository.Get<Record>("Broadcasts", txId.ToString())?.Transaction ??
 				   Repository.Get<Transaction>("CachedTransactions", txId.ToString());
-		}
 	}
 }

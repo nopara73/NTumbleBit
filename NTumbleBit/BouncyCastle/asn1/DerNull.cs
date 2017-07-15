@@ -8,16 +8,11 @@ namespace NTumbleBit.BouncyCastle.Asn1
 	internal class DerNull
 		: Asn1Null
 	{
-		public static readonly DerNull Instance = new DerNull(0);
+		public static readonly DerNull Instance = new DerNull();
 
 		private byte[] zeroBytes = new byte[0];
 
-		[Obsolete("Use static Instance object")]
-		public DerNull()
-		{
-		}
-
-		protected internal DerNull(int dummy)
+		private DerNull()
 		{
 		}
 
@@ -28,14 +23,8 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		}
 
 		protected override bool Asn1Equals(
-			Asn1Object asn1Object)
-		{
-			return asn1Object is DerNull;
-		}
+			Asn1Object asn1Object) => asn1Object is DerNull;
 
-		protected override int Asn1GetHashCode()
-		{
-			return -1;
-		}
+		protected override int Asn1GetHashCode() => -1;
 	}
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace NTumbleBit.PuzzleSolver
 {
 	public class OfferScriptPubKeyParameters
-	{		
+	{
 		public uint160[] Hashes
 		{
 			get; set;
@@ -28,7 +28,7 @@ namespace NTumbleBit.PuzzleSolver
 
 		public Script ToScript()
 		{
-			List<Op> ops = new List<Op>();
+			var ops = new List<Op>();
 			ops.Add(OpcodeType.OP_DEPTH);
 			ops.Add(Op.GetPushOp(Hashes.Length + 1));
 			ops.Add(OpcodeType.OP_EQUAL);
@@ -57,7 +57,7 @@ namespace NTumbleBit.PuzzleSolver
 	}
 	public static class SolverScriptBuilder
 	{
-		
+
 		public static SolutionKey[] ExtractSolutions(Script scriptSig, int expectedSolutions)
 		{
 			if(scriptSig == null)
@@ -72,7 +72,7 @@ namespace NTumbleBit.PuzzleSolver
 		{
 			if(keys == null)
 				throw new ArgumentNullException(nameof(keys));
-			List<Op> ops = new List<Op>();
+			var ops = new List<Op>();
 			ops.Add(signature == null ? Op.GetPushOp(TrustedBroadcastRequest.PlaceholderSignature) : Op.GetPushOp(signature.ToBytes()));
 			foreach(var key in keys.Reverse())
 			{

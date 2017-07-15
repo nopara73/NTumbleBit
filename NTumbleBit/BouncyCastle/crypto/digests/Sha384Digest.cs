@@ -34,18 +34,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 		{
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return "SHA-384";
-			}
-		}
+		public override string AlgorithmName => "SHA-384";
 
-		public override int GetDigestSize()
-		{
-			return DigestLength;
-		}
+		public override int GetDigestSize() => DigestLength;
 
 		public override int DoFinal(
 			byte[] output,
@@ -86,14 +77,11 @@ namespace NTumbleBit.BouncyCastle.Crypto.Digests
 			H8 = 0x47b5481dbefa4fa4;
 		}
 
-		public override IMemoable Copy()
-		{
-			return new Sha384Digest(this);
-		}
+		public override IMemoable Copy() => new Sha384Digest(this);
 
 		public override void Reset(IMemoable other)
 		{
-			Sha384Digest d = (Sha384Digest)other;
+			var d = (Sha384Digest)other;
 
 			CopyIn(d);
 		}

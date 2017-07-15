@@ -42,12 +42,7 @@ namespace NTumbleBit.Logging
 
 		internal CustomerConsoleLogger(string name, Func<string, LogLevel, bool> filter, bool includeScopes, ConsoleLoggerProcessor loggerProcessor)
 		{
-			if(name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			Name = name;
+			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Filter = filter ?? ((category, logLevel) => true);
 			IncludeScopes = includeScopes;
 
@@ -71,12 +66,7 @@ namespace NTumbleBit.Logging
 			}
 			set
 			{
-				if(value == null)
-				{
-					throw new ArgumentNullException(nameof(value));
-				}
-
-				_queueProcessor.Console = value;
+				_queueProcessor.Console = value ?? throw new ArgumentNullException(nameof(value));
 			}
 		}
 
@@ -88,12 +78,7 @@ namespace NTumbleBit.Logging
 			}
 			set
 			{
-				if(value == null)
-				{
-					throw new ArgumentNullException(nameof(value));
-				}
-
-				_filter = value;
+				_filter = value ?? throw new ArgumentNullException(nameof(value));
 			}
 		}
 
@@ -183,7 +168,7 @@ namespace NTumbleBit.Logging
 			{
 				var hasLevel = !string.IsNullOrEmpty(logLevelString);
 				// Queue log message
-				_queueProcessor.EnqueueMessage(new LogMessageEntry()
+				_queueProcessor.EnqueueMessage(new LogMessageEntry
 				{
 					Message = logBuilder.ToString(),
 					MessageColor = DefaultConsoleColor,
@@ -201,10 +186,7 @@ namespace NTumbleBit.Logging
 			_logBuilder = logBuilder;
 		}
 
-		public bool IsEnabled(LogLevel logLevel)
-		{
-			return Filter(Name, logLevel);
-		}
+		public bool IsEnabled(LogLevel logLevel) => Filter(Name, logLevel);
 
 		public IDisposable BeginScope<TState>(TState state)
 		{
@@ -260,10 +242,10 @@ namespace NTumbleBit.Logging
 			}
 		}
 
-		private void GetScopeInformation(StringBuilder builder)
+		private static void GetScopeInformation(StringBuilder builder)
 		{
 			var current = ConsoleLogScope.Current;
-			string scopeLog = string.Empty;
+			var scopeLog = string.Empty;
 			var length = builder.Length;
 
 			while(current != null)

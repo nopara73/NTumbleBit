@@ -26,13 +26,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 		{
 		}
 
-		public override string AlgorithmName
-		{
-			get
-			{
-				return "ChaCha" + rounds;
-			}
-		}
+		public override string AlgorithmName => "ChaCha" + rounds;
 
 		protected override void AdvanceCounter()
 		{
@@ -86,24 +80,24 @@ namespace NTumbleBit.BouncyCastle.Crypto.Engines
 			if(rounds % 2 != 0)
 				throw new ArgumentException("Number of rounds must be even");
 
-			uint x00 = input[0];
-			uint x01 = input[1];
-			uint x02 = input[2];
-			uint x03 = input[3];
-			uint x04 = input[4];
-			uint x05 = input[5];
-			uint x06 = input[6];
-			uint x07 = input[7];
-			uint x08 = input[8];
-			uint x09 = input[9];
-			uint x10 = input[10];
-			uint x11 = input[11];
-			uint x12 = input[12];
-			uint x13 = input[13];
-			uint x14 = input[14];
-			uint x15 = input[15];
+			var x00 = input[0];
+			var x01 = input[1];
+			var x02 = input[2];
+			var x03 = input[3];
+			var x04 = input[4];
+			var x05 = input[5];
+			var x06 = input[6];
+			var x07 = input[7];
+			var x08 = input[8];
+			var x09 = input[9];
+			var x10 = input[10];
+			var x11 = input[11];
+			var x12 = input[12];
+			var x13 = input[13];
+			var x14 = input[14];
+			var x15 = input[15];
 
-			for(int i = rounds; i > 0; i -= 2)
+			for (int i = rounds; i > 0; i -= 2)
 			{
 				x00 += x04;
 				x12 = R(x12 ^ x00, 16);

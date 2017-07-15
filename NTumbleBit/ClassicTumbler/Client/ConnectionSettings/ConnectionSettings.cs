@@ -20,7 +20,7 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 			else if(type.Equals("http", StringComparison.OrdinalIgnoreCase))
 			{
 
-				HttpConnectionSettings settings = new HttpConnectionSettings();
+				var settings = new HttpConnectionSettings();
 				var server = config.GetOrDefault<Uri>(prefix + ".proxy.server", null);
 				if(server != null)
 					settings.Proxy = server;
@@ -32,7 +32,7 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 			}
 			else if(type.Equals("socks", StringComparison.OrdinalIgnoreCase))
 			{
-				SocksConnectionSettings settings = new SocksConnectionSettings();
+				var settings = new SocksConnectionSettings();
 				var server = config.GetOrDefault<IPEndPoint>(prefix + ".proxy.server", new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050));
 				settings.Proxy = server;
 				return settings;
@@ -44,9 +44,6 @@ namespace NTumbleBit.ClassicTumbler.Client.ConnectionSettings
 			else
 				throw new ConfigException(prefix + ".proxy.type is not supported, should be socks or http");
 		}
-		public virtual HttpMessageHandler CreateHttpHandler()
-		{
-			return null;
-		}
+		public virtual HttpMessageHandler CreateHttpHandler() => null;
 	}
 }

@@ -38,10 +38,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Generators
 			//
 			// p and q values should have a length of half the strength in bits
 			//
-			int strength = param.Strength;
-			int pbitlength = (strength + 1) / 2;
-			int qbitlength = (strength - pbitlength);
-			int mindiffbits = strength / 3;
+			var strength = param.Strength;
+			var pbitlength = (strength + 1) / 2;
+			var qbitlength = (strength - pbitlength);
+			var mindiffbits = strength / 3;
 
 			e = param.PublicExponent;
 

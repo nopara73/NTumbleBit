@@ -79,32 +79,19 @@ namespace NTumbleBit.Services
 
 		public Tracker(IRepository repo, Network network)
 		{
-			if(repo == null)
-				throw new ArgumentNullException("repo");
-			if(network == null)
-				throw new ArgumentNullException("network");
-			_Repo = repo;
-			_Network = network;
+			_Repo = repo ?? throw new ArgumentNullException(nameof(repo));
+			_Network = network ?? throw new ArgumentNullException(nameof(network));
 		}
 
 
 		private readonly Network _Network;
-		public Network Network
-		{
-			get
-			{
-				return _Network;
-			}
-		}
+		public Network Network => _Network;
 
-		private static string GetCyclePartition(int cycleId)
-		{
-			return "Cycle_" + cycleId;
-		}
+		private static string GetCyclePartition(int cycleId) => "Cycle_" + cycleId;
 
 		public void TransactionCreated(int cycleId, TransactionType type, uint256 txId, uint correlation)
 		{
-			var record = new TrackerRecord()
+			var record = new TrackerRecord
 			{
 				Cycle = cycleId,
 				RecordType = RecordType.Transaction,
@@ -113,7 +100,7 @@ namespace NTumbleBit.Services
 				Correlation = correlation,
 			};
 
-			bool isNew = true;
+			var isNew = true;
 
 			_Repo.UpdateOrInsert(GetCyclePartition(cycleId), txId.GetLow64().ToString(), record, (a, b) =>
 			{
@@ -128,7 +115,7 @@ namespace NTumbleBit.Services
 
 		public void AddressCreated(int cycleId, TransactionType type, Script scriptPubKey, uint correlation)
 		{
-			var record = new TrackerRecord()
+			var record = new TrackerRecord
 			{
 				Cycle = cycleId,
 				RecordType = RecordType.ScriptPubKey,
@@ -137,7 +124,7 @@ namespace NTumbleBit.Services
 				Correlation = correlation
 			};
 
-			bool isNew = true;
+			var isNew = true;
 			_Repo.UpdateOrInsert(GetCyclePartition(cycleId), Rand(), record, (a, b) =>
 			{
 				isNew = false;
@@ -149,10 +136,7 @@ namespace NTumbleBit.Services
 				Logs.Tracker.LogInformation($"Tracking address {type} of cycle {cycleId} with correlation {correlation} ({scriptPubKey.GetDestinationAddress(Network)})");
 		}
 
-		private string Rand()
-		{
-			return RandomUtils.GetUInt64().ToString();
-		}
+		private static string Rand() => RandomUtils.GetUInt64().ToString();
 
 		public TrackerRecord[] Search(Script script)
 		{
@@ -170,9 +154,6 @@ namespace NTumbleBit.Services
 			return GetRecords(row).Where(r => r.RecordType == RecordType.Transaction && r.TransactionId == txId).ToArray();
 		}
 
-		public TrackerRecord[] GetRecords(int cycleId)
-		{
-			return _Repo.List<TrackerRecord>(GetCyclePartition(cycleId));
-		}
+		public TrackerRecord[] GetRecords(int cycleId) => _Repo.List<TrackerRecord>(GetCyclePartition(cycleId));
 	}
 }

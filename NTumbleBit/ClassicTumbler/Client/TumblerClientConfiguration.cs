@@ -185,8 +185,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}
 
 			OutputWallet.KeyPath = new KeyPath("0");
-			string keyPathString = config.GetOrDefault("outputwallet.keypath", null as string);
-			if(keyPathString != null)
+			var keyPathString = config.GetOrDefault("outputwallet.keypath", null as string);
+			if (keyPathString != null)
 			{
 				try
 				{
@@ -213,10 +213,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			return this;
 		}
 
-		private bool IsTest(Network network)
-		{
-			return network == Network.TestNet || network == Network.RegTest;
-		}
+		private static bool IsTest(Network network) => network == Network.TestNet || network == Network.RegTest;
 
 		public static string GetDefaultConfigurationFile(string dataDirectory, Network network)
 		{
@@ -225,7 +222,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			if(!File.Exists(config))
 			{
 				Logs.Configuration.LogInformation("Creating configuration file");
-				StringBuilder builder = new StringBuilder();
+				var builder = new StringBuilder();
 				builder.AppendLine("####Common Commands####");
 				builder.AppendLine("#Connection to the input wallet. TumbleBit.CLI will try to autoconfig based on default settings of Bitcoin Core.");
 				builder.AppendLine("#rpc.url=http://localhost:" + network.RPCPort + "/");

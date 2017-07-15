@@ -30,10 +30,7 @@ namespace NTumbleBit.JsonConverters
 		}
 
 
-		public override bool CanConvert(Type objectType)
-		{
-			return _Supports.ContainsKey(objectType);
-		}
+		public override bool CanConvert(Type objectType) => _Supports.ContainsKey(objectType);
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
@@ -56,10 +53,7 @@ namespace NTumbleBit.JsonConverters
 			throw new JsonObjectException("Invalid rsa object of type " + objectType.Name, reader);
 		}
 
-		private SerializerBase CreateSolverSerializer(JsonReader reader)
-		{
-			return new SerializerBase(new MemoryStream(Encoders.Hex.DecodeData((string)reader.Value)));
-		}
+		private static SerializerBase CreateSolverSerializer(JsonReader reader) => new SerializerBase(new MemoryStream(Encoders.Hex.DecodeData((string)reader.Value)));
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{

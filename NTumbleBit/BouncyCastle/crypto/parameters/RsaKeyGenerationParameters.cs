@@ -23,28 +23,16 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			this.certainty = certainty;
 		}
 
-		public BigInteger PublicExponent
-		{
-			get
-			{
-				return publicExponent;
-			}
-		}
+		public BigInteger PublicExponent => publicExponent;
 
-		public int Certainty
-		{
-			get
-			{
-				return certainty;
-			}
-		}
+		public int Certainty => certainty;
 
 		public override bool Equals(
 			object obj)
 		{
-			RsaKeyGenerationParameters other = obj as RsaKeyGenerationParameters;
+			var other = obj as RsaKeyGenerationParameters;
 
-			if(other == null)
+			if (other == null)
 			{
 				return false;
 			}
@@ -53,9 +41,6 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 				&& publicExponent.Equals(other.publicExponent);
 		}
 
-		public override int GetHashCode()
-		{
-			return certainty.GetHashCode() ^ publicExponent.GetHashCode();
-		}
+		public override int GetHashCode() => certainty.GetHashCode() ^ publicExponent.GetHashCode();
 	}
 }

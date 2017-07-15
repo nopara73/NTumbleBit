@@ -23,13 +23,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
         *
         * @return the name of the algorithm the cipher implements.
         */
-		public string PaddingName
-		{
-			get
-			{
-				return "PKCS7";
-			}
-		}
+		public string PaddingName => "PKCS7";
 
 		/**
         * add the pad bytes to the passed in block, returning the
@@ -39,9 +33,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 			byte[] input,
 			int inOff)
 		{
-			byte code = (byte)(input.Length - inOff);
+			var code = (byte)(input.Length - inOff);
 
-			while(inOff < input.Length)
+			while (inOff < input.Length)
 			{
 				input[inOff] = code;
 				inOff++;
@@ -56,7 +50,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Paddings
 		public int PadCount(
 			byte[] input)
 		{
-			byte countAsByte = input[input.Length - 1];
+			var countAsByte = input[input.Length - 1];
 			int count = countAsByte;
 
 			if(count < 1 || count > input.Length)

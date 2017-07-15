@@ -30,28 +30,16 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			this.exponent = exponent;
 		}
 
-		public BigInteger Modulus
-		{
-			get
-			{
-				return modulus;
-			}
-		}
+		public BigInteger Modulus => modulus;
 
-		public BigInteger Exponent
-		{
-			get
-			{
-				return exponent;
-			}
-		}
+		public BigInteger Exponent => exponent;
 
 		public override bool Equals(
 			object obj)
 		{
-			RsaKeyParameters kp = obj as RsaKeyParameters;
+			var kp = obj as RsaKeyParameters;
 
-			if(kp == null)
+			if (kp == null)
 			{
 				return false;
 			}
@@ -61,9 +49,6 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 				&& kp.Exponent.Equals(exponent);
 		}
 
-		public override int GetHashCode()
-		{
-			return modulus.GetHashCode() ^ exponent.GetHashCode() ^ IsPrivate.GetHashCode();
-		}
+		public override int GetHashCode() => modulus.GetHashCode() ^ exponent.GetHashCode() ^ IsPrivate.GetHashCode();
 	}
 }

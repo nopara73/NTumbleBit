@@ -13,10 +13,13 @@ namespace NTumbleBit.Services
 		{
 			var info = rpc.SendCommand(RPCOperations.getinfo);
 			var minimumRate = new NBitcoin.FeeRate(NBitcoin.Money.Coins((decimal)(double)((Newtonsoft.Json.Linq.JValue)(info.Result["relayfee"])).Value * 2), 1000);
-			
-			ExternalServices service = new ExternalServices();
-			service.FeeService = new RPCFeeService(rpc) {
-				MinimumFeeRate = minimumRate
+
+			var service = new ExternalServices
+			{
+				FeeService = new RPCFeeService(rpc)
+				{
+					MinimumFeeRate = minimumRate
+				}
 			};
 
 			// on regtest the estimatefee always fails

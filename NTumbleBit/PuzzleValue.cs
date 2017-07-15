@@ -22,20 +22,15 @@ namespace NTumbleBit
 		}
 		internal PuzzleValue(BigInteger z)
 		{
-			if(z == null)
-				throw new ArgumentNullException(nameof(z));
-			_Value = z;
+			_Value = z ?? throw new ArgumentNullException(nameof(z));
 		}
 
-		public byte[] ToBytes()
-		{
-			return _Value.ToByteArrayUnsigned();
-		}
+		public byte[] ToBytes() => _Value.ToByteArrayUnsigned();
 
 		public override bool Equals(object obj)
 		{
-			PuzzleValue item = obj as PuzzleValue;
-			if(item == null)
+			var item = obj as PuzzleValue;
+			if (item == null)
 				return false;
 			return _Value.Equals(item._Value);
 		}
@@ -55,24 +50,12 @@ namespace NTumbleBit
 			return key.SolvePuzzle(this);
 		}
 
-		public static bool operator !=(PuzzleValue a, PuzzleValue b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(PuzzleValue a, PuzzleValue b) => !(a == b);
 
-		public override int GetHashCode()
-		{
-			return _Value.GetHashCode();
-		}
+		public override int GetHashCode() => _Value.GetHashCode();
 
-		public override string ToString()
-		{
-			return Encoders.Hex.EncodeData(ToBytes());
-		}
+		public override string ToString() => Encoders.Hex.EncodeData(ToBytes());
 
-		public Puzzle WithRsaKey(RsaPubKey key)
-		{
-			return new Puzzle(key, this);
-		}
+		public Puzzle WithRsaKey(RsaPubKey key) => new Puzzle(key, this);
 	}
 }

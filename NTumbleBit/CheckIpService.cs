@@ -30,7 +30,7 @@ namespace NTumbleBit
 				{
 					while(true)
 					{
-						var ip = GetExternalIp(runtime.CreateTumblerClient(0, Identity.Alice), "https://myexternalip.com/raw").Result;
+						var ip = GetExternalIpAsync(runtime.CreateTumblerClient(0, Identity.Alice), "https://myexternalip.com/raw").Result;
 						var ipLife = (DateTimeOffset.UtcNow - lastChangeAddress);
 
 						if(lastIp == null)
@@ -55,7 +55,7 @@ namespace NTumbleBit
 			}).Start();
 		}
 
-		internal static async Task<IPAddress> GetExternalIp(TumblerClient client, string url)
+		internal static async Task<IPAddress> GetExternalIpAsync(TumblerClient client, string url)
 		{
 			var result = await client.Client.GetAsync(url).ConfigureAwait(false);
 			var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);

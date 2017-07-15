@@ -25,20 +25,10 @@ namespace NTumbleBit.BouncyCastle.Utilities
             return Encoding.UTF8.GetString(bs, 0, bs.Length);
         }
 #else
-		private static string GetNewLine()
-		{
-			return Environment.NewLine;
-		}
+		private static string GetNewLine() => Environment.NewLine;
 #endif
 
-		internal static bool EqualsIgnoreCase(string a, string b)
-		{
-#if PORTABLE
-            return String.Equals(a, b, StringComparison.OrdinalIgnoreCase);
-#else
-			return ToUpperInvariant(a) == ToUpperInvariant(b);
-#endif
-		}
+		internal static bool EqualsIgnoreCase(string a, string b) => ToUpperInvariant(a) == ToUpperInvariant(b);
 
 #if NETCF_1_0 || NETCF_2_0 || SILVERLIGHT || PORTABLE
 		internal static string GetEnvironmentVariable(
@@ -47,7 +37,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			return null;
 		}
 #else
-        internal static string GetEnvironmentVariable(
+		internal static string GetEnvironmentVariable(
             string variable)
         {
             try
@@ -78,10 +68,7 @@ namespace NTumbleBit.BouncyCastle.Utilities
         }
 #else
 		internal static Exception CreateNotImplementedException(
-			string message)
-		{
-			return new NotImplementedException(message);
-		}
+			string message) => new NotImplementedException(message);
 #endif
 
 #if SILVERLIGHT || PORTABLE
@@ -129,77 +116,51 @@ namespace NTumbleBit.BouncyCastle.Utilities
 			return result;
 		}
 #else
-        internal static IList CreateArrayList()
+		internal static IList CreateArrayList()
         {
             return new ArrayList();
         }
-        internal static IList CreateArrayList(int capacity)
-        {
-            return new ArrayList(capacity);
-        }
-        internal static IList CreateArrayList(ICollection collection)
+		internal static IList CreateArrayList(int capacity) => new ArrayList(capacity);
+
+		internal static IList CreateArrayList(ICollection collection)
         {
             return new ArrayList(collection);
         }
         internal static IList CreateArrayList(IEnumerable collection)
         {
-            ArrayList result = new ArrayList();
-            foreach (object o in collection)
+            var result = new ArrayList();
+			foreach (object o in collection)
             {
                 result.Add(o);
             }
             return result;
         }
-        internal static IDictionary CreateHashtable()
-        {
-            return new Hashtable();
-        }
-        internal static IDictionary CreateHashtable(int capacity)
+		internal static IDictionary CreateHashtable() => new Hashtable();
+
+		internal static IDictionary CreateHashtable(int capacity)
         {
             return new Hashtable(capacity);
         }
-        internal static IDictionary CreateHashtable(IDictionary dictionary)
-        {
-            return new Hashtable(dictionary);
-        }
+		internal static IDictionary CreateHashtable(IDictionary dictionary) => new Hashtable(dictionary);
 #endif
 
-		internal static string ToLowerInvariant(string s)
-		{
-			return s.ToLowerInvariant();
-		}
-		internal static string ToUpperInvariant(string s)
-		{
-			return s.ToUpperInvariant();
-		}
+		internal static string ToLowerInvariant(string s) => s.ToLowerInvariant();
+
+		internal static string ToUpperInvariant(string s) => s.ToUpperInvariant();
+
 		internal static readonly string NewLine = GetNewLine();
 		internal static void Dispose(IDisposable d)
         {
             d.Dispose();
         }
-		internal static int IndexOf(string source, string value)
-		{
-			return InvariantCompareInfo.IndexOf(source, value, CompareOptions.Ordinal);
-		}
+		internal static int IndexOf(string source, string value) => InvariantCompareInfo.IndexOf(source, value, CompareOptions.Ordinal);
 
-		internal static int LastIndexOf(string source, string value)
-		{
-			return InvariantCompareInfo.LastIndexOf(source, value, CompareOptions.Ordinal);
-		}
+		internal static int LastIndexOf(string source, string value) => InvariantCompareInfo.LastIndexOf(source, value, CompareOptions.Ordinal);
 
-		internal static bool StartsWith(string source, string prefix)
-		{
-			return InvariantCompareInfo.IsPrefix(source, prefix, CompareOptions.Ordinal);
-		}
+		internal static bool StartsWith(string source, string prefix) => InvariantCompareInfo.IsPrefix(source, prefix, CompareOptions.Ordinal);
 
-		internal static bool EndsWith(string source, string suffix)
-		{
-			return InvariantCompareInfo.IsSuffix(source, suffix, CompareOptions.Ordinal);
-		}
+		internal static bool EndsWith(string source, string suffix) => InvariantCompareInfo.IsSuffix(source, suffix, CompareOptions.Ordinal);
 
-		internal static string GetTypeName(object obj)
-		{
-			return obj.GetType().FullName;
-		}
+		internal static string GetTypeName(object obj) => obj.GetType().FullName;
 	}
 }

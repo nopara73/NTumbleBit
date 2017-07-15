@@ -41,10 +41,7 @@ namespace NTumbleBit.Tor
 			get; set;
 		}
 
-		private static string BuildMessage(string message, string result)
-		{
-			return message + ":" + Environment.NewLine + result;
-		}
+		private static string BuildMessage(string message, string result) => message + ":" + Environment.NewLine + result;
 	}
 
 	public class TorClient : IDisposable
@@ -76,11 +73,11 @@ namespace NTumbleBit.Tor
 		}
 
 		const string KeyType = "NEW:RSA1024";
-		public async Task<RegisterHiddenServiceResponse> RegisterHiddenServiceAsync(IPEndPoint endpoint, int virtualPort, string privateKey = null, CancellationToken cts = default(CancellationToken))
+		public async Task<RegisterHiddenServiceResponse> RegisterHiddenServiceAsync(IPEndPoint endpoint, int virtualPort, string privateKey = null)
 		{
 			privateKey = privateKey ?? KeyType;
 			var command = $"ADD_ONION {privateKey} Port={virtualPort},{endpoint.Address}:{endpoint.Port}";
-			var result = await SendCommandAsync(command, cts).ConfigureAwait(false);
+			var result = await SendCommandAsync(command).ConfigureAwait(false);
 
 			var resp = new RegisterHiddenServiceResponse();
 			var serviceIdMatch = System.Text.RegularExpressions.Regex.Match(result, "250-ServiceID=([^\r]*)");
@@ -93,14 +90,14 @@ namespace NTumbleBit.Tor
 			if((resp.PrivateKey == null && privateKey == KeyType) ||
 				resp.ServiceID == null)
 				throw new TorException("Unexpected response when registering hidden service", result);
-			resp.HiddenServiceUri = new UriBuilder() { Scheme = "http", Host = resp.ServiceID + ".onion", Port = virtualPort }.Uri;
+			resp.HiddenServiceUri = new UriBuilder { Scheme = "http", Host = resp.ServiceID + ".onion", Port = virtualPort }.Uri;
 			return resp;
 		}
 
-		public async Task<bool> AuthenticateAsync(CancellationToken ctsToken = default(CancellationToken))
+		public async Task<bool> AuthenticateAsync()
 		{
-			string authString = "\"\"";
-			if(_authenticationToken != null)
+			var authString = "\"\"";
+			if (_authenticationToken != null)
 			{
 				authString = Util.ByteArrayToString(_authenticationToken);
 			}
@@ -108,13 +105,13 @@ namespace NTumbleBit.Tor
 			{
 				authString = Util.ByteArrayToString(File.ReadAllBytes(_cookieFilePath));
 			}
-			var result = await SendCommandAsync($"AUTHENTICATE {authString}", ctsToken).ConfigureAwait(false);
+			var result = await SendCommandAsync($"AUTHENTICATE {authString}").ConfigureAwait(false);
 			return result.StartsWith("250 OK", StringComparison.Ordinal);
 		}
 
-		public async Task<IPEndPoint[]> GetSocksListenersAsync(CancellationToken ctsToken = default(CancellationToken))
+		public async Task<IPEndPoint[]> GetSocksListenersAsync()
 		{
-			var result = await SendCommandAsync("GETINFO net/listeners/socks", ctsToken).ConfigureAwait(false);
+			var result = await SendCommandAsync("GETINFO net/listeners/socks").ConfigureAwait(false);
 			return Regex
 				.Matches(result, @"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})")
 				.OfType<Match>()
@@ -122,7 +119,7 @@ namespace NTumbleBit.Tor
 				.ToArray();
 		}
 
-		public async Task<string> SendCommandAsync(string command, CancellationToken ctsToken = default(CancellationToken))
+		public async Task<string> SendCommandAsync(string command)
 		{
 			command = command.Trim();
 			if(!command.EndsWith("\r\n", StringComparison.Ordinal))
@@ -164,7 +161,7 @@ namespace NTumbleBit.Tor
 	{
 		internal static string ByteArrayToString(byte[] ba)
 		{
-			string hex = BitConverter.ToString(ba);
+			var hex = BitConverter.ToString(ba);
 			return hex.Replace("-", "");
 		}
 	}

@@ -27,17 +27,14 @@ namespace NTumbleBit.PuzzlePromise
 
 		private XORKey(BigInteger value)
 		{
-			if(value == null)
-				throw new ArgumentNullException(nameof(value));
-
-			_Value = value;
+			_Value = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
 		private BigInteger _Value;
 
 		public byte[] XOR(byte[] data)
 		{
-			byte[] keyBytes = ToBytes();
+			var keyBytes = ToBytes();
 			var keyHash = PromiseUtils.SHA512(keyBytes, 0, keyBytes.Length);
 			var encrypted = new byte[data.Length];
 			for(int i = 0; i < encrypted.Length; i++)
@@ -52,7 +49,7 @@ namespace NTumbleBit.PuzzlePromise
 		private const int KeySize = 256;
 		public byte[] ToBytes()
 		{
-			byte[] keyBytes = _Value.ToByteArrayUnsigned();
+			var keyBytes = _Value.ToByteArrayUnsigned();
 			Utils.Pad(ref keyBytes, KeySize);
 			return keyBytes;
 		}

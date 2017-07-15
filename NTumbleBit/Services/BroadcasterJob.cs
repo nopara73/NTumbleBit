@@ -36,12 +36,12 @@ namespace NTumbleBit.Services
 			private set;
 		}
 
-		public override string Name => "broadcaster";		
+		public override string Name => "broadcaster";
 
 		public Transaction[] TryBroadcast()
 		{
 			uint256[] knownBroadcasted = null;
-			List<Transaction> broadcasted = new List<Transaction>();
+			var broadcasted = new List<Transaction>();
 			try
 			{
 				broadcasted.AddRange(BroadcasterService.TryBroadcast(ref knownBroadcasted));
@@ -73,8 +73,8 @@ namespace NTumbleBit.Services
 					Exception unhandled = null;
 					try
 					{
-						uint256 lastBlock = uint256.Zero;
-						while(true)
+						var lastBlock = uint256.Zero;
+						while (true)
 						{
 							lastBlock = BlockExplorerService.WaitBlock(lastBlock, cancellationToken);
 							TryBroadcast();

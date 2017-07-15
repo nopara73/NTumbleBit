@@ -34,27 +34,18 @@ namespace NTumbleBit.BouncyCastle.Crypto.Macs
 			outputBuf = new byte[blockLength + digestSize];
 		}
 
-		public virtual string AlgorithmName
-		{
-			get
-			{
-				return digest.AlgorithmName + "/HMAC";
-			}
-		}
+		public virtual string AlgorithmName => digest.AlgorithmName + "/HMAC";
 
-		public virtual IDigest GetUnderlyingDigest()
-		{
-			return digest;
-		}
+		public virtual IDigest GetUnderlyingDigest() => digest;
 
 		public virtual void Init(ICipherParameters parameters)
 		{
 			digest.Reset();
 
-			byte[] key = ((KeyParameter)parameters).GetKey();
-			int keyLength = key.Length;
+			var key = ((KeyParameter)parameters).GetKey();
+			var keyLength = key.Length;
 
-			if(keyLength > blockLength)
+			if (keyLength > blockLength)
 			{
 				digest.BlockUpdate(key, 0, keyLength);
 				digest.DoFinal(inputPad, 0);
@@ -87,10 +78,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Macs
 			}
 		}
 
-		public virtual int GetMacSize()
-		{
-			return digestSize;
-		}
+		public virtual int GetMacSize() => digestSize;
 
 		public virtual void Update(byte input)
 		{
@@ -116,7 +104,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Macs
 				digest.BlockUpdate(outputBuf, 0, outputBuf.Length);
 			}
 
-			int len = digest.DoFinal(output, outOff);
+			var len = digest.DoFinal(output, outOff);
 
 			Array.Clear(outputBuf, blockLength, digestSize);
 

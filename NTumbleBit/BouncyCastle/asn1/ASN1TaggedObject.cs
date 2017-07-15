@@ -57,7 +57,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 		protected override bool Asn1Equals(
 			Asn1Object asn1Object)
 		{
-			Asn1TaggedObject other = asn1Object as Asn1TaggedObject;
+			var other = asn1Object as Asn1TaggedObject;
 
 			if(other == null)
 				return false;
@@ -70,7 +70,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 
 		protected override int Asn1GetHashCode()
 		{
-			int code = tagNo.GetHashCode();
+			var code = tagNo.GetHashCode();
 
 			// TODO: actually this is wrong - the problem is that a re-encoded
 			// object may end up with a different hashCode due to implicit
@@ -79,7 +79,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			// compare the encodings...
 			//			code ^= explicitly.GetHashCode();
 
-			if(obj != null)
+			if (obj != null)
 			{
 				code ^= obj.GetHashCode();
 			}
@@ -87,13 +87,7 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			return code;
 		}
 
-		public int TagNo
-		{
-			get
-			{
-				return tagNo;
-			}
-		}
+		public int TagNo => tagNo;
 
 		/**
          * return whether or not the object may be explicitly tagged.
@@ -104,15 +98,9 @@ namespace NTumbleBit.BouncyCastle.Asn1
          * to be explicitly tagged, so you need to understand the context under
          * which the reading was done as well, see GetObject below.</p>
          */
-		public bool IsExplicit()
-		{
-			return explicitly;
-		}
+		public bool IsExplicit() => explicitly;
 
-		public bool IsEmpty()
-		{
-			return false; //empty;
-		}
+		public static bool IsEmpty() => false;
 
 		/**
          * return whatever was following the tag.
@@ -131,9 +119,6 @@ namespace NTumbleBit.BouncyCastle.Asn1
 			return null;
 		}
 
-		public override string ToString()
-		{
-			return "[" + tagNo + "]" + obj;
-		}
+		public override string ToString() => "[" + tagNo + "]" + obj;
 	}
 }

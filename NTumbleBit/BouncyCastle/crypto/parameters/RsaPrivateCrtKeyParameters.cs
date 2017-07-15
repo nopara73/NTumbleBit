@@ -36,53 +36,17 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			this.qInv = qInv;
 		}
 
-		public BigInteger PublicExponent
-		{
-			get
-			{
-				return e;
-			}
-		}
+		public BigInteger PublicExponent => e;
 
-		public BigInteger P
-		{
-			get
-			{
-				return p;
-			}
-		}
+		public BigInteger P => p;
 
-		public BigInteger Q
-		{
-			get
-			{
-				return q;
-			}
-		}
+		public BigInteger Q => q;
 
-		public BigInteger DP
-		{
-			get
-			{
-				return dP;
-			}
-		}
+		public BigInteger DP => dP;
 
-		public BigInteger DQ
-		{
-			get
-			{
-				return dQ;
-			}
-		}
+		public BigInteger DQ => dQ;
 
-		public BigInteger QInv
-		{
-			get
-			{
-				return qInv;
-			}
-		}
+		public BigInteger QInv => qInv;
 
 		public override bool Equals(
 			object obj)
@@ -90,9 +54,9 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 			if(obj == this)
 				return true;
 
-			RsaPrivateCrtKeyParameters kp = obj as RsaPrivateCrtKeyParameters;
+			var kp = obj as RsaPrivateCrtKeyParameters;
 
-			if(kp == null)
+			if (kp == null)
 				return false;
 
 			return kp.DP.Equals(dP)
@@ -105,11 +69,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 				&& kp.QInv.Equals(qInv);
 		}
 
-		public override int GetHashCode()
-		{
-			return DP.GetHashCode() ^ DQ.GetHashCode() ^ Exponent.GetHashCode() ^ Modulus.GetHashCode()
+		public override int GetHashCode() => DP.GetHashCode() ^ DQ.GetHashCode() ^ Exponent.GetHashCode() ^ Modulus.GetHashCode()
 				^ P.GetHashCode() ^ Q.GetHashCode() ^ PublicExponent.GetHashCode() ^ QInv.GetHashCode();
-		}
 
 		private static void ValidateValue(BigInteger x, string name, string desc)
 		{

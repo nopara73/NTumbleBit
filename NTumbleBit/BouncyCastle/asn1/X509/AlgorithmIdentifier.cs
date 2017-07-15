@@ -30,21 +30,9 @@ namespace NTumbleBit.BouncyCastle.Asn1.X509
 			parametersDefined = true;
 		}
 
-		public virtual DerObjectIdentifier ObjectID
-		{
-			get
-			{
-				return objectID;
-			}
-		}
+		public virtual DerObjectIdentifier ObjectID => objectID;
 
-		public Asn1Encodable Parameters
-		{
-			get
-			{
-				return parameters;
-			}
-		}
+		public Asn1Encodable Parameters => parameters;
 
 		/**
          * Produce an object suitable for an Asn1OutputStream.
@@ -56,9 +44,9 @@ namespace NTumbleBit.BouncyCastle.Asn1.X509
          */
 		public override Asn1Object ToAsn1Object()
 		{
-			Asn1EncodableVector v = new Asn1EncodableVector(objectID);
+			var v = new Asn1EncodableVector(objectID);
 
-			if(parametersDefined)
+			if (parametersDefined)
 			{
 				if(parameters != null)
 				{

@@ -15,9 +15,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 		public StateMachinesExecutor(
 			TumblerClientRuntime runtime)
 		{
-			if(runtime == null)
-				throw new ArgumentNullException("runtime");
-			Runtime = runtime;
+			Runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 		}
 
 
@@ -33,9 +31,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 			new Thread(() =>
 			{
 				Logs.Client.LogInformation("State machines started");
-				uint256 lastBlock = uint256.Zero;
-				int lastCycle = 0;
-				while(true)
+				var lastBlock = uint256.Zero;
+				var lastCycle = 0;
+				while (true)
 				{
 					Exception unhandled = null;
 					try
@@ -112,10 +110,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}).Start();
 		}
 
-		private string GetPartitionKey(int cycle)
-		{
-			return "Cycle_" + cycle;
-		}
+		private static string GetPartitionKey(int cycle) => "Cycle_" + cycle;
+
 		private void Save(PaymentStateMachine stateMachine, int cycle)
 		{
 			Runtime.Repository.UpdateOrInsert(GetPartitionKey(cycle), "", stateMachine.GetInternalState(), (o, n) => n);

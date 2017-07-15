@@ -32,7 +32,7 @@ namespace NTumbleBit.Services
 				var engine = GetEngine(partitionKey);
 				using(var tx = engine.GetTransaction())
 				{
-					T newValue = data;
+					var newValue = data;
 					var existingRow = tx.Select<string, byte[]>(GetTableName<T>(), rowKey);
 					if(existingRow != null && existingRow.Exists)
 					{
@@ -46,24 +46,24 @@ namespace NTumbleBit.Services
 			}
 		}
 
-		private byte[] Zip(string unzipped)
+		private static byte[] Zip(string unzipped)
 		{
-			MemoryStream ms = new MemoryStream();
-			using(GZipStream gzip = new GZipStream(ms, CompressionMode.Compress))
+			var ms = new MemoryStream();
+			using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress))
+			using (var writer = new StreamWriter(gzip, Encoding.UTF8))
 			{
-				StreamWriter writer = new StreamWriter(gzip, Encoding.UTF8);
 				writer.Write(unzipped);
 				writer.Flush();
+				return ms.ToArray();
 			}
-			return ms.ToArray();
 		}
 
-		private string Unzip(byte[] bytes)
+		private static string Unzip(byte[] bytes)
 		{
-			MemoryStream ms = new MemoryStream(bytes);
-			using(GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
+			var ms = new MemoryStream(bytes);
+			using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
+			using (var reader = new StreamReader(gzip, Encoding.UTF8))
 			{
-				StreamReader reader = new StreamReader(gzip, Encoding.UTF8);
 				var unzipped = reader.ReadToEnd();
 				return unzipped;
 			}
@@ -73,13 +73,12 @@ namespace NTumbleBit.Services
 		{
 			if(!Directory.Exists(_Folder))
 				Directory.CreateDirectory(_Folder);
-			string partitionPath = GetPartitionPath(partitionKey);
-			if(!Directory.Exists(partitionPath))
+			var partitionPath = GetPartitionPath(partitionKey);
+			if (!Directory.Exists(partitionPath))
 				Directory.CreateDirectory(partitionPath);
-			DBreezeEngineReference engine;
-			if(!_EnginesByParitionKey.TryGetValue(partitionKey, out engine))
+			if (!_EnginesByParitionKey.TryGetValue(partitionKey, out DBreezeEngineReference engine))
 			{
-				engine = new DBreezeEngineReference() { PartitionKey = partitionKey, Engine = new DBreezeEngine(partitionPath) };
+				engine = new DBreezeEngineReference { PartitionKey = partitionKey, Engine = new DBreezeEngine(partitionPath) };
 				_EnginesByParitionKey.Add(partitionKey, engine);
 				_EngineReferences.Enqueue(engine);
 			}
@@ -135,15 +134,9 @@ namespace NTumbleBit.Services
 				get; set;
 			}
 		}
-		private string GetPartitionPath(string partitionKey)
-		{
-			return Path.Combine(_Folder, GetDirectory(partitionKey));
-		}
+		private string GetPartitionPath(string partitionKey) => Path.Combine(_Folder, GetDirectory(partitionKey));
 
-		private string GetDirectory(string partitionKey)
-		{
-			return partitionKey;
-		}
+		private static string GetDirectory(string partitionKey) => partitionKey;
 
 		public void Delete(string partitionKey)
 		{
@@ -163,7 +156,7 @@ namespace NTumbleBit.Services
 		{
 			lock(_EnginesByParitionKey)
 			{
-				List<T> result = new List<T>();
+				var result = new List<T>();
 				var engine = GetEngine(partitionKey);
 				using(var tx = engine.GetTransaction())
 				{
@@ -176,10 +169,7 @@ namespace NTumbleBit.Services
 			}
 		}
 
-		private string GetTableName<T>()
-		{
-			return typeof(T).FullName;
-		}
+		private static string GetTableName<T>() => typeof(T).FullName;
 
 		public T Get<T>(string partitionKey, string rowKey)
 		{
@@ -193,7 +183,7 @@ namespace NTumbleBit.Services
 			}
 		}
 
-		private T Get<T>(string rowKey, DBreeze.Transactions.Transaction tx)
+		private static T Get<T>(string rowKey, DBreeze.Transactions.Transaction tx)
 		{
 			var row = tx.Select<string, byte[]>(GetTableName<T>(), rowKey);
 			if(row == null || !row.Exists)
@@ -209,7 +199,7 @@ namespace NTumbleBit.Services
 		{
 			lock(_EnginesByParitionKey)
 			{
-				bool removed = false;
+				var removed = false;
 				var engine = GetEngine(partitionKey);
 				using(var tx = engine.GetTransaction())
 				{

@@ -46,37 +46,28 @@ namespace NTumbleBit.ClassicTumbler
 	public class StandardCycles
 	{
 		bool _Debug;
-		public bool Debug
-		{
-			get
-			{
-				return _Debug;
-			}
-		}
+		public bool Debug => _Debug;
 
 		public StandardCycles(Network network):this(network.Consensus, IsDebug(network))
 		{
 
 		}
 
-		private static bool IsDebug(Network network)
-		{
-			return network == Network.TestNet || network == Network.RegTest;
-		}
+		private static bool IsDebug(Network network) => network == Network.TestNet || network == Network.RegTest;
 
 		public StandardCycles(Consensus consensus, bool debug)
 		{
 			_Debug = debug;
 
-			_Shorty = new StandardCycle()
+			_Shorty = new StandardCycle
 			{
 				FriendlyName = "Shorty",
 				Consensus = consensus,
 				Denomination = Money.Coins(1.0m),
-				Generator = new OverlappedCycleGenerator()
+				Generator = new OverlappedCycleGenerator
 				{
 					RegistrationOverlap = 1,
-					FirstCycle = new CycleParameters()
+					FirstCycle = new CycleParameters
 					{
 						Start = 1,
 						//one cycle per day
@@ -92,15 +83,15 @@ namespace NTumbleBit.ClassicTumbler
 				}
 			};
 
-			_Kotori = new StandardCycle()
+			_Kotori = new StandardCycle
 			{
 				FriendlyName = "Kotori",
 				Consensus = consensus,
 				Denomination = Money.Coins(1.0m),
-				Generator = new OverlappedCycleGenerator()
+				Generator = new OverlappedCycleGenerator
 				{
 					RegistrationOverlap = 1,
-					FirstCycle = new CycleParameters()
+					FirstCycle = new CycleParameters
 					{
 						Start = 0,
 						//one cycle per day
@@ -119,23 +110,23 @@ namespace NTumbleBit.ClassicTumbler
 
 			if(!_Debug)
 			{
-				
+
 				//Verify that 2 phases are always at least separated by 20 minutes
 				foreach(var standard in ToEnumerable())
 				{
-					HashSet<uint256> states = new HashSet<uint256>();
+					var states = new HashSet<uint256>();
 
 					var start = standard.Generator.FirstCycle.Start;
 					var periods = standard.Generator.FirstCycle.GetPeriods();
 					var nonOverlappedPart = periods.Registration.End - periods.Registration.Start - standard.Generator.RegistrationOverlap;
 					var total = periods.Total.End - periods.Total.Start;
-					
+
 
 					var maxOverlapped = Math.Ceiling((decimal)total / (decimal)nonOverlappedPart);
 
 					for(int i = start;; i += nonOverlappedPart)
 					{
-						var starts = 
+						var starts =
 							standard.Generator.GetCycles(i)
 							.SelectMany(c =>
 							{
@@ -160,8 +151,8 @@ namespace NTumbleBit.ClassicTumbler
 						{
 							starts[ii] = starts[ii] % total;
 						}
-						MemoryStream ms = new MemoryStream();
-						BitcoinStream bs = new BitcoinStream(ms, true);
+						var ms = new MemoryStream();
+						var bs = new BitcoinStream(ms, true);
 						bs.ReadWrite(ref starts);
 						if(!states.Add(Hashes.Hash256(ms.ToArray())))
 							break;
@@ -170,32 +161,15 @@ namespace NTumbleBit.ClassicTumbler
 			}
 		}
 
-		internal static int GetBlocksCount(Consensus consensus, int minutes)
-		{
-			return (int)Math.Ceiling((double)TimeSpan.FromMinutes(minutes).Ticks / consensus.PowTargetSpacing.Ticks);
-		}
-		internal static TimeSpan GetEstimatedTime(Consensus consensus, int blocks)
-		{
-			return TimeSpan.FromTicks(consensus.PowTargetSpacing.Ticks * blocks);
-		}
+		internal static int GetBlocksCount(Consensus consensus, int minutes) => (int)Math.Ceiling((double)TimeSpan.FromMinutes(minutes).Ticks / consensus.PowTargetSpacing.Ticks);
+
+		internal static TimeSpan GetEstimatedTime(Consensus consensus, int blocks) => TimeSpan.FromTicks(consensus.PowTargetSpacing.Ticks * blocks);
 
 		StandardCycle _Kotori;
-		public StandardCycle Kotori
-		{
-			get
-			{
-				return _Kotori;
-			}
-		}
+		public StandardCycle Kotori => _Kotori;
 
 		StandardCycle _Shorty;
-		public StandardCycle Shorty
-		{
-			get
-			{
-				return _Shorty;
-			}
-		}
+		public StandardCycle Shorty => _Shorty;
 
 		public IEnumerable<StandardCycle> ToEnumerable()
 		{
@@ -204,14 +178,8 @@ namespace NTumbleBit.ClassicTumbler
 				yield return _Shorty;
 		}
 
-		public StandardCycle GetStandardCycle(ClassicTumblerParameters tumblerParameters)
-		{
-			return ToEnumerable().FirstOrDefault(c => c.Generator.GetHash() == tumblerParameters.CycleGenerator.GetHash() && c.Denomination == tumblerParameters.Denomination);
-		}
+		public StandardCycle GetStandardCycle(ClassicTumblerParameters tumblerParameters) => ToEnumerable().FirstOrDefault(c => c.Generator.GetHash() == tumblerParameters.CycleGenerator.GetHash() && c.Denomination == tumblerParameters.Denomination);
 
-		public StandardCycle GetStandardCycle(string name)
-		{
-			return ToEnumerable().FirstOrDefault(c => c.FriendlyName.Equals(name, StringComparison.OrdinalIgnoreCase));
-		}
+		public StandardCycle GetStandardCycle(string name) => ToEnumerable().FirstOrDefault(c => c.FriendlyName.Equals(name, StringComparison.OrdinalIgnoreCase));
 	}
 }

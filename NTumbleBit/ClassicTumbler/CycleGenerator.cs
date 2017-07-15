@@ -13,7 +13,7 @@ namespace NTumbleBit.ClassicTumbler
 		{
 			FirstCycle = new CycleParameters();
 			RegistrationOverlap = 1;
-		}		
+		}
 
 
 		int _RegistrationOverlap;
@@ -77,10 +77,7 @@ namespace NTumbleBit.ClassicTumbler
 			return GetCycle(cycle.Start - registrationLength);
 		}
 
-		internal uint256 GetHash()
-		{
-			return Hashes.Hash256(this.ToBytes());
-		}
+		internal uint256 GetHash() => Hashes.Hash256(this.ToBytes());
 
 		public CycleParameters GetNextCycle(CycleParameters cycle)
 		{
@@ -90,7 +87,7 @@ namespace NTumbleBit.ClassicTumbler
 
 		public CycleParameters[] GetCycles(int height)
 		{
-			List<CycleParameters> cycles = new List<CycleParameters>();
+			var cycles = new List<CycleParameters>();
 			var cycle = GetRegistratingCycle(height);
 			while(cycle.IsInside(height))
 			{

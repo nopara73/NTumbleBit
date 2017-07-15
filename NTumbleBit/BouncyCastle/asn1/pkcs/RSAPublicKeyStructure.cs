@@ -57,21 +57,9 @@ namespace NTumbleBit.BouncyCastle.Asn1.X509
 			publicExponent = DerInteger.GetInstance(seq[1]).PositiveValue;
 		}
 
-		public BigInteger Modulus
-		{
-			get
-			{
-				return modulus;
-			}
-		}
+		public BigInteger Modulus => modulus;
 
-		public BigInteger PublicExponent
-		{
-			get
-			{
-				return publicExponent;
-			}
-		}
+		public BigInteger PublicExponent => publicExponent;
 
 		/**
          * This outputs the key in Pkcs1v2 format.
@@ -82,11 +70,8 @@ namespace NTumbleBit.BouncyCastle.Asn1.X509
          *                      }
          * </pre>
          */
-		public override Asn1Object ToAsn1Object()
-		{
-			return new DerSequence(
+		public override Asn1Object ToAsn1Object() => new DerSequence(
 				new DerInteger(Modulus),
 				new DerInteger(PublicExponent));
-		}
 	}
 }

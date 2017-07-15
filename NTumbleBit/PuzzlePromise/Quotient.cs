@@ -19,9 +19,7 @@ namespace NTumbleBit.PuzzlePromise
 
 		internal Quotient(BigInteger quotient)
 		{
-			if(quotient == null)
-				throw new ArgumentNullException(nameof(quotient));
-			_Value = quotient;
+			_Value = quotient ?? throw new ArgumentNullException(nameof(quotient));
 		}
 
 

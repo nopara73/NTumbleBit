@@ -60,10 +60,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 			return length * 2;
 		}
 
-		private static bool Ignore(char c)
-		{
-			return c == '\n' || c == '\r' || c == '\t' || c == ' ';
-		}
+		private static bool Ignore(char c) => c == '\n' || c == '\r' || c == '\t' || c == ' ';
 
 		/**
         * decode the Hex encoded byte data writing it to the given output stream,
@@ -78,10 +75,10 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 			Stream outStream)
 		{
 			byte b1, b2;
-			int outLen = 0;
-			int end = off + length;
+			var outLen = 0;
+			var end = off + length;
 
-			while(end > off)
+			while (end > off)
 			{
 				if(!Ignore((char)data[end - 1]))
 				{
@@ -91,8 +88,8 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 				end--;
 			}
 
-			int i = off;
-			while(i < end)
+			var i = off;
+			while (i < end)
 			{
 				while(i < end && Ignore((char)data[i]))
 				{
@@ -130,11 +127,11 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 			Stream outStream)
 		{
 			byte b1, b2;
-			int length = 0;
+			var length = 0;
 
-			int end = data.Length;
+			var end = data.Length;
 
-			while(end > 0)
+			while (end > 0)
 			{
 				if(!Ignore(data[end - 1]))
 				{
@@ -144,8 +141,8 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 				end--;
 			}
 
-			int i = 0;
-			while(i < end)
+			var i = 0;
+			while (i < end)
 			{
 				while(i < end && Ignore(data[i]))
 				{

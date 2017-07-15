@@ -12,13 +12,8 @@ namespace NTumbleBit
 	{
 
 		private static readonly NBitcoinSecureRandom _Instance = new NBitcoinSecureRandom();
-		public static NBitcoinSecureRandom Instance
-		{
-			get
-			{
-				return _Instance;
-			}
-		}
+		public static NBitcoinSecureRandom Instance => _Instance;
+
 		private NBitcoinSecureRandom()
 		{
 

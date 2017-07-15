@@ -18,10 +18,7 @@ namespace NTumbleBit.Logging
 
 		}
 
-		public ILogger CreateLogger(string categoryName)
-		{
-			return createLogger(categoryName);
-		}
+		public ILogger CreateLogger(string categoryName) => createLogger(categoryName);
 
 		public void Dispose()
 		{

@@ -40,10 +40,7 @@ namespace NTumbleBit.ClassicTumbler
 			get; set;
 		}
 
-		public bool IsInPeriod(int blockHeight)
-		{
-			return Start <= blockHeight && blockHeight < End;
-		}
+		public bool IsInPeriod(int blockHeight) => Start <= blockHeight && blockHeight < End;
 	}
 	public class CyclePeriods
 	{
@@ -78,10 +75,7 @@ namespace NTumbleBit.ClassicTumbler
 			internal set;
 		}
 
-		public bool IsInPhase(CyclePhase phase, int blockHeight)
-		{
-			return GetPeriod(phase).IsInPeriod(blockHeight);
-		}
+		public bool IsInPhase(CyclePhase phase, int blockHeight) => GetPeriod(phase).IsInPeriod(blockHeight);
 
 		public CyclePeriod GetPeriod(CyclePhase phase)
 		{
@@ -104,9 +98,7 @@ namespace NTumbleBit.ClassicTumbler
 			}
 		}
 
-		public IEnumerable<CyclePeriod> ToEnumerable()
-		{
-			return new[] 
+		public IEnumerable<CyclePeriod> ToEnumerable() => new[]
 			{
 				Registration,
 				ClientChannelEstablishment,
@@ -115,11 +107,8 @@ namespace NTumbleBit.ClassicTumbler
 				TumblerCashout,
 				ClientCashout
 			};
-		}
-		public bool IsInside(int blockHeight)
-		{
-			return Total.IsInPeriod(blockHeight);
-		}
+
+		public bool IsInside(int blockHeight) => Total.IsInPeriod(blockHeight);
 	}
 
 
@@ -142,26 +131,28 @@ namespace NTumbleBit.ClassicTumbler
 
 		public CyclePeriods GetPeriods()
 		{
-			int registrationStart = Start;
-			int registrationEnd = registrationStart + RegistrationDuration;
-			int cchannelRegistrationStart = registrationEnd + SafetyPeriodDuration;
-			int cchannelRegistrationEnd = cchannelRegistrationStart + ClientChannelEstablishmentDuration;
-			int tchannelRegistrationStart = cchannelRegistrationEnd + SafetyPeriodDuration;
-			int tchannelRegistrationEnd = tchannelRegistrationStart + TumblerChannelEstablishmentDuration;
-			int tcashoutStart = tchannelRegistrationEnd + SafetyPeriodDuration;
-			int tcashoutEnd = tcashoutStart + TumblerCashoutDuration;
-			int paymentStart = tcashoutStart;
-			int paymentEnd = paymentStart + PaymentPhaseDuration;
-			int ccashoutStart = tcashoutEnd;
-			int ccashoutEnd = ccashoutStart + ClientCashoutDuration;
-			CyclePeriods periods = new CyclePeriods();
-			periods.Registration = new CyclePeriod(registrationStart, registrationEnd);
-			periods.ClientChannelEstablishment = new CyclePeriod(cchannelRegistrationStart, cchannelRegistrationEnd);
-			periods.TumblerChannelEstablishment = new CyclePeriod(tchannelRegistrationStart, tchannelRegistrationEnd);
-			periods.TumblerCashout = new CyclePeriod(tcashoutStart, tcashoutEnd);
-			periods.Payment = new CyclePeriod(paymentStart, paymentEnd);
-			periods.ClientCashout = new CyclePeriod(ccashoutStart, ccashoutEnd);
-			periods.Total = new CyclePeriod(Start, ccashoutEnd + SafetyPeriodDuration);
+			var registrationStart = Start;
+			var registrationEnd = registrationStart + RegistrationDuration;
+			var cchannelRegistrationStart = registrationEnd + SafetyPeriodDuration;
+			var cchannelRegistrationEnd = cchannelRegistrationStart + ClientChannelEstablishmentDuration;
+			var tchannelRegistrationStart = cchannelRegistrationEnd + SafetyPeriodDuration;
+			var tchannelRegistrationEnd = tchannelRegistrationStart + TumblerChannelEstablishmentDuration;
+			var tcashoutStart = tchannelRegistrationEnd + SafetyPeriodDuration;
+			var tcashoutEnd = tcashoutStart + TumblerCashoutDuration;
+			var paymentStart = tcashoutStart;
+			var paymentEnd = paymentStart + PaymentPhaseDuration;
+			var ccashoutStart = tcashoutEnd;
+			var ccashoutEnd = ccashoutStart + ClientCashoutDuration;
+			var periods = new CyclePeriods
+			{
+				Registration = new CyclePeriod(registrationStart, registrationEnd),
+				ClientChannelEstablishment = new CyclePeriod(cchannelRegistrationStart, cchannelRegistrationEnd),
+				TumblerChannelEstablishment = new CyclePeriod(tchannelRegistrationStart, tchannelRegistrationEnd),
+				TumblerCashout = new CyclePeriod(tcashoutStart, tcashoutEnd),
+				Payment = new CyclePeriod(paymentStart, paymentEnd),
+				ClientCashout = new CyclePeriod(ccashoutStart, ccashoutEnd),
+				Total = new CyclePeriod(Start, ccashoutEnd + SafetyPeriodDuration)
+			};
 			return periods;
 		}
 
@@ -195,20 +186,17 @@ namespace NTumbleBit.ClassicTumbler
 			return lockTime;
 		}
 
-		public CycleParameters Clone()
+		public CycleParameters Clone() => new CycleParameters
 		{
-			return new CycleParameters
-			{
-				ClientCashoutDuration = ClientCashoutDuration,
-				SafetyPeriodDuration = SafetyPeriodDuration,
-				Start = Start,
-				ClientChannelEstablishmentDuration = ClientChannelEstablishmentDuration,
-				PaymentPhaseDuration = PaymentPhaseDuration,
-				RegistrationDuration = RegistrationDuration,
-				TumblerCashoutDuration = TumblerCashoutDuration,
-				TumblerChannelEstablishmentDuration = TumblerChannelEstablishmentDuration
-			};
-		}
+			ClientCashoutDuration = ClientCashoutDuration,
+			SafetyPeriodDuration = SafetyPeriodDuration,
+			Start = Start,
+			ClientChannelEstablishmentDuration = ClientChannelEstablishmentDuration,
+			PaymentPhaseDuration = PaymentPhaseDuration,
+			RegistrationDuration = RegistrationDuration,
+			TumblerCashoutDuration = TumblerCashoutDuration,
+			TumblerChannelEstablishmentDuration = TumblerChannelEstablishmentDuration
+		};
 
 		public void ReadWrite(BitcoinStream stream)
 		{
@@ -334,18 +322,16 @@ namespace NTumbleBit.ClassicTumbler
 				_SafetyPeriodDuration = value;
 			}
 		}
-		public override string ToString()
-		{
-			return ToString(-1);
-		}
+		public override string ToString() => ToString(-1);
+
 		public string ToString(int pos)
 		{
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 			builder.Append('{');
 			var periods = GetPeriods();
-			HashSet<CyclePeriod> started = new HashSet<CyclePeriod>();
-			HashSet<CyclePeriod> ended = new HashSet<CyclePeriod>();
-			for(int i = Start; i < Start + periods.Total.End - periods.Total.Start; i++)
+			var started = new HashSet<CyclePeriod>();
+			var ended = new HashSet<CyclePeriod>();
+			for (int i = Start; i < Start + periods.Total.End - periods.Total.Start; i++)
 			{
 				foreach(var period in periods.ToEnumerable())
 				{

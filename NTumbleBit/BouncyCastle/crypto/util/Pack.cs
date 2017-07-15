@@ -20,21 +20,21 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static ushort BE_To_UInt16(byte[] bs)
 		{
-			uint n = (uint)bs[0] << 8
+			var n = (uint)bs[0] << 8
 				| (uint)bs[1];
 			return (ushort)n;
 		}
 
 		internal static ushort BE_To_UInt16(byte[] bs, int off)
 		{
-			uint n = (uint)bs[off] << 8
+			var n = (uint)bs[off] << 8
 				| (uint)bs[off + 1];
 			return (ushort)n;
 		}
 
 		internal static byte[] UInt32_To_BE(uint n)
 		{
-			byte[] bs = new byte[4];
+			var bs = new byte[4];
 			UInt32_To_BE(n, bs, 0);
 			return bs;
 		}
@@ -57,7 +57,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static byte[] UInt32_To_BE(uint[] ns)
 		{
-			byte[] bs = new byte[4 * ns.Length];
+			var bs = new byte[4 * ns.Length];
 			UInt32_To_BE(ns, bs, 0);
 			return bs;
 		}
@@ -71,21 +71,15 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 			}
 		}
 
-		internal static uint BE_To_UInt32(byte[] bs)
-		{
-			return (uint)bs[0] << 24
+		internal static uint BE_To_UInt32(byte[] bs) => (uint)bs[0] << 24
 				| (uint)bs[1] << 16
 				| (uint)bs[2] << 8
 				| (uint)bs[3];
-		}
 
-		internal static uint BE_To_UInt32(byte[] bs, int off)
-		{
-			return (uint)bs[off] << 24
+		internal static uint BE_To_UInt32(byte[] bs, int off) => (uint)bs[off] << 24
 				| (uint)bs[off + 1] << 16
 				| (uint)bs[off + 2] << 8
 				| (uint)bs[off + 3];
-		}
 
 		internal static void BE_To_UInt32(byte[] bs, int off, uint[] ns)
 		{
@@ -98,7 +92,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static byte[] UInt64_To_BE(ulong n)
 		{
-			byte[] bs = new byte[8];
+			var bs = new byte[8];
 			UInt64_To_BE(n, bs, 0);
 			return bs;
 		}
@@ -117,7 +111,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static byte[] UInt64_To_BE(ulong[] ns)
 		{
-			byte[] bs = new byte[8 * ns.Length];
+			var bs = new byte[8 * ns.Length];
 			UInt64_To_BE(ns, bs, 0);
 			return bs;
 		}
@@ -133,15 +127,15 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static ulong BE_To_UInt64(byte[] bs)
 		{
-			uint hi = BE_To_UInt32(bs);
-			uint lo = BE_To_UInt32(bs, 4);
+			var hi = BE_To_UInt32(bs);
+			var lo = BE_To_UInt32(bs, 4);
 			return ((ulong)hi << 32) | (ulong)lo;
 		}
 
 		internal static ulong BE_To_UInt64(byte[] bs, int off)
 		{
-			uint hi = BE_To_UInt32(bs, off);
-			uint lo = BE_To_UInt32(bs, off + 4);
+			var hi = BE_To_UInt32(bs, off);
+			var lo = BE_To_UInt32(bs, off + 4);
 			return ((ulong)hi << 32) | (ulong)lo;
 		}
 
@@ -168,21 +162,21 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static ushort LE_To_UInt16(byte[] bs)
 		{
-			uint n = (uint)bs[0]
+			var n = (uint)bs[0]
 				| (uint)bs[1] << 8;
 			return (ushort)n;
 		}
 
 		internal static ushort LE_To_UInt16(byte[] bs, int off)
 		{
-			uint n = (uint)bs[off]
+			var n = (uint)bs[off]
 				| (uint)bs[off + 1] << 8;
 			return (ushort)n;
 		}
 
 		internal static byte[] UInt32_To_LE(uint n)
 		{
-			byte[] bs = new byte[4];
+			var bs = new byte[4];
 			UInt32_To_LE(n, bs, 0);
 			return bs;
 		}
@@ -205,7 +199,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static byte[] UInt32_To_LE(uint[] ns)
 		{
-			byte[] bs = new byte[4 * ns.Length];
+			var bs = new byte[4 * ns.Length];
 			UInt32_To_LE(ns, bs, 0);
 			return bs;
 		}
@@ -219,21 +213,15 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 			}
 		}
 
-		internal static uint LE_To_UInt32(byte[] bs)
-		{
-			return (uint)bs[0]
+		internal static uint LE_To_UInt32(byte[] bs) => (uint)bs[0]
 				| (uint)bs[1] << 8
 				| (uint)bs[2] << 16
 				| (uint)bs[3] << 24;
-		}
 
-		internal static uint LE_To_UInt32(byte[] bs, int off)
-		{
-			return (uint)bs[off]
+		internal static uint LE_To_UInt32(byte[] bs, int off) => (uint)bs[off]
 				| (uint)bs[off + 1] << 8
 				| (uint)bs[off + 2] << 16
 				| (uint)bs[off + 3] << 24;
-		}
 
 		internal static void LE_To_UInt32(byte[] bs, int off, uint[] ns)
 		{
@@ -255,8 +243,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static uint[] LE_To_UInt32(byte[] bs, int off, int count)
 		{
-			uint[] ns = new uint[count];
-			for(int i = 0; i < ns.Length; ++i)
+			var ns = new uint[count];
+			for (int i = 0; i < ns.Length; ++i)
 			{
 				ns[i] = LE_To_UInt32(bs, off);
 				off += 4;
@@ -266,7 +254,7 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static byte[] UInt64_To_LE(ulong n)
 		{
-			byte[] bs = new byte[8];
+			var bs = new byte[8];
 			UInt64_To_LE(n, bs, 0);
 			return bs;
 		}
@@ -285,15 +273,15 @@ namespace NTumbleBit.BouncyCastle.Crypto.Utilities
 
 		internal static ulong LE_To_UInt64(byte[] bs)
 		{
-			uint lo = LE_To_UInt32(bs);
-			uint hi = LE_To_UInt32(bs, 4);
+			var lo = LE_To_UInt32(bs);
+			var hi = LE_To_UInt32(bs, 4);
 			return ((ulong)hi << 32) | (ulong)lo;
 		}
 
 		internal static ulong LE_To_UInt64(byte[] bs, int off)
 		{
-			uint lo = LE_To_UInt32(bs, off);
-			uint hi = LE_To_UInt32(bs, off + 4);
+			var lo = LE_To_UInt32(bs, off);
+			var hi = LE_To_UInt32(bs, off + 4);
 			return ((ulong)hi << 32) | (ulong)lo;
 		}
 	}

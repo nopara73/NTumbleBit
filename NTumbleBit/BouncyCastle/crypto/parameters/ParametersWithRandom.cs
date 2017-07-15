@@ -14,13 +14,8 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
             ICipherParameters	parameters,
             SecureRandom		random)
         {
-			if (parameters == null)
-				throw new ArgumentNullException("parameters");
-			if (random == null)
-				throw new ArgumentNullException("random");
-
-			this.parameters = parameters;
-			this.random = random;
+			this.parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
+			this.random = random ?? throw new ArgumentNullException(nameof(random));
 		}
 
 		public ParametersWithRandom(
@@ -30,19 +25,10 @@ namespace NTumbleBit.BouncyCastle.Crypto.Parameters
 		}
 
 		[Obsolete("Use Random property instead")]
-		public SecureRandom GetRandom()
-		{
-			return Random;
-		}
+		public SecureRandom GetRandom() => Random;
 
-		public SecureRandom Random
-        {
-			get { return random; }
-        }
+		public SecureRandom Random => random;
 
-		public ICipherParameters Parameters
-        {
-            get { return parameters; }
-        }
-    }
+		public ICipherParameters Parameters => parameters;
+	}
 }

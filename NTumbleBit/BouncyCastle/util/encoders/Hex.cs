@@ -19,10 +19,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
          * @return a byte array containing the Hex encoded data.
          */
 		public static byte[] Encode(
-			byte[] data)
-		{
-			return Encode(data, 0, data.Length);
-		}
+			byte[] data) => Encode(data, 0, data.Length);
 
 		/**
          * encode the input data producing a Hex encoded byte array.
@@ -34,7 +31,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 			int off,
 			int length)
 		{
-			MemoryStream bOut = new MemoryStream(length * 2);
+			var bOut = new MemoryStream(length * 2);
 
 			encoder.Encode(data, off, length, bOut);
 
@@ -48,10 +45,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
          */
 		public static int Encode(
 			byte[] data,
-			Stream outStream)
-		{
-			return encoder.Encode(data, 0, data.Length, outStream);
-		}
+			Stream outStream) => encoder.Encode(data, 0, data.Length, outStream);
 
 		/**
          * Hex encode the byte data writing it to the given output stream.
@@ -62,10 +56,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 			byte[] data,
 			int off,
 			int length,
-			Stream outStream)
-		{
-			return encoder.Encode(data, off, length, outStream);
-		}
+			Stream outStream) => encoder.Encode(data, off, length, outStream);
 
 		/**
          * decode the Hex encoded input data. It is assumed the input data is valid.
@@ -75,7 +66,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 		public static byte[] Decode(
 			byte[] data)
 		{
-			MemoryStream bOut = new MemoryStream((data.Length + 1) / 2);
+			var bOut = new MemoryStream((data.Length + 1) / 2);
 
 			encoder.Decode(data, 0, data.Length, bOut);
 
@@ -90,7 +81,7 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
 		public static byte[] Decode(
 			string data)
 		{
-			MemoryStream bOut = new MemoryStream((data.Length + 1) / 2);
+			var bOut = new MemoryStream((data.Length + 1) / 2);
 
 			encoder.DecodeString(data, bOut);
 
@@ -105,9 +96,6 @@ namespace NTumbleBit.BouncyCastle.Utilities.Encoders
          */
 		public static int Decode(
 			string data,
-			Stream outStream)
-		{
-			return encoder.DecodeString(data, outStream);
-		}
+			Stream outStream) => encoder.DecodeString(data, outStream);
 	}
 }

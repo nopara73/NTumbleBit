@@ -30,13 +30,11 @@ namespace NTumbleBit
 			this.Receiver = receiver;
 			this.LockTime = lockTime;
 		}
-		public static EscrowScriptPubKeyParameters GetFromCoin(ScriptCoin coin)
-		{
-			return GetFromScript(coin.Redeem);
-		}
+		public static EscrowScriptPubKeyParameters GetFromCoin(ScriptCoin coin) => GetFromScript(coin.Redeem);
+
 		private static EscrowScriptPubKeyParameters GetFromScript(Script script)
 		{
-			EscrowScriptPubKeyParameters parameters = new EscrowScriptPubKeyParameters();
+			var parameters = new EscrowScriptPubKeyParameters();
 			try
 			{
 				var data = script.ToOps().Where(o => o.PushData != null).ToArray();
@@ -64,17 +62,14 @@ namespace NTumbleBit
 			get; set;
 		}
 
-		public uint GetCorrelation()
-		{
-			return new uint160(ToScript().Hash.ToString()).GetLow32();
-		}
+		public uint GetCorrelation() => new uint160(ToScript().Hash.ToString()).GetLow32();
 
 		public Script ToScript()
 		{
 			if(Initiator == null || Receiver == null || LockTime == default(LockTime))
 				throw new InvalidOperationException("Parameters are incomplete");
-			EscrowScriptPubKeyParameters parameters = new EscrowScriptPubKeyParameters();
-			List<Op> ops = new List<Op>();
+			var parameters = new EscrowScriptPubKeyParameters();
+			var ops = new List<Op>();
 			ops.Add(Op.GetPushOp(Initiator.ToBytes()));
 			ops.Add(OpcodeType.OP_DEPTH);
 			ops.Add(OpcodeType.OP_3);
@@ -98,7 +93,7 @@ namespace NTumbleBit
 
 		public Script GetInitiatorScriptCode()
 		{
-			List<Op> ops = new List<Op>();
+			var ops = new List<Op>();
 			ops.Add(OpcodeType.OP_ELSE);
 			{
 				ops.Add(Op.GetPushOp(LockTime));
@@ -111,8 +106,8 @@ namespace NTumbleBit
 
 		public override bool Equals(object obj)
 		{
-			EscrowScriptPubKeyParameters item = obj as EscrowScriptPubKeyParameters;
-			if(item == null)
+			var item = obj as EscrowScriptPubKeyParameters;
+			if (item == null)
 				return false;
 			return ToScript().Equals(item.ToScript());
 		}
@@ -125,14 +120,8 @@ namespace NTumbleBit
 			return a.ToScript() == b.ToScript();
 		}
 
-		public static bool operator !=(EscrowScriptPubKeyParameters a, EscrowScriptPubKeyParameters b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(EscrowScriptPubKeyParameters a, EscrowScriptPubKeyParameters b) => !(a == b);
 
-		public override int GetHashCode()
-		{
-			return ToScript().GetHashCode();
-		}
+		public override int GetHashCode() => ToScript().GetHashCode();
 	}
 }
