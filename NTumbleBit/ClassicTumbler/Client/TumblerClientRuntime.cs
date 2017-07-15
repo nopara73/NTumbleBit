@@ -12,16 +12,10 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using NTumbleBit.Services;
 using NTumbleBit.Configuration;
-using NTumbleBit.ClassicTumbler.Client.ConnectionSettings;
 using NTumbleBit.ClassicTumbler.CLI;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {
-	public enum Identity
-	{
-		Alice,
-		Bob
-	}
 	public class PrematureRequestException : Exception
 	{
 		public PrematureRequestException() : base("Premature request")
@@ -32,9 +26,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 	public class TumblerClientRuntime : IDisposable
 	{
-		public static TumblerClientRuntime FromConfiguration(TumblerClientConfiguration configuration, ClientInteraction interaction) => FromConfigurationAsync(configuration, interaction).GetAwaiter().GetResult();
+		public static TumblerClientRuntime FromConfiguration(TumblerClientConfiguration configuration, IClientInteraction interaction) => FromConfigurationAsync(configuration, interaction).GetAwaiter().GetResult();
 
-		public static async Task<TumblerClientRuntime> FromConfigurationAsync(TumblerClientConfiguration configuration, ClientInteraction interaction)
+		public static async Task<TumblerClientRuntime> FromConfigurationAsync(TumblerClientConfiguration configuration, IClientInteraction interaction)
 		{
 			var runtime = new TumblerClientRuntime();
 			try
@@ -48,17 +42,12 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}
 			return runtime;
 		}
-		public async Task ConfigureAsync(TumblerClientConfiguration configuration, ClientInteraction interaction)
+		public async Task ConfigureAsync(TumblerClientConfiguration configuration, IClientInteraction interaction)
 		{
 			interaction = interaction ?? new AcceptAllClientInteraction();
 
 			Network = configuration.Network;
 			TumblerServer = configuration.TumblerServer;
-			BobSettings = configuration.BobConnectionSettings;
-			AliceSettings = configuration.AliceConnectionSettings;
-			AllowInsecure = configuration.AllowInsecure;
-
-			await SetupTorAsync(interaction, configuration.TorPath).ConfigureAwait(false);
 
 			RPCClient rpc = null;
 			try
@@ -101,7 +90,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 			if(!configuration.OnlyMonitor)
 			{
-				var client = CreateTumblerClient(0);
+				var client = CreateTumblerClient(new Identity(Role.Alice, -1));
 				if(TumblerParameters == null)
 				{
 					Logs.Configuration.LogInformation("Downloading tumbler information of " + configuration.TumblerServer.AbsoluteUri);
@@ -118,8 +107,6 @@ namespace NTumbleBit.ClassicTumbler.Client
 					if(standardCycle == null || !parameters.IsStandard())
 					{
 						Logs.Configuration.LogWarning("This tumbler has non standard parameters");
-						if(!AllowInsecure)
-							throw new ConfigException("This tumbler has non standard parameters");
 						standardCycle = null;
 					}
 
@@ -135,62 +122,15 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}
 		}
 
-		private async Task SetupTorAsync(ClientInteraction interaction, string torPath)
-		{
-			await SetupTorAsync(interaction, AliceSettings, torPath).ConfigureAwait(false);
-			await SetupTorAsync(interaction, BobSettings, torPath).ConfigureAwait(false);
-		}
-
-		private async Task SetupTorAsync(ClientInteraction interaction, ConnectionSettingsBase settings, string torPath)
-		{
-			var tor = settings as ITorConnectionSettings;
-			if(tor == null)
-				return;
-			_Disposables.Add(await tor.SetupAsync(interaction, torPath).ConfigureAwait(false));
-		}
-
 		public BroadcasterJob CreateBroadcasterJob() => new BroadcasterJob(Services);
 
-		public ConnectionSettingsBase BobSettings
-		{
-			get; set;
-		}
+		public bool Cooperative { get; set; }
 
-		public ConnectionSettingsBase AliceSettings
-		{
-			get; set;
-		}
+		public Uri TumblerServer { get; set; }
 
-		public bool Cooperative
+		public TumblerClient CreateTumblerClient(Identity identity)
 		{
-			get; set;
-		}
-
-		public Uri TumblerServer
-		{
-			get; set;
-		}
-
-		public TumblerClient CreateTumblerClient(int cycle, Identity? identity = null)
-		{
-			if(identity == null)
-				identity = RandomUtils.GetUInt32() % 2 == 0 ? Identity.Alice : Identity.Bob;
-			return CreateTumblerClient(cycle, identity == Identity.Alice ? AliceSettings : BobSettings);
-		}
-
-		DateTimeOffset previousHandlerCreationDate;
-		TimeSpan CircuitRenewInterval = TimeSpan.FromMinutes(10.0);
-		private TumblerClient CreateTumblerClient(int cycleId, ConnectionSettingsBase settings)
-		{
-			if(!AllowInsecure && DateTimeOffset.UtcNow - previousHandlerCreationDate < CircuitRenewInterval)
-			{
-				throw new InvalidOperationException("premature-request");
-			}
-			previousHandlerCreationDate = DateTime.UtcNow;
-			var client = new TumblerClient(Network, TumblerServer, cycleId);
-			var handler = settings.CreateHttpHandler();
-			if(handler != null)
-				client.SetHttpHandler(handler);
+			var client = new TumblerClient(Network, TumblerServer, identity);
 			return client;
 		}
 
@@ -222,41 +162,11 @@ namespace NTumbleBit.ClassicTumbler.Client
 			_Disposables.Clear();
 		}
 
-
-		public IDestinationWallet DestinationWallet
-		{
-			get; set;
-		}
-
-		public Network Network
-		{
-			get;
-			set;
-		}
-		public ExternalServices Services
-		{
-			get;
-			set;
-		}
-		public Tracker Tracker
-		{
-			get;
-			set;
-		}
-		public ClassicTumblerParameters TumblerParameters
-		{
-			get;
-			set;
-		}
-		public DBreezeRepository Repository
-		{
-			get;
-			set;
-		}
-		public bool AllowInsecure
-		{
-			get;
-			private set;
-		}
+		public IDestinationWallet DestinationWallet { get; set; }
+		public Network Network { get; set; }
+		public ExternalServices Services { get; set; }
+		public Tracker Tracker { get; set; }
+		public ClassicTumblerParameters TumblerParameters { get; set; }
+		public DBreezeRepository Repository { get; set; }
 	}
 }

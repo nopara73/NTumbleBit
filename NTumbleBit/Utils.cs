@@ -16,19 +16,6 @@ namespace NTumbleBit
 {
 	public static class Utils
 	{
-		internal static HttpMessageHandler SetAntiFingerprint(this HttpClientHandler handler)
-		{
-			handler.AllowAutoRedirect = false;
-			handler.UseCookies = false;
-			handler.AutomaticDecompression = DecompressionMethods.None;
-			handler.CheckCertificateRevocationList = false;
-			handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-			handler.ClientCertificates.Clear();
-			handler.CookieContainer = null;
-			handler.Credentials = null;
-			handler.PreAuthenticate = false;
-			return handler;
-		}
 		public static IEnumerable<T> TopologicalSort<T>(this IEnumerable<T> nodes,
 												Func<T, IEnumerable<T>> dependsOn)
 		{

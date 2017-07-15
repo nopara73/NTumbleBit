@@ -15,96 +15,26 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NTumbleBit.ClassicTumbler.Client.ConnectionSettings;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {
 	public class OutputWalletConfiguration
 	{
-		public BitcoinExtPubKey RootKey
-		{
-			get; set;
-		}
-
-		public KeyPath KeyPath
-		{
-			get; set;
-		}
-
-		public RPCArgs RPCArgs
-		{
-			get; set;
-		}
+		public BitcoinExtPubKey RootKey { get; set; }
+		public KeyPath KeyPath { get; set; }
+		public RPCArgs RPCArgs { get; set; }
 	}
 
 	public class TumblerClientConfiguration
 	{
-		public string ConfigurationFile
-		{
-			get;
-			set;
-		}
-		public string DataDir
-		{
-			get;
-			set;
-		}
-
-		public Network Network
-		{
-			get; set;
-		}
-
-		public bool OnlyMonitor
-		{
-			get; set;
-		}
-
-		public bool CheckIp
-		{
-			get; set;
-		} = true;
-
-		public bool Cooperative
-		{
-			get;
-			set;
-		}
-		public Uri TumblerServer
-		{
-			get;
-			set;
-		}
-
-		public ConnectionSettingsBase BobConnectionSettings
-		{
-			get; set;
-		} = new ConnectionSettingsBase();
-
-		public ConnectionSettingsBase AliceConnectionSettings
-		{
-			get; set;
-		} = new ConnectionSettings.ConnectionSettingsBase();
-
-		public OutputWalletConfiguration OutputWallet
-		{
-			get; set;
-		} = new OutputWalletConfiguration();
-
-		public RPCArgs RPCArgs
-		{
-			get; set;
-		} = new RPCArgs();
-		public bool AllowInsecure
-		{
-			get;
-			set;
-		} = false;
-		public string TorPath
-		{
-			get;
-			set;
-		}
+		public string ConfigurationFile { get; set; }
+		public string DataDir { get; set; }
+		public Network Network { get; set; }
+		public bool OnlyMonitor { get; set; }
+		public bool Cooperative { get; set; }
+		public Uri TumblerServer { get; set; }
+		public OutputWalletConfiguration OutputWallet { get; set; } = new OutputWalletConfiguration();
+		public RPCArgs RPCArgs { get; set; } = new RPCArgs();
 
 		public TumblerClientConfiguration LoadArgs(String[] args)
 		{
@@ -158,7 +88,6 @@ namespace NTumbleBit.ClassicTumbler.Client
 			OnlyMonitor = config.GetOrDefault<bool>("onlymonitor", false);
 			Cooperative = config.GetOrDefault<bool>("cooperative", true);
 			TumblerServer = config.GetOrDefault("tumbler.server", null as Uri);
-			TorPath = config.GetOrDefault<string>("torpath", "tor");
 
 			RPCArgs = RPCArgs.Parse(config, Network);
 
@@ -207,10 +136,6 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 			OutputWallet.RPCArgs = RPCArgs.Parse(config, Network, "outputwallet");
 
-			AliceConnectionSettings = ConnectionSettingsBase.ParseConnectionSettings("alice", config);
-			BobConnectionSettings = ConnectionSettingsBase.ParseConnectionSettings("bob", config);
-
-			AllowInsecure = config.GetOrDefault<bool>("allowinsecure", IsTest(Network));
 			return this;
 		}
 
@@ -230,7 +155,6 @@ namespace NTumbleBit.ClassicTumbler.Client
 				builder.AppendLine("#rpc.user=bitcoinuser");
 				builder.AppendLine("#rpc.password=bitcoinpassword");
 				builder.AppendLine("#rpc.cookiefile=yourbitcoinfolder/.cookie");
-
 				builder.AppendLine("#Tumbler server to connect to");
 				builder.AppendLine("#tumbler.server=");
 				builder.AppendLine();
@@ -239,51 +163,9 @@ namespace NTumbleBit.ClassicTumbler.Client
 				builder.AppendLine("#outputwallet.keypath=0");
 				builder.AppendLine();
 				builder.AppendLine();
-				builder.AppendLine("####Connection Commands####");
-				builder.AppendLine("#Making Alice or Bob pass through TOR (Recommended, the circuit will change for each cycle/persona)");
-				builder.AppendLine("#The default settings you run `tor -controlport 9051 -cookieauthentication 1`");
-				builder.AppendLine("#alice.proxy.type=tor");
-				builder.AppendLine("#alice.proxy.server=127.0.0.1:9051");
-				builder.AppendLine("#alice.proxy.password=padeiwmnfw");
-				builder.AppendLine("#alice.proxy.cookiefile=/var/run/tor/control.authcookie");
-				builder.AppendLine("#or");
-				builder.AppendLine("#bob.proxy.type=tor");
-				builder.AppendLine("#bob.proxy.server=127.0.0.1:9051");
-				builder.AppendLine("#bob.proxy.password=padeiwmnfw");
-				builder.AppendLine("#bob.proxy.cookiefile=/var/run/tor/control.authcookie");
-				builder.AppendLine();
-				builder.AppendLine("#Making Alice or Bob pass through a HTTP Proxy");
-				builder.AppendLine("#alice.proxy.type=http");
-				builder.AppendLine("#alice.proxy.server=http://127.0.0.1:8118/");
-				builder.AppendLine("#alice.proxy.username=dpowqkwkpd");
-				builder.AppendLine("#alice.proxy.password=padeiwmnfw");
-				builder.AppendLine("#or");
-				builder.AppendLine("#bob.proxy.type=http");
-				builder.AppendLine("#bob.proxy.server=http://127.0.0.1:8118/");
-				builder.AppendLine("#bob.proxy.username=dpowqkwkpd");
-				builder.AppendLine("#bob.proxy.password=padeiwmnfw");
-				builder.AppendLine();
-				builder.AppendLine("#Making Alice or Bob pass through a SOCKS Proxy");
-				builder.AppendLine("#alice.proxy.type=socks");
-				builder.AppendLine("#alice.proxy.server=127.0.0.1:9050");
-				builder.AppendLine("#or");
-				builder.AppendLine("#bob.proxy.type=socks");
-				builder.AppendLine("#bob.proxy.server=127.0.0.1:9050");
-				builder.AppendLine();
-				builder.AppendLine("#Disabling any proxy");
-				builder.AppendLine("#alice.proxy.type=none");
-				builder.AppendLine("#or");
-				builder.AppendLine("#bob.proxy.type=none");
-
-
-				builder.AppendLine();
-				builder.AppendLine();
-
 				builder.AppendLine("####Debug Commands####");
 				builder.AppendLine("#Whether or not signature for the escape transaction is transmitted to the Tumbler (default: true)");
 				builder.AppendLine("#cooperative=false");
-				builder.AppendLine("#Whether or not IP sharing between Bob and Alice is authorized (default: true for testnets, false for mainnet)");
-				builder.AppendLine("#allowinsecure=true");
 				File.WriteAllText(config, builder.ToString());
 			}
 			return config;

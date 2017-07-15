@@ -194,14 +194,12 @@ namespace NTumbleBit.PuzzlePromise
 				for(int i = 0; i < _Hashes.Length; i++)
 				{
 					commitments.Add(_Hashes[i].Commitment);
-					var fake = _Hashes[i] as FakeHash;
-					if(fake != null)
+					if (_Hashes[i] is FakeHash fake)
 					{
 						fakeSalts.Add(fake.Salt);
 					}
 
-					var real = _Hashes[i] as RealHash;
-					if(real != null)
+					if (_Hashes[i] is RealHash real)
 					{
 						lockTimes.Add(real.LockTime);
 					}

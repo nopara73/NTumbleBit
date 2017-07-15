@@ -77,5 +77,14 @@ namespace NTumbleBit
 		}, throwIfRPCError: false);
 
 		public static ScriptCoin Clone(this ScriptCoin scriptCoin) => new ScriptCoin(scriptCoin, scriptCoin.Redeem);
+
+		public static async Task<TResult> WithTimeout<TResult>(this Task<TResult> task, TimeSpan timeout)
+		{
+			if (task == await Task.WhenAny(task, Task.Delay(timeout)))
+			{
+				return await task;
+			}
+			throw new TimeoutException();
+		}
 	}
 }

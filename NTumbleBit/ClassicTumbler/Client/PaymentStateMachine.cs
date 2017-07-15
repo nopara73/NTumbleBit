@@ -161,7 +161,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 					case CyclePhase.Registration:
 						if(ClientChannelNegotiation == null)
 						{
-							bob = Runtime.CreateTumblerClient(cycle.Start, Identity.Bob);
+							bob = Runtime.CreateTumblerClient(new Identity(Role.Bob, cycle.Start));
 							//Client asks for voucher
 							var voucherResponse = bob.AskUnsignedVoucher();
 							//Client ensures he is in the same cycle as the tumbler (would fail if one tumbler or client's chain isn't sync)
@@ -177,7 +177,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 					case CyclePhase.ClientChannelEstablishment:
 						if(ClientChannelNegotiation.Status == TumblerClientSessionStates.WaitingTumblerClientTransactionKey)
 						{
-							alice = Runtime.CreateTumblerClient(cycle.Start, Identity.Alice);
+							alice = Runtime.CreateTumblerClient(new Identity(Role.Alice, cycle.Start));
 							var key = alice.RequestTumblerEscrowKey();
 							ClientChannelNegotiation.ReceiveTumblerEscrowKey(key.PubKey, key.KeyIndex);
 							//Client create the escrow
@@ -219,7 +219,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 						}
 						else if(ClientChannelNegotiation.Status == TumblerClientSessionStates.WaitingSolvedVoucher)
 						{
-							alice = Runtime.CreateTumblerClient(cycle.Start, Identity.Alice);
+							alice = Runtime.CreateTumblerClient(new Identity(Role.Alice, cycle.Start));
 							var clientTx = GetTransactionInformation(SolverClientSession.EscrowedCoin, true);
 							var state = ClientChannelNegotiation.GetInternalState();
 							if(clientTx != null && clientTx.Confirmations >= cycle.SafetyPeriodDuration)
@@ -243,7 +243,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 					case CyclePhase.TumblerChannelEstablishment:
 						if(ClientChannelNegotiation != null && ClientChannelNegotiation.Status == TumblerClientSessionStates.WaitingGenerateTumblerTransactionKey)
 						{
-							bob = Runtime.CreateTumblerClient(cycle.Start, Identity.Bob);
+							bob = Runtime.CreateTumblerClient(new Identity(Role.Bob, cycle.Start));
 							//Client asks the Tumbler to make a channel
 							var bobEscrowInformation = ClientChannelNegotiation.GetOpenChannelRequest();
 							var tumblerInformation = bob.OpenChannel(bobEscrowInformation);
@@ -280,7 +280,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 								if(SolverClientSession.Status == SolverClientStates.WaitingGeneratePuzzles)
 								{
 									feeRate = GetFeeRate();
-									alice = Runtime.CreateTumblerClient(cycle.Start, Identity.Alice);
+									alice = Runtime.CreateTumblerClient(new Identity(Role.Alice, cycle.Start));
 									var puzzles = SolverClientSession.GeneratePuzzles();
 									var commmitments = alice.SolvePuzzles(SolverClientSession.Id, puzzles);
 									var revelation2 = SolverClientSession.Reveal(commmitments);
@@ -349,10 +349,6 @@ namespace NTumbleBit.ClassicTumbler.Client
 			{
 				if(alice != null && bob != null)
 					throw new InvalidOperationException("Bob and Alice have been both initialized, please report the bug to NTumbleBit developers");
-				if(alice != null)
-					alice.Dispose();
-				if(bob != null)
-					bob.Dispose();
 			}
 		}
 

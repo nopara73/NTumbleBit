@@ -110,14 +110,12 @@ namespace NTumbleBit.PuzzleSolver
 				{
 					commitments[i] = _PuzzleElements[i].Commitment;
 					puzzles[i] = _PuzzleElements[i].Puzzle.PuzzleValue;
-					var fake = _PuzzleElements[i] as FakePuzzle;
-					if(fake != null)
+					if (_PuzzleElements[i] is FakePuzzle fake)
 					{
 						fakeSolutions[fakeI++] = fake.Solution;
 					}
 
-					var real = _PuzzleElements[i] as RealPuzzle;
-					if(real != null)
+					if (_PuzzleElements[i] is RealPuzzle real)
 					{
 						blinds[realI++] = real.BlindFactor;
 					}

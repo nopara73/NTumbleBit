@@ -1,6 +1,5 @@
 ﻿using NTumbleBit.ClassicTumbler;
 using NTumbleBit.ClassicTumbler.CLI;
-using NTumbleBit.ClassicTumbler.Client.ConnectionSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NTumbleBit
 {
-	public class TextWriterClientInteraction : ClientInteraction
+	public class TextWriterClientInteraction : IClientInteraction
 	{
 		TextReader _Input;
 		TextWriter _Output;

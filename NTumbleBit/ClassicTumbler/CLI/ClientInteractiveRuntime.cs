@@ -15,11 +15,7 @@ namespace NTumbleBit.ClassicTumbler.CLI
 			InnerRuntime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 		}
 
-
-		public TumblerClientRuntime InnerRuntime
-		{
-			get; set;
-		}
+		public TumblerClientRuntime InnerRuntime { get; set; }
 
 		public ClassicTumblerParameters TumblerParameters => InnerRuntime.TumblerParameters;
 
@@ -31,9 +27,6 @@ namespace NTumbleBit.ClassicTumbler.CLI
 
 		public IDestinationWallet DestinationWallet => InnerRuntime.DestinationWallet;
 
-		public void Dispose()
-		{
-			InnerRuntime.Dispose();
-		}
+		public void Dispose() => InnerRuntime.Dispose();
 	}
 }
