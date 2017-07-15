@@ -12,14 +12,8 @@ namespace NTumbleBit.Services.RPC
 {
 	public class RPCWalletEntry
 	{
-		public uint256 TransactionId
-		{
-			get; set;
-		}
-		public int Confirmations
-		{
-			get; set;
-		}
+		public uint256 TransactionId { get; set; }
+		public int Confirmations { get; set; }
 	}
 
 	/// <summary>
