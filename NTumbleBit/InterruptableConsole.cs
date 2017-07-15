@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace NTumbleBit
 {
@@ -21,18 +22,14 @@ namespace NTumbleBit
 
 		static InterruptableConsole()
 		{
-			new Thread(() =>
+			Task.Run(() =>
 			{
 				while(true)
 				{
 					input = Console.ReadLine();
 					newInput.Set();
 				}
-			})
-			{
-				IsBackground = true,
-				Name = "UserConsoleInput"
-			}.Start();
+			});
 			Console.CancelKeyPress += (s, e) =>
 			{
 				Interrupt();

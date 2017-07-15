@@ -224,7 +224,7 @@ namespace NTumbleBit.PuzzleSolver
 			return _PuzzleElements.Select(p => p.Puzzle.PuzzleValue).ToArray();
 		}
 
-		public ClientRevelation Reveal(ServerCommitment[] commitments)
+		public SolverClientRevelation Reveal(ServerCommitment[] commitments)
 		{
 			if(commitments == null)
 				throw new ArgumentNullException(nameof(commitments));
@@ -245,7 +245,7 @@ namespace NTumbleBit.PuzzleSolver
 				_PuzzleElements[i].Commitment = commitments[i];
 			}
 			InternalState.Status = SolverClientStates.WaitingFakeCommitmentsProof;
-			return new ClientRevelation(InternalState.FakeIndexes, solutions.ToArray());
+			return new SolverClientRevelation(InternalState.FakeIndexes, solutions.ToArray());
 		}
 
 		public BlindFactor[] GetBlindFactors(SolutionKey[] keys)

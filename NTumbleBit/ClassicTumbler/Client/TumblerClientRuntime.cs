@@ -13,6 +13,7 @@ using System.Net.Http;
 using NTumbleBit.Services;
 using NTumbleBit.Configuration;
 using NTumbleBit.ClassicTumbler.CLI;
+using System.Threading;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {
@@ -26,14 +27,12 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 	public class TumblerClientRuntime : IDisposable
 	{
-		public static TumblerClientRuntime FromConfiguration(TumblerClientConfiguration configuration, IClientInteraction interaction) => FromConfigurationAsync(configuration, interaction).GetAwaiter().GetResult();
-
-		public static async Task<TumblerClientRuntime> FromConfigurationAsync(TumblerClientConfiguration configuration, IClientInteraction interaction)
+		public static async Task<TumblerClientRuntime> FromConfigurationAsync(TumblerClientConfiguration configuration, IClientInteraction interaction, CancellationToken ctsToken)
 		{
 			var runtime = new TumblerClientRuntime();
 			try
 			{
-				await runtime.ConfigureAsync(configuration, interaction).ConfigureAwait(false);
+				await runtime.ConfigureAsync(configuration, interaction, ctsToken).ConfigureAwait(false);
 			}
 			catch
 			{
@@ -42,7 +41,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			}
 			return runtime;
 		}
-		public async Task ConfigureAsync(TumblerClientConfiguration configuration, IClientInteraction interaction)
+		public async Task ConfigureAsync(TumblerClientConfiguration configuration, IClientInteraction interaction, CancellationToken ctsToken)
 		{
 			interaction = interaction ?? new AcceptAllClientInteraction();
 
@@ -94,7 +93,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 				if(TumblerParameters == null)
 				{
 					Logs.Configuration.LogInformation("Downloading tumbler information of " + configuration.TumblerServer.AbsoluteUri);
-					var parameters = Retry(3, () => client.GetTumblerParameters());
+					var parameters = await Retry(3, async () 
+						=> await client.GetTumblerParametersAsync(ctsToken).ConfigureAwait(false)).ConfigureAwait(false);
 					if(parameters == null)
 						throw new ConfigException("Unable to download tumbler's parameters");
 

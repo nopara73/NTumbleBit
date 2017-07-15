@@ -28,7 +28,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 		protected override void StartCore(CancellationToken cancellationToken)
 		{
-			new Thread(() =>
+			Task.Run(async() =>
 			{
 				Logs.Client.LogInformation("State machines started");
 				var lastBlock = uint256.Zero;
@@ -38,7 +38,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 					Exception unhandled = null;
 					try
 					{
-						lastBlock = Runtime.Services.BlockExplorerService.WaitBlock(lastBlock, cancellationToken);
+						lastBlock = await Runtime.Services.BlockExplorerService.WaitBlockAsync(lastBlock, cancellationToken).ConfigureAwait(false);
 						var height = Runtime.Services.BlockExplorerService.GetCurrentHeight();
 						Logs.Client.LogInformation("New Block: " + height);
 						var cycle = Runtime.TumblerParameters.CycleGenerator.GetRegistratingCycle(height);
@@ -61,7 +61,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 							var machine = new PaymentStateMachine(Runtime, state);
 							try
 							{
-								machine.Update();
+								await machine.UpdateAsync(default(CancellationToken)).ConfigureAwait(false);
 								machine.InvalidPhaseCount = 0;
 							}
 							catch(PrematureRequestException)
@@ -104,10 +104,10 @@ namespace NTumbleBit.ClassicTumbler.Client
 					if(unhandled != null)
 					{
 						Logs.Client.LogError("StateMachineExecutor Error: " + unhandled.ToString());
-						cancellationToken.WaitHandle.WaitOne(5000);
+						await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 					}
 				}
-			}).Start();
+			});
 		}
 
 		private static string GetPartitionKey(int cycle) => "Cycle_" + cycle;

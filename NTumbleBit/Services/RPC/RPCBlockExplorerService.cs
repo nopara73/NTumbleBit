@@ -27,7 +27,7 @@ namespace NTumbleBit.Services.RPC
 
 		public int GetCurrentHeight() => _Cache.BlockCount;
 
-		public uint256 WaitBlock(uint256 currentBlock, CancellationToken cancellation = default(CancellationToken))
+		public async Task<uint256> WaitBlockAsync(uint256 currentBlock, CancellationToken cancellation = default(CancellationToken))
 		{
 			while(true)
 			{
@@ -38,7 +38,7 @@ namespace NTumbleBit.Services.RPC
 					_Cache.Refresh(h);
 					return h;
 				}
-				cancellation.WaitHandle.WaitOne(5000);
+				await Task.Delay(5000, cancellation).ConfigureAwait(false);
 			}
 		}
 

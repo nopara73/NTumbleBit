@@ -148,7 +148,7 @@ namespace NTumbleBit.Services
 				var engine = GetEngine(partitionKey);
 				engine.Dispose();
 				_EnginesByParitionKey.Remove(partitionKey);
-				Utils.DeleteRecursivelyWithMagicDust(GetPartitionPath(partitionKey));
+				Utils.DeleteRecursivelyWithMagicDustAsync(GetPartitionPath(partitionKey)).Wait();
 			}
 		}
 

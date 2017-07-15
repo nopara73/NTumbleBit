@@ -28,7 +28,7 @@ namespace NTumbleBit.Services
 		int GetCurrentHeight();
 		TransactionInformation[] GetTransactions(Script scriptPubKey, bool withProof);
 		TransactionInformation GetTransaction(uint256 txId);
-		uint256 WaitBlock(uint256 currentBlock, CancellationToken cancellation);
+		Task<uint256> WaitBlockAsync(uint256 currentBlock, CancellationToken cancellation);
 		void Track(Script scriptPubkey);
 		int GetBlockConfirmations(uint256 blockId);
 		bool TrackPrunedTransaction(Transaction transaction, MerkleBlock merkleProof);

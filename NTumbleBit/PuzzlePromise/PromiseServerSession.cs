@@ -141,7 +141,7 @@ namespace NTumbleBit.PuzzlePromise
 
 
 
-		public ServerCommitmentsProof CheckRevelation(ClientRevelation revelation)
+		public ServerCommitmentsProof CheckRevelation(PromiseClientRevelation revelation)
 		{
 			if(revelation == null)
 				throw new ArgumentNullException(nameof(revelation));

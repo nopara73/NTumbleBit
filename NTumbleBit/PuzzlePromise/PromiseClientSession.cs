@@ -285,7 +285,7 @@ namespace NTumbleBit.PuzzlePromise
 			return request;
 		}
 
-		public ClientRevelation Reveal(ServerCommitment[] commitments)
+		public PromiseClientRevelation Reveal(ServerCommitment[] commitments)
 		{
 			if(commitments == null)
 				throw new ArgumentNullException(nameof(commitments));
@@ -306,7 +306,7 @@ namespace NTumbleBit.PuzzlePromise
 				_Hashes[i].Commitment = commitments[i];
 			}
 			InternalState.Status = PromiseClientStates.WaitingCommitmentsProof;
-			return new ClientRevelation(indexes.ToArray(), InternalState.IndexSalt, salts.ToArray());
+			return new PromiseClientRevelation(indexes.ToArray(), InternalState.IndexSalt, salts.ToArray());
 		}
 
 		public PuzzleValue CheckCommitmentProof(ServerCommitmentsProof proof)

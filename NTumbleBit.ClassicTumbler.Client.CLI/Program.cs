@@ -15,6 +15,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NTumbleBit.ClassicTumbler.Client.CLI
 {
@@ -86,7 +87,7 @@ namespace NTumbleBit.ClassicTumbler.Client.CLI
 					}
 					#endregion
 
-					var runtime = TumblerClientRuntime.FromConfiguration(config, new TextWriterClientInteraction(Console.Out, Console.In));
+					var runtime = TumblerClientRuntime.FromConfigurationAsync(config, new TextWriterClientInteraction(Console.Out, Console.In), default(CancellationToken)).Result;
 					interactive.Runtime = new ClientInteractiveRuntime(runtime);
 
 					var broadcaster = runtime.CreateBroadcasterJob();

@@ -14,6 +14,7 @@ using NTumbleBit;
 using System.IO;
 using NTumbleBit.Logging;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {
@@ -34,32 +35,27 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 		private readonly Uri _Address;
 		
-		public Task<ClassicTumblerParameters> GetTumblerParametersAsync() => GetAsync<ClassicTumblerParameters>($"parameters");
+		public async Task<ClassicTumblerParameters> GetTumblerParametersAsync(CancellationToken ctsToken) 
+			=> await GetAsync<ClassicTumblerParameters>(ctsToken, $"parameters").ConfigureAwait(false);
 
-		public ClassicTumblerParameters GetTumblerParameters() => GetTumblerParametersAsync().GetAwaiter().GetResult();
+		private async Task<T> GetAsync<T>(CancellationToken ctsToken, string relativePath, params object[] parameters) 
+			=> await SendAsync<T>(ctsToken, HttpMethod.Get, null, relativePath, parameters).ConfigureAwait(false);
+		
+		public async Task<UnsignedVoucherInformation> AskUnsignedVoucherAsync(CancellationToken ctsToken)
+			=> await GetAsync<UnsignedVoucherInformation>(ctsToken, $"vouchers/").ConfigureAwait(false);
 
-		private Task<T> GetAsync<T>(string relativePath, params object[] parameters) => SendAsync<T>(HttpMethod.Get, null, relativePath, parameters);
+		public async Task<PuzzleSolution> SignVoucherAsync(SignVoucherRequest signVoucherRequest, CancellationToken ctsToken)
+			=> await SendAsync<PuzzleSolution>(ctsToken, HttpMethod.Post, signVoucherRequest, $"clientchannels/confirm").ConfigureAwait(false);
 
-		public UnsignedVoucherInformation AskUnsignedVoucher() => AskUnsignedVoucherAsync().GetAwaiter().GetResult();
-
-		public Task<UnsignedVoucherInformation> AskUnsignedVoucherAsync() => GetAsync<UnsignedVoucherInformation>($"vouchers/");
-
-		public Task<PuzzleSolution> SignVoucherAsync(SignVoucherRequest signVoucherRequest) => SendAsync<PuzzleSolution>(HttpMethod.Post, signVoucherRequest, $"clientchannels/confirm");
-
-		public PuzzleSolution SignVoucher(SignVoucherRequest signVoucherRequest) => SignVoucherAsync(signVoucherRequest).GetAwaiter().GetResult();
-
-		public Task<ScriptCoin> OpenChannelAsync(OpenChannelRequest request)
+		public async Task<ScriptCoin> OpenChannelAsync(OpenChannelRequest request, CancellationToken ctsToken)
 		{
 			if (request == null)
 				throw new ArgumentNullException(nameof(request));
-			return SendAsync<ScriptCoin>(HttpMethod.Post, request, $"channels/");
+			return await SendAsync<ScriptCoin>(ctsToken, HttpMethod.Post, request, $"channels/").ConfigureAwait(false);
 		}
 
-		public ScriptCoin OpenChannel(OpenChannelRequest request) => OpenChannelAsync(request).GetAwaiter().GetResult();
-
-		public Task<TumblerEscrowKeyResponse> RequestTumblerEscrowKeyAsync() => SendAsync<TumblerEscrowKeyResponse>(HttpMethod.Post, _identity.CycleId, $"clientchannels/");
-
-		public TumblerEscrowKeyResponse RequestTumblerEscrowKey() => RequestTumblerEscrowKeyAsync().GetAwaiter().GetResult();
+		public async Task<TumblerEscrowKeyResponse> RequestTumblerEscrowKeyAsync(CancellationToken ctsToken)
+			=> await SendAsync<TumblerEscrowKeyResponse>(ctsToken, HttpMethod.Post, _identity.CycleId, $"clientchannels/").ConfigureAwait(false);
 
 		private string GetFullUri(string relativePath, params object[] parameters)
 		{
@@ -73,7 +69,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 		public static Identity LastUsedIdentity { get; private set; } = Identity.DoesntMatter;
 
-		private async Task<T> SendAsync<T>(HttpMethod method, object body, string relativePath, params object[] parameters)
+		private async Task<T> SendAsync<T>(CancellationToken ctsToken, HttpMethod method, object body, string relativePath, params object[] parameters)
 		{
 			var uri = GetFullUri(relativePath, parameters);
 			var message = new HttpRequestMessage(method, uri);
@@ -94,7 +90,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 				{
 					var start = DateTime.Now;
 					Logs.Client.LogInformation($"Changing identity to {_identity}");
-					await Tor.ControlPortClient.ChangeCircuitAsync().ConfigureAwait(false);
+					await Tor.ControlPortClient.ChangeCircuitAsync(ctsToken).ConfigureAwait(false);
 					var takelong = DateTime.Now - start;
 					File.AppendAllText("torchangelog.txt", Environment.NewLine + Environment.NewLine + $"CHANGE IP: {(int)takelong.TotalSeconds} sec" + Environment.NewLine);
 				}
@@ -106,7 +102,7 @@ namespace NTumbleBit.ClassicTumbler.Client
 			HttpResponseMessage result;
 			try
 			{
-				result = await Tor.HttpClient.SendAsync(message).ConfigureAwait(false);
+				result = await Tor.HttpClient.SendAsync(message, ctsToken).ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
@@ -138,34 +134,25 @@ namespace NTumbleBit.ClassicTumbler.Client
 			return Serializer.ToObject<T>(str, Network);
 		}
 
-		public ServerCommitmentsProof CheckRevelation(string channelId, PuzzlePromise.ClientRevelation revelation) => CheckRevelationAsync(channelId, revelation).GetAwaiter().GetResult();
+		public async Task<ServerCommitmentsProof> CheckRevelationAsync(string channelId, PromiseClientRevelation revelation, CancellationToken ctsToken)
+			=> await SendAsync<ServerCommitmentsProof>(ctsToken, HttpMethod.Post, revelation, $"channels/{_identity.CycleId}/{channelId}/checkrevelation").ConfigureAwait(false);
 
-		private Task<ServerCommitmentsProof> CheckRevelationAsync(string channelId, PuzzlePromise.ClientRevelation revelation) => SendAsync<ServerCommitmentsProof>(HttpMethod.Post, revelation, $"channels/{_identity.CycleId}/{channelId}/checkrevelation");
+		public async Task<PuzzlePromise.ServerCommitment[]> SignHashesAsync(string channelId, SignaturesRequest sigReq, CancellationToken ctsToken)
+			=> await SendAsync<PuzzlePromise.ServerCommitment[]>(ctsToken, HttpMethod.Post, sigReq, $"channels/{_identity.CycleId}/{channelId}/signhashes").ConfigureAwait(false);
 
-		public Task<PuzzlePromise.ServerCommitment[]> SignHashesAsync(string channelId, SignaturesRequest sigReq) => SendAsync<PuzzlePromise.ServerCommitment[]>(HttpMethod.Post, sigReq, $"channels/{_identity.CycleId}/{channelId}/signhashes");
-
-		public SolutionKey[] CheckRevelation(string channelId, PuzzleSolver.ClientRevelation revelation) => CheckRevelationAsync(channelId, revelation).GetAwaiter().GetResult();
-
-		public Task<SolutionKey[]> CheckRevelationAsync(string channelId, PuzzleSolver.ClientRevelation revelation) => SendAsync<SolutionKey[]>(HttpMethod.Post, revelation, $"clientschannels/{_identity.CycleId}/{channelId}/checkrevelation");
-
-		public OfferInformation CheckBlindFactors(string channelId, BlindFactor[] blindFactors) => CheckBlindFactorsAsync(channelId, blindFactors).GetAwaiter().GetResult();
-
-		public Task<OfferInformation> CheckBlindFactorsAsync(string channelId, BlindFactor[] blindFactors) => SendAsync<OfferInformation>(HttpMethod.Post, blindFactors, $"clientschannels/{_identity.CycleId}/{channelId}/checkblindfactors");
-
-		public PuzzleSolver.ServerCommitment[] SolvePuzzles(string channelId, PuzzleValue[] puzzles) => SolvePuzzlesAsync(channelId, puzzles).GetAwaiter().GetResult();
-
-		public Task<PuzzleSolver.ServerCommitment[]> SolvePuzzlesAsync(string channelId, PuzzleValue[] puzzles) => SendAsync<PuzzleSolver.ServerCommitment[]>(HttpMethod.Post, puzzles, $"clientchannels/{_identity.CycleId}/{channelId}/solvepuzzles");
-
-		public PuzzlePromise.ServerCommitment[] SignHashes(string channelId, SignaturesRequest sigReq) => SignHashesAsync(channelId, sigReq).GetAwaiter().GetResult();
-
-		public SolutionKey[] FulfillOffer(string channelId, TransactionSignature signature) => FulfillOfferAsync(_identity.CycleId, channelId, signature).GetAwaiter().GetResult();
-
-		public Task<SolutionKey[]> FulfillOfferAsync(int cycleId, string channelId, TransactionSignature signature) => SendAsync<SolutionKey[]>(HttpMethod.Post, signature, $"clientchannels/{_identity.CycleId}/{channelId}/offer");
-
-		public void GiveEscapeKey(string channelId, TransactionSignature signature)
-		{
-			GiveEscapeKeyAsync(channelId, signature).GetAwaiter().GetResult();
-		}
-		public Task GiveEscapeKeyAsync(string channelId, TransactionSignature signature) => SendAsync<string>(HttpMethod.Post, signature, $"clientchannels/{_identity.CycleId}/{channelId}/escape");
+		public async Task<SolutionKey[]> CheckRevelationAsync(string channelId, SolverClientRevelation revelation, CancellationToken ctsToken)
+			=> await SendAsync<SolutionKey[]>(ctsToken, HttpMethod.Post, revelation, $"clientschannels/{_identity.CycleId}/{channelId}/checkrevelation").ConfigureAwait(false);
+		
+		public async Task<OfferInformation> CheckBlindFactorsAsync(string channelId, BlindFactor[] blindFactors, CancellationToken ctsToken)
+			=> await SendAsync<OfferInformation>(ctsToken, HttpMethod.Post, blindFactors, $"clientschannels/{_identity.CycleId}/{channelId}/checkblindfactors").ConfigureAwait(false);
+		
+		public async Task<PuzzleSolver.ServerCommitment[]> SolvePuzzlesAsync(string channelId, PuzzleValue[] puzzles, CancellationToken ctsToken)
+			=> await SendAsync<PuzzleSolver.ServerCommitment[]>(ctsToken, HttpMethod.Post, puzzles, $"clientchannels/{_identity.CycleId}/{channelId}/solvepuzzles").ConfigureAwait(false);
+		
+		public async Task<SolutionKey[]> FulfillOfferAsync(string channelId, TransactionSignature signature, CancellationToken ctsToken)
+			=> await SendAsync<SolutionKey[]>(ctsToken, HttpMethod.Post, signature, $"clientchannels/{_identity.CycleId}/{channelId}/offer").ConfigureAwait(false);
+		
+		public async Task GiveEscapeKeyAsync(string channelId, TransactionSignature signature, CancellationToken ctsToken)
+			=> await SendAsync<string>(ctsToken, HttpMethod.Post, signature, $"clientchannels/{_identity.CycleId}/{channelId}/escape").ConfigureAwait(false);
 	}
 }

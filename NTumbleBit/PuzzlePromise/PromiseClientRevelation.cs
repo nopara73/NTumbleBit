@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace NTumbleBit.PuzzlePromise
 {
-	public class ClientRevelation
+	public class PromiseClientRevelation
 	{
-		public ClientRevelation()
+		public PromiseClientRevelation()
 		{
 
 		}
-		public ClientRevelation(int[] indexes, uint256 indexesSalt, uint256[] salts)
+		public PromiseClientRevelation(int[] indexes, uint256 indexesSalt, uint256[] salts)
 		{
 			FakeIndexes = indexes;
 			Salts = salts;

@@ -4,6 +4,7 @@ using NTumbleBit.BouncyCastle.Crypto.Parameters;
 using NTumbleBit.BouncyCastle.Math;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -106,7 +107,7 @@ namespace NTumbleBit
 		}
 
 		// http://stackoverflow.com/a/14933880/2061103
-		public static void DeleteRecursivelyWithMagicDust(string destinationDir)
+		public static async Task DeleteRecursivelyWithMagicDustAsync(string destinationDir, CancellationToken ctsToken = default(CancellationToken))
 		{
 			const int magicDust = 10;
 			for (var gnomes = 1; gnomes <= magicDust; gnomes++)
@@ -124,10 +125,10 @@ namespace NTumbleBit
 					if (gnomes == magicDust)
 						throw;
 					// System.IO.IOException: The directory is not empty
-					System.Diagnostics.Debug.WriteLine("Gnomes prevent deletion of {0}! Applying magic dust, attempt #{1}.", destinationDir, gnomes);
+					Debug.WriteLine("Gnomes prevent deletion of {0}! Applying magic dust, attempt #{1}.", destinationDir, gnomes);
 
 					// see http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true for more magic
-					Thread.Sleep(100);
+					await Task.Delay(100, ctsToken).ConfigureAwait(false);
 					continue;
 				}
 				catch (UnauthorizedAccessException)
@@ -135,10 +136,10 @@ namespace NTumbleBit
 					if (gnomes == magicDust)
 						throw;
 					// Wait, maybe another software make us authorized a little later
-					System.Diagnostics.Debug.WriteLine("Gnomes prevent deletion of {0}! Applying magic dust, attempt #{1}.", destinationDir, gnomes);
+					Debug.WriteLine("Gnomes prevent deletion of {0}! Applying magic dust, attempt #{1}.", destinationDir, gnomes);
 
 					// see http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true for more magic
-					Thread.Sleep(100);
+					await Task.Delay(100, ctsToken).ConfigureAwait(false);
 					continue;
 				}
 				return;

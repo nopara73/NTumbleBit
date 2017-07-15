@@ -65,7 +65,7 @@ namespace NTumbleBit.Services
 
 		protected override void StartCore(CancellationToken cancellationToken)
 		{
-			new Thread(() =>
+			Task.Run(async () =>
 			{
 				Logs.Broadcasters.LogInformation("BroadcasterJob started");
 				while(true)
@@ -76,7 +76,7 @@ namespace NTumbleBit.Services
 						var lastBlock = uint256.Zero;
 						while (true)
 						{
-							lastBlock = BlockExplorerService.WaitBlock(lastBlock, cancellationToken);
+							lastBlock = await BlockExplorerService.WaitBlockAsync(lastBlock, cancellationToken).ConfigureAwait(false);
 							TryBroadcast();
 						}
 					}
@@ -97,10 +97,10 @@ namespace NTumbleBit.Services
 					if(unhandled != null)
 					{
 						Logs.Broadcasters.LogError("Uncaught exception BroadcasterJob : " + unhandled.ToString());
-						cancellationToken.WaitHandle.WaitOne(5000);
+						await Task.Delay(5000, cancellationToken).ConfigureAwait(false);
 					}
 				}
-			}).Start();
+			});
 		}
 	}
 }

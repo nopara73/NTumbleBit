@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace NTumbleBit.PuzzleSolver
 {
-	public class ClientRevelation
+	public class SolverClientRevelation
 	{
-		public ClientRevelation()
+		public SolverClientRevelation()
 		{
 
 		}
-		public ClientRevelation(int[] fakeIndexes, PuzzleSolution[] solutions)
+		public SolverClientRevelation(int[] fakeIndexes, PuzzleSolution[] solutions)
 		{
 			FakeIndexes = fakeIndexes;
 			Solutions = solutions;

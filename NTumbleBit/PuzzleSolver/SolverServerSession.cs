@@ -166,7 +166,7 @@ namespace NTumbleBit.PuzzleSolver
 			return commitments.ToArray();
 		}
 
-		public SolutionKey[] CheckRevelation(ClientRevelation revelation)
+		public SolutionKey[] CheckRevelation(SolverClientRevelation revelation)
 		{
 			if(revelation == null)
 				throw new ArgumentNullException($"{nameof(revelation)}");
