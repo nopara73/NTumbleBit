@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using NTumbleBit.Logging;
 using NTumbleBit.Services;
 using Microsoft.Extensions.Logging.Abstractions;
-using NTumbleBit.ClassicTumbler.Server.Models;
+using NTumbleBit.ClassicTumbler.Models;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {

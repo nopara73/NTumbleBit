@@ -1,5 +1,6 @@
 ﻿using NBitcoin;
 using NTumbleBit.ClassicTumbler;
+using NTumbleBit.ClassicTumbler.Models;
 using NTumbleBit.PuzzlePromise;
 using NTumbleBit.PuzzleSolver;
 using System;
@@ -9,7 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using NTumbleBit.ClassicTumbler.Server.Models;
 
 namespace NTumbleBit.ClassicTumbler.Client
 {

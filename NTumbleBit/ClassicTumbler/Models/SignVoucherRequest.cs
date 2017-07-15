@@ -1,11 +1,9 @@
 ﻿using NBitcoin;
-using NTumbleBit.ClassicTumbler;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace NTumbleBit.ClassicTumbler.Server.Models
+namespace NTumbleBit.ClassicTumbler.Models
 {
 	public class SignVoucherRequest
 	{
