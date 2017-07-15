@@ -134,7 +134,8 @@ namespace NTumbleBit.ClassicTumbler.Client
 
 			if(DataDir == null)
 			{
-				DataDir = DefaultDataDirectory.GetDefaultDirectory("NTumbleBit", Network);
+				DataDir = Path.Combine("TumbleBitData", Network.ToString());
+				Directory.CreateDirectory(DataDir);
 			}
 
 			if(ConfigurationFile == null)
